@@ -71,7 +71,7 @@ export class QuestionGenerationService {
         if (grade === 1) {
             switch (difficulty) {
                 case DifficultyLevel.EASY:
-                    return 10;
+                    return 9;
                 case DifficultyLevel.MEDIUM:
                     return 15;
                 case DifficultyLevel.HARD:
