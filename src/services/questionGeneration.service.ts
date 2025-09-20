@@ -54,12 +54,13 @@ export class QuestionGenerationService {
         difficulty: DifficultyLevel,
         grade?: number
     ): number[] {
-        // Adjust number ranges based on grade and difficulty
-        const maxNumber = this.getMaxNumberForGrade(grade || 1, difficulty);
+        const effectiveGrade = grade || 1;
+        const minNumber = effectiveGrade === 1 ? 1 : 10;
+        const maxNumber = this.getMaxNumberForGrade(effectiveGrade, difficulty);
 
         return [
-            Math.floor(Math.random() * maxNumber) + 1,
-            Math.floor(Math.random() * maxNumber) + 1,
+            Math.floor(Math.random() * (maxNumber - minNumber + 1)) + minNumber,
+            Math.floor(Math.random() * (maxNumber - minNumber + 1)) + minNumber,
         ];
     }
 
