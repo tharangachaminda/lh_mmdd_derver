@@ -1,18 +1,12 @@
 import express, { Request, Response, NextFunction } from "express";
+import questionRoutes from "./routes/question.routes";
+import { errorHandler } from "./utils/error.handler";
 
 const app = express();
 export { app };
 
 // Middleware to parse JSON bodies
 app.use(express.json());
-
-// Error handling middleware for JSON parsing errors
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-    if (err instanceof SyntaxError && "body" in err) {
-        return res.status(400).json({ error: "Invalid JSON payload" });
-    }
-    next(err);
-});
 
 // Health check endpoint
 app.get("/health", (_req: Request, res: Response) => {
@@ -22,7 +16,13 @@ app.get("/health", (_req: Request, res: Response) => {
     });
 });
 
+// API routes
+app.use("/api/questions", questionRoutes);
+
 // 404 handler for undefined routes
 app.use((_req: Request, res: Response) => {
     res.status(404).json({ error: "Route not found" });
 });
+
+// Global error handler
+app.use(errorHandler);

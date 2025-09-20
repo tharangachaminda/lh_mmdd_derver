@@ -54,12 +54,13 @@ export class QuestionGenerationService {
         difficulty: DifficultyLevel,
         grade?: number
     ): number[] {
-        // Adjust number ranges based on grade and difficulty
-        const maxNumber = this.getMaxNumberForGrade(grade || 1, difficulty);
+        const effectiveGrade = grade || 1;
+        const minNumber = effectiveGrade === 1 ? 1 : 10;
+        const maxNumber = this.getMaxNumberForGrade(effectiveGrade, difficulty);
 
         return [
-            Math.floor(Math.random() * maxNumber) + 1,
-            Math.floor(Math.random() * maxNumber) + 1,
+            Math.floor(Math.random() * (maxNumber - minNumber + 1)) + minNumber,
+            Math.floor(Math.random() * (maxNumber - minNumber + 1)) + minNumber,
         ];
     }
 
@@ -67,6 +68,7 @@ export class QuestionGenerationService {
         grade: number,
         difficulty: DifficultyLevel
     ): number {
+        // For grade 1, keep numbers simple
         if (grade === 1) {
             switch (difficulty) {
                 case DifficultyLevel.EASY:
@@ -75,19 +77,19 @@ export class QuestionGenerationService {
                     return 15;
                 case DifficultyLevel.HARD:
                     return 20;
-                default:
-                    return 9;
             }
         }
 
-        const baseMax = grade * 10;
+        // For higher grades, scale linearly to maintain reasonable ranges
+        const baseMax = 10 + (grade - 1) * 15; // Increases by 15 per grade
+
         switch (difficulty) {
             case DifficultyLevel.EASY:
                 return baseMax;
             case DifficultyLevel.MEDIUM:
-                return baseMax * 1.5;
+                return Math.min(100, baseMax * 1.5);
             case DifficultyLevel.HARD:
-                return baseMax * 2;
+                return Math.min(100, baseMax * 2);
             default:
                 return baseMax;
         }
