@@ -13,5 +13,13 @@ module.exports = {
       lines: 80,
       statements: 80
     }
+  },
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', {
+      useESM: true,
+    }]
+  },
+  moduleNameMapper: {
+    '^uuid$': require.resolve('uuid')
   }
 };
