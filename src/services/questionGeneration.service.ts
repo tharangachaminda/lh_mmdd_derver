@@ -4,6 +4,7 @@ import {
     QuestionType,
     QuestionValidationResult,
 } from "../models/question";
+import { langChainService } from "./langchain.service";
 
 export class QuestionGenerationService {
     private questionCounter = 0;
@@ -12,21 +13,69 @@ export class QuestionGenerationService {
         difficulty: DifficultyLevel,
         grade?: number
     ): Promise<MathQuestion> {
-        // This is a placeholder implementation
-        // TODO: Implement LangChain integration for dynamic question generation
-        const numbers = this.getNumbersForDifficulty(difficulty, grade);
-        const question = this.formatQuestion(type, numbers);
-        const answer = this.calculateAnswer(type, numbers);
+        const effectiveGrade = grade || 1;
 
-        return {
-            id: `q${++this.questionCounter}`,
-            type,
-            difficulty,
-            grade: grade || 1,
-            question,
-            answer,
-            createdAt: new Date(),
-        };
+        try {
+            // Get AI-generated question
+            const aiResponse = await langChainService.generateMathQuestion(
+                type,
+                effectiveGrade,
+                difficulty
+            );
+
+            // Parse the AI response
+            const questionMatch = aiResponse.match(
+                /Question:\s*(.+?)\s*Answer:\s*(\d+)/i
+            );
+            if (!questionMatch) {
+                // Fallback to deterministic generation if AI response is invalid
+                const numbers = this.getNumbersForDifficulty(
+                    difficulty,
+                    effectiveGrade
+                );
+                const question = this.formatQuestion(type, numbers);
+                const answer = this.calculateAnswer(type, numbers);
+                return {
+                    id: `q${++this.questionCounter}`,
+                    type,
+                    difficulty,
+                    grade: effectiveGrade,
+                    question,
+                    answer,
+                    createdAt: new Date(),
+                };
+            }
+
+            const [, questionText, answerText] = questionMatch;
+            const answer = parseInt(answerText, 10);
+
+            return {
+                id: `q${++this.questionCounter}`,
+                type,
+                difficulty,
+                grade: effectiveGrade,
+                question: questionText.trim(),
+                answer,
+                createdAt: new Date(),
+            };
+        } catch (error) {
+            // Fallback to deterministic generation on error
+            const numbers = this.getNumbersForDifficulty(
+                difficulty,
+                effectiveGrade
+            );
+            const question = this.formatQuestion(type, numbers);
+            const answer = this.calculateAnswer(type, numbers);
+            return {
+                id: `q${++this.questionCounter}`,
+                type,
+                difficulty,
+                grade: effectiveGrade,
+                question,
+                answer,
+                createdAt: new Date(),
+            };
+        }
     }
 
     async validateAnswer(
@@ -35,19 +84,38 @@ export class QuestionGenerationService {
     ): Promise<QuestionValidationResult> {
         const correct = studentAnswer === question.answer;
 
-        // TODO: Use LangChain to generate personalized feedback
-        const feedback = correct
-            ? "Great job! You got it right!"
-            : `Try again. Think about how you can break down the problem into smaller steps.`;
+        try {
+            // Generate personalized feedback using LangChain
+            const feedback = await langChainService.generateFeedback(
+                question.question,
+                studentAnswer,
+                question.answer,
+                question.grade
+            );
 
-        return {
-            correct,
-            feedback,
-            nextQuestionSuggestion: this.getNextQuestionSuggestion(
-                question,
-                correct
-            ),
-        };
+            return {
+                correct,
+                feedback: feedback.trim(),
+                nextQuestionSuggestion: this.getNextQuestionSuggestion(
+                    question,
+                    correct
+                ),
+            };
+        } catch (error) {
+            // Fallback to default feedback on error
+            const defaultFeedback = correct
+                ? "Great job! You got it right!"
+                : `Try again. Think about how you can break down the problem into smaller steps.`;
+
+            return {
+                correct,
+                feedback: defaultFeedback,
+                nextQuestionSuggestion: this.getNextQuestionSuggestion(
+                    question,
+                    correct
+                ),
+            };
+        }
     }
 
     private getNumbersForDifficulty(
