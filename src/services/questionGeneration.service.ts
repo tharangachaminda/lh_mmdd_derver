@@ -67,16 +67,29 @@ export class QuestionGenerationService {
         grade: number,
         difficulty: DifficultyLevel
     ): number {
+        if (grade === 1) {
+            switch (difficulty) {
+                case DifficultyLevel.EASY:
+                    return 9;
+                case DifficultyLevel.MEDIUM:
+                    return 15;
+                case DifficultyLevel.HARD:
+                    return 20;
+                default:
+                    return 9;
+            }
+        }
+
         const baseMax = grade * 10;
         switch (difficulty) {
             case DifficultyLevel.EASY:
-                return Math.min(baseMax, 10);
-            case DifficultyLevel.MEDIUM:
                 return baseMax;
+            case DifficultyLevel.MEDIUM:
+                return baseMax * 1.5;
             case DifficultyLevel.HARD:
                 return baseMax * 2;
             default:
-                return 10;
+                return baseMax;
         }
     }
 
@@ -132,10 +145,15 @@ export class QuestionGenerationService {
     }
 
     private getNextQuestionType(currentType: QuestionType): QuestionType {
-        // Rotate through question types
-        const types = Object.values(QuestionType);
-        const currentIndex = types.indexOf(currentType);
-        return types[(currentIndex + 1) % types.length];
+        // Rotate through implemented question types only
+        const implementedTypes = [
+            QuestionType.ADDITION,
+            QuestionType.SUBTRACTION,
+            QuestionType.MULTIPLICATION,
+            QuestionType.DIVISION,
+        ];
+        const currentIndex = implementedTypes.indexOf(currentType);
+        return implementedTypes[(currentIndex + 1) % implementedTypes.length];
     }
 
     private getNextDifficulty(current: DifficultyLevel): DifficultyLevel {
