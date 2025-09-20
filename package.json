@@ -21,11 +21,14 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@llama-node/llama-cpp": "^0.1.6",
         "@opensearch-project/opensearch": "^3.5.1",
         "@types/express": "^5.0.3",
         "@types/node": "^24.5.2",
+        "dotenv": "^17.2.2",
         "express": "^5.1.0",
         "langchain": "^0.3.34",
+        "node-llama-cpp": "^3.13.0",
         "typescript": "^5.9.2",
         "uuid": "^13.0.0"
     },
