@@ -1,6 +1,7 @@
 import { getLlama } from "node-llama-cpp";
+import { ILanguageModel } from "../interfaces/language-model.interface.js";
 
-export class LangChainService {
+export class LangChainService implements ILanguageModel {
     private static instance: LangChainService;
     private model: any = null;
     private context: any = null;
