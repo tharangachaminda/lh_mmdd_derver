@@ -1,93 +1,94 @@
-import { OpenSearchService } from "../services/opensearch.service";
+import { OpenSearchService } from "../services/opensearch.service.js";
+import { jest, describe, it, expect, beforeEach } from "@jest/globals";
 import { Client } from "@opensearch-project/opensearch";
 
+// Mock the OpenSearch module
 jest.mock("@opensearch-project/opensearch");
 
 describe("OpenSearch Connection Tests", () => {
     let service: OpenSearchService;
-    let mockClient: jest.Mocked<Client>;
+    let mockHealth: jest.Mock;
+    let mockExists: jest.Mock;
+    let mockCreate: jest.Mock;
+    let mockIndex: jest.Mock;
+    let mockSearch: jest.Mock;
+    let mockDeleteByQuery: jest.Mock;
 
     beforeEach(() => {
+        // Create fresh mocks for each test
+        mockHealth = jest.fn();
+        mockExists = jest.fn();
+        mockCreate = jest.fn();
+        mockIndex = jest.fn();
+        mockSearch = jest.fn();
+        mockDeleteByQuery = jest.fn();
+
+        // Reset all mocks
         jest.clearAllMocks();
 
-        // Initialize mock client with required methods
-        mockClient = {
-            indices: {
-                exists: jest.fn().mockResolvedValue({ body: false }),
-                create: jest.fn().mockResolvedValue({}),
-            },
+        // Create a minimal mock client
+        const mockClient = {
             cluster: {
-                health: jest.fn().mockResolvedValue({
-                    body: {
-                        cluster_name: "opensearch-cluster",
-                        status: "green",
-                        timed_out: false,
-                        number_of_nodes: 2,
-                        number_of_data_nodes: 2,
-                        active_primary_shards: 14,
-                        active_shards: 28,
-                        relocating_shards: 0,
-                        initializing_shards: 0,
-                        unassigned_shards: 0,
-                        delayed_unassigned_shards: 0,
-                        number_of_pending_tasks: 0,
-                        number_of_in_flight_fetch: 0,
-                        task_max_waiting_in_queue_millis: 0,
-                        active_shards_percent_as_number: 100,
-                    },
-                }),
+                health: mockHealth,
             },
-        } as unknown as jest.Mocked<Client>;
+            indices: {
+                exists: mockExists,
+                create: mockCreate,
+            },
+            index: mockIndex,
+            search: mockSearch,
+            deleteByQuery: mockDeleteByQuery,
+        };
 
-        // Mock the Client constructor to return our mockClient
-        (Client as jest.Mock).mockImplementation(() => mockClient);
-
-        service = new OpenSearchService();
+        // Initialize service with mock client
+        service = new OpenSearchService(mockClient as unknown as Client);
     });
 
     it("should connect to OpenSearch and get cluster health", async () => {
+        // Setup mock response
+        mockHealth.mockImplementation(() =>
+            Promise.resolve({
+                body: {
+                    status: "green",
+                    cluster_name: "test-cluster",
+                },
+            })
+        );
+
+        // Execute the method
         const health = await service.getClusterHealth();
 
-        expect(mockClient.cluster.health).toHaveBeenCalled();
+        // Verify the results
+        expect(mockHealth).toHaveBeenCalled();
         expect(health).toEqual({
-            cluster_name: "opensearch-cluster",
             status: "green",
-            timed_out: false,
-            number_of_nodes: 2,
-            number_of_data_nodes: 2,
-            active_primary_shards: 14,
-            active_shards: 28,
-            relocating_shards: 0,
-            initializing_shards: 0,
-            unassigned_shards: 0,
-            delayed_unassigned_shards: 0,
-            number_of_pending_tasks: 0,
-            number_of_in_flight_fetch: 0,
-            task_max_waiting_in_queue_millis: 0,
-            active_shards_percent_as_number: 100,
+            cluster_name: "test-cluster",
         });
     });
 
     it("should initialize index successfully", async () => {
+        // Setup mock responses
+        mockExists.mockImplementation(() => Promise.resolve({ body: false }));
+        mockCreate.mockImplementation(() => Promise.resolve({ body: {} }));
+
+        // Execute the method
         await service.initializeIndex();
 
-        expect(mockClient.indices.exists).toHaveBeenCalled();
-        expect(mockClient.indices.create).toHaveBeenCalledWith({
+        // Verify the results
+        expect(mockExists).toHaveBeenCalledWith({
+            index: "math-questions",
+        });
+
+        expect(mockCreate).toHaveBeenCalledWith({
             index: "math-questions",
             body: {
                 settings: {
-                    index: {
-                        knn: true,
-                    },
+                    index: { knn: true },
                 },
                 mappings: {
                     properties: {
-                        questionId: {
-                            type: "keyword",
-                        },
-                        question: {
-                            type: "text",
-                        },
+                        questionId: { type: "keyword" },
+                        question: { type: "text" },
                         embedding: {
                             type: "knn_vector",
                             dimension: 1536,
@@ -97,15 +98,9 @@ describe("OpenSearch Connection Tests", () => {
                                 engine: "lucene",
                             },
                         },
-                        difficulty: {
-                            type: "keyword",
-                        },
-                        topic: {
-                            type: "keyword",
-                        },
-                        createdAt: {
-                            type: "date",
-                        },
+                        difficulty: { type: "keyword" },
+                        topic: { type: "keyword" },
+                        createdAt: { type: "date" },
                     },
                 },
             },
@@ -113,13 +108,171 @@ describe("OpenSearch Connection Tests", () => {
     });
 
     it("should not initialize index if it already exists", async () => {
-        (mockClient.indices.exists as jest.Mock).mockResolvedValueOnce({
-            body: true,
-        });
+        // Setup mock response
+        mockExists.mockImplementation(() => Promise.resolve({ body: true }));
 
+        // Execute the method
         await service.initializeIndex();
 
-        expect(mockClient.indices.exists).toHaveBeenCalled();
-        expect(mockClient.indices.create).not.toHaveBeenCalled();
+        // Verify the results
+        expect(mockExists).toHaveBeenCalledWith({
+            index: "math-questions",
+        });
+        expect(mockCreate).not.toHaveBeenCalled();
+    });
+
+    it("should store a question with embedding", async () => {
+        const mockData = {
+            questionId: "test-123",
+            question: "What is 2 + 2?",
+            embedding: [0.1, 0.2, 0.3],
+            difficulty: "easy",
+            topic: "arithmetic",
+        };
+
+        mockIndex.mockImplementation(() =>
+            Promise.resolve({ body: { result: "created" } })
+        );
+
+        await service.storeQuestionEmbedding(mockData);
+
+        expect(mockIndex).toHaveBeenCalledWith({
+            index: "math-questions",
+            body: expect.objectContaining({
+                ...mockData,
+                createdAt: expect.any(String),
+            }),
+        });
+    });
+
+    it("should search for similar questions", async () => {
+        const mockSearchResponse = {
+            body: {
+                hits: {
+                    hits: [
+                        {
+                            _score: 0.9,
+                            _source: {
+                                questionId: "q1",
+                                question: "What is 1 + 1?",
+                                difficulty: "easy",
+                                topic: "arithmetic",
+                            },
+                        },
+                    ],
+                },
+            },
+        };
+
+        mockSearch.mockImplementation(() =>
+            Promise.resolve(mockSearchResponse)
+        );
+
+        const embedding = Array(1536).fill(0.1);
+        const results = await service.searchSimilarQuestions(embedding, 1);
+
+        expect(mockSearch).toHaveBeenCalledWith({
+            index: "math-questions",
+            body: {
+                size: 1,
+                query: {
+                    bool: {
+                        must: [
+                            {
+                                knn: {
+                                    embedding: {
+                                        vector: embedding,
+                                        k: 1,
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        });
+
+        expect(results).toEqual([
+            {
+                score: 0.9,
+                questionId: "q1",
+                question: "What is 1 + 1?",
+                difficulty: "easy",
+                topic: "arithmetic",
+            },
+        ]);
+    });
+
+    it("should delete a question by ID", async () => {
+        mockDeleteByQuery.mockImplementation(() =>
+            Promise.resolve({ body: { deleted: 1 } })
+        );
+
+        const questionId = "test-123";
+        await service.deleteQuestion(questionId);
+
+        expect(mockDeleteByQuery).toHaveBeenCalledWith({
+            index: "math-questions",
+            body: {
+                query: {
+                    term: { questionId },
+                },
+            },
+        });
+    });
+
+    it("should test connection successfully", async () => {
+        const mockResponses = {
+            health: { body: { status: "green" } },
+            index: { body: { result: "created" } },
+            search: {
+                body: {
+                    hits: {
+                        hits: [
+                            { _score: 0.9, _source: { questionId: "test-id" } },
+                        ],
+                    },
+                },
+            },
+            deleteByQuery: { body: { deleted: 1 } },
+        };
+
+        mockHealth.mockImplementation(() =>
+            Promise.resolve(mockResponses.health)
+        );
+        mockExists.mockImplementation(() => Promise.resolve({ body: true }));
+        mockIndex.mockImplementation(() =>
+            Promise.resolve(mockResponses.index)
+        );
+        mockSearch.mockImplementation(() =>
+            Promise.resolve(mockResponses.search)
+        );
+        mockDeleteByQuery.mockImplementation(() =>
+            Promise.resolve(mockResponses.deleteByQuery)
+        );
+
+        const result = await service.testConnection();
+
+        expect(result.status).toBe(true);
+        expect(result.message).toBe(
+            "Successfully connected to OpenSearch and tested all operations"
+        );
+        expect(result.details).toEqual({
+            clusterHealth: mockResponses.health.body,
+            searchResults: [{ score: 0.9, questionId: "test-id" }],
+        });
+    });
+
+    it("should handle connection test failure", async () => {
+        const errorMessage = "Connection failed";
+        mockHealth.mockImplementation(() =>
+            Promise.reject(new Error(errorMessage))
+        );
+
+        const result = await service.testConnection();
+
+        expect(result.status).toBe(false);
+        expect(result.message).toBe(`Connection test failed: ${errorMessage}`);
+        expect(result.details).toBeInstanceOf(Error);
     });
 });
