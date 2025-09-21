@@ -1,24 +1,43 @@
 import { Client } from "@opensearch-project/opensearch";
 
-export class OpenSearchService {
-    private client: Client;
-    private readonly indexName: string = "math-questions";
+// Type for all OpenSearch responses
+type OSResponse<T> = { body: T };
 
-    constructor() {
-        this.client = new Client({
-            node: "https://localhost:9200",
-            auth: {
-                username: "admin",
-                password: "h7F!q9rT#4vL",
-            },
-            // Add additional configuration options
-            ssl: {
-                rejectUnauthorized: false, // For development only, since we're using self-signed certificates
-            },
-            maxRetries: 3,
-            requestTimeout: 30000, // Increased timeout
-            sniffOnStart: false, // Disabled sniffing since we're using SSL
-        });
+// Basic client interfaces
+interface MinimalClient {
+    indices: {
+        exists: (params: any) => Promise<OSResponse<boolean>>;
+        create: (params: any) => Promise<OSResponse<{}>>;
+    };
+    index: (params: any) => Promise<OSResponse<{ result: string }>>;
+    search: (params: any) => Promise<OSResponse<{ hits: { hits: any[] } }>>;
+    deleteByQuery: (params: any) => Promise<OSResponse<{ deleted: number }>>;
+    cluster: {
+        health: (params: any) => Promise<OSResponse<{ status: string }>>;
+    };
+}
+
+class OpenSearchService {
+    private readonly client: Client | MinimalClient;
+    private readonly indexName = "math-questions";
+
+    constructor(client?: Client | MinimalClient) {
+        this.client =
+            client ??
+            new Client({
+                node: "https://localhost:9200",
+                auth: {
+                    username: "admin",
+                    password: "h7F!q9rT#4vL",
+                },
+                // Add additional configuration options
+                ssl: {
+                    rejectUnauthorized: false, // For development only, since we're using self-signed certificates
+                },
+                maxRetries: 3,
+                requestTimeout: 30000, // Increased timeout
+                sniffOnStart: false, // Disabled sniffing since we're using SSL
+            });
     }
 
     /**
@@ -108,10 +127,13 @@ export class OpenSearchService {
             } as any,
         });
 
-        return response.body.hits.hits.map((hit: any) => ({
-            score: hit._score,
-            ...hit._source,
-        }));
+        // Using ES2023 methods for better immutability
+        return response.body.hits.hits
+            .toSorted((a: any, b: any) => b._score - a._score)
+            .map((hit: any) => ({
+                score: hit._score,
+                ...hit._source,
+            }));
     }
 
     /**
@@ -132,7 +154,7 @@ export class OpenSearchService {
      * Get the health status of the OpenSearch cluster
      */
     public async getClusterHealth(): Promise<any> {
-        const response = await this.client.cluster.health();
+        const response = await this.client.cluster.health({});
         return response.body;
     }
 
@@ -190,4 +212,6 @@ export class OpenSearchService {
 }
 
 // Create and export the singleton instance
-export const opensearchService = new OpenSearchService();
+const opensearchService = new OpenSearchService();
+export default opensearchService;
+export { OpenSearchService };

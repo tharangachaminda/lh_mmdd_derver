@@ -1,43 +1,36 @@
-import { OpenSearchService } from "../services/opensearch.service";
+import { jest, describe, it, expect, beforeEach } from "@jest/globals";
+import { OpenSearchService } from "../services/opensearch.service.js";
 import { Client } from "@opensearch-project/opensearch";
 
-// Mock the OpenSearch Client
-jest.mock("@opensearch-project/opensearch");
+// Create properly typed mock client
+const mockClient = {
+    indices: {
+        exists: jest.fn(),
+        create: jest.fn(),
+    },
+    index: jest.fn(),
+    search: jest.fn(),
+    cluster: {
+        health: jest.fn(),
+    },
+};
+
+jest.mock("@opensearch-project/opensearch", () => ({
+    Client: jest.fn(() => mockClient),
+}));
 
 describe("OpenSearchService", () => {
     let service: OpenSearchService;
-    let mockClient: jest.Mocked<Client>;
 
     beforeEach(() => {
-        // Clear mock calls between tests
         jest.clearAllMocks();
-
-        // Initialize mock client with required methods
-        mockClient = {
-            indices: {
-                exists: jest.fn(),
-                create: jest.fn(),
-            },
-            cluster: {
-                health: jest.fn(),
-            },
-            index: jest.fn(),
-            search: jest.fn(),
-        } as unknown as jest.Mocked<Client>;
-
-        // Mock the Client constructor to return our mockClient
-        (Client as jest.Mock).mockImplementation(() => mockClient);
-
-        service = new OpenSearchService();
+        service = new OpenSearchService(mockClient as unknown as Client);
     });
 
     describe("initializeIndex", () => {
         it("should create index if it does not exist", async () => {
-            // Mock index exists check to return false
-            mockClient.indices.exists = jest
-                .fn()
-                .mockResolvedValue({ body: false });
-            mockClient.indices.create = jest.fn().mockResolvedValue({});
+            mockClient.indices.exists.mockResolvedValueOnce({ body: false });
+            mockClient.indices.create.mockResolvedValueOnce({ body: {} });
 
             await service.initializeIndex();
 
@@ -48,11 +41,7 @@ describe("OpenSearchService", () => {
         });
 
         it("should not create index if it already exists", async () => {
-            // Mock index exists check to return true
-            mockClient.indices.exists = jest
-                .fn()
-                .mockResolvedValue({ body: true });
-            mockClient.indices.create = jest.fn();
+            mockClient.indices.exists.mockResolvedValueOnce({ body: true });
 
             await service.initializeIndex();
 
@@ -64,30 +53,25 @@ describe("OpenSearchService", () => {
     describe("storeQuestionEmbedding", () => {
         it("should store question with embedding", async () => {
             const mockData = {
-                questionId: "123",
+                questionId: "test-id",
                 question: "test question",
-                embedding: [0.1, 0.2, 0.3],
+                embedding: [1, 2, 3],
                 difficulty: "medium",
                 topic: "algebra",
             };
-
-            mockClient.index = jest.fn().mockResolvedValue({});
+            mockClient.index.mockResolvedValueOnce({ body: {} });
 
             await service.storeQuestionEmbedding(mockData);
 
             expect(mockClient.index).toHaveBeenCalledWith({
                 index: expect.any(String),
-                body: expect.objectContaining({
-                    ...mockData,
-                    createdAt: expect.any(String),
-                }),
+                body: mockData,
             });
         });
     });
 
     describe("searchSimilarQuestions", () => {
         it("should search for similar questions using vector similarity", async () => {
-            const mockEmbedding = [0.1, 0.2, 0.3];
             const mockResponse = {
                 body: {
                     hits: {
@@ -95,7 +79,7 @@ describe("OpenSearchService", () => {
                             {
                                 _score: 0.8,
                                 _source: {
-                                    questionId: "123",
+                                    id: "123",
                                     question: "test question",
                                 },
                             },
@@ -104,14 +88,21 @@ describe("OpenSearchService", () => {
                 },
             };
 
-            mockClient.search = jest.fn().mockResolvedValue(mockResponse);
+            mockClient.search.mockResolvedValueOnce(mockResponse);
 
-            const result = await service.searchSimilarQuestions(mockEmbedding);
+            const result = await service.searchSimilarQuestions(
+                [0.1, 0.2, 0.3],
+                5
+            );
 
             expect(mockClient.search).toHaveBeenCalled();
-            expect(result).toHaveLength(1);
-            expect(result[0]).toHaveProperty("score");
-            expect(result[0]).toHaveProperty("questionId");
+            expect(result).toEqual([
+                {
+                    id: "123",
+                    question: "test question",
+                    score: 0.8,
+                },
+            ]);
         });
     });
 
@@ -124,7 +115,7 @@ describe("OpenSearchService", () => {
                 },
             };
 
-            mockClient.cluster.health = jest.fn().mockResolvedValue(mockHealth);
+            mockClient.cluster.health.mockResolvedValueOnce(mockHealth);
 
             const result = await service.getClusterHealth();
 

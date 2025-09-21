@@ -2,8 +2,8 @@ import {
     QuestionType,
     DifficultyLevel,
     MathQuestion,
-} from "../models/question";
-import { QuestionGenerationService } from "../services/questionGeneration.service";
+} from "../models/question.js";
+import { QuestionGenerationService } from "../services/questionGeneration.service.js";
 
 describe("QuestionGenerationService", () => {
     let questionService: QuestionGenerationService;
@@ -18,7 +18,10 @@ describe("QuestionGenerationService", () => {
                 const type = QuestionType.ADDITION;
                 const level = DifficultyLevel.EASY;
 
-                const question = await questionService.generateQuestion(type, level);
+                const question = await questionService.generateQuestion(
+                    type,
+                    level
+                );
 
                 expect(question).toBeDefined();
                 expect(question.type).toBe(type);
@@ -32,8 +35,14 @@ describe("QuestionGenerationService", () => {
                 const type = QuestionType.ADDITION;
                 const level = DifficultyLevel.EASY;
 
-                const question1 = await questionService.generateQuestion(type, level);
-                const question2 = await questionService.generateQuestion(type, level);
+                const question1 = await questionService.generateQuestion(
+                    type,
+                    level
+                );
+                const question2 = await questionService.generateQuestion(
+                    type,
+                    level
+                );
 
                 expect(question1.id).not.toBe(question2.id);
             });
@@ -114,7 +123,9 @@ describe("QuestionGenerationService", () => {
                     DifficultyLevel.EASY
                 );
 
-                expect(question.question).toMatch(/What is \d+(\s*\+\s*\d+)+\?/);
+                expect(question.question).toMatch(
+                    /What is \d+(\s*\+\s*\d+)+\?/
+                );
             });
 
             it("should format subtraction questions correctly", async () => {
@@ -176,14 +187,20 @@ describe("QuestionGenerationService", () => {
                 const [a1, b1] = additionQ.question.match(/\d+/g)!.map(Number);
                 expect(additionQ.answer).toBe(a1 + b1);
 
-                const [a2, b2] = subtractionQ.question.match(/\d+/g)!.map(Number);
+                const [a2, b2] = subtractionQ.question
+                    .match(/\d+/g)!
+                    .map(Number);
                 expect(subtractionQ.answer).toBe(a2 - b2);
 
-                const [a3, b3] = multiplicationQ.question.match(/\d+/g)!.map(Number);
+                const [a3, b3] = multiplicationQ.question
+                    .match(/\d+/g)!
+                    .map(Number);
                 expect(multiplicationQ.answer).toBe(a3 * b3);
 
                 const [a4, b4] = divisionQ.question.match(/\d+/g)!.map(Number);
-                expect(divisionQ.answer).toBe(Math.round((a4 / b4) * 100) / 100);
+                expect(divisionQ.answer).toBe(
+                    Math.round((a4 / b4) * 100) / 100
+                );
             });
         });
     });
@@ -327,7 +344,9 @@ describe("QuestionGenerationService", () => {
                     );
 
                     const expectedNextType = types[(i + 1) % types.length];
-                    expect(result.nextQuestionSuggestion?.type).toBe(expectedNextType);
+                    expect(result.nextQuestionSuggestion?.type).toBe(
+                        expectedNextType
+                    );
                     currentType = expectedNextType;
                 }
             });

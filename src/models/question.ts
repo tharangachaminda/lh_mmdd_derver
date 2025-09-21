@@ -4,6 +4,10 @@ export enum QuestionType {
     MULTIPLICATION = "multiplication",
     DIVISION = "division",
     PATTERN = "pattern",
+    FRACTION_ADDITION = "fraction_addition",
+    FRACTION_SUBTRACTION = "fraction_subtraction",
+    FRACTION_MULTIPLICATION = "fraction_multiplication",
+    FRACTION_DIVISION = "fraction_division",
 }
 
 export enum DifficultyLevel {
@@ -12,7 +16,7 @@ export enum DifficultyLevel {
     HARD = "hard",
 }
 
-export interface MathQuestion {
+export interface Question {
     id: string;
     type: QuestionType;
     difficulty: DifficultyLevel;
@@ -32,3 +36,5 @@ export interface QuestionValidationResult {
         difficulty: DifficultyLevel;
     };
 }
+
+// Curriculum-related interfaces have been moved to curriculum.ts

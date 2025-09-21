@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es2020",
+    "target": "ES2022",
     "module": "NodeNext",
-    "lib": ["es2020"],
+    "lib": ["ES2022"],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -11,10 +11,14 @@
     "rootDir": "./src",
     "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowJs": true,
+    "declaration": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

@@ -1,23 +1,29 @@
 import {
     DifficultyLevel,
-    MathQuestion,
+    Question,
     QuestionType,
     QuestionValidationResult,
-} from "../models/question";
-import { langChainService } from "./langchain.service";
+} from "../models/question.js";
+import { LangChainService } from "./langchain.service.js";
 
 export class QuestionGenerationService {
+    private langchainService: LangChainService;
     private questionCounter = 0;
+
+    constructor(langchainService?: LangChainService) {
+        this.langchainService =
+            langchainService || LangChainService.getInstance();
+    }
     async generateQuestion(
         type: QuestionType,
         difficulty: DifficultyLevel,
         grade?: number
-    ): Promise<MathQuestion> {
+    ): Promise<Question> {
         const effectiveGrade = grade || 1;
 
         try {
             // Get AI-generated question
-            const aiResponse = await langChainService.generateMathQuestion(
+            const aiResponse = await this.langchainService.generateMathQuestion(
                 type,
                 effectiveGrade,
                 difficulty
@@ -79,14 +85,14 @@ export class QuestionGenerationService {
     }
 
     async validateAnswer(
-        question: MathQuestion,
+        question: Question,
         studentAnswer: number
     ): Promise<QuestionValidationResult> {
         const correct = studentAnswer === question.answer;
 
         try {
             // Generate personalized feedback using LangChain
-            const feedback = await langChainService.generateFeedback(
+            const feedback = await this.langchainService.generateFeedback(
                 question.question,
                 studentAnswer,
                 question.answer,
@@ -196,7 +202,7 @@ export class QuestionGenerationService {
     }
 
     private getNextQuestionSuggestion(
-        currentQuestion: MathQuestion,
+        currentQuestion: Question,
         wasCorrect: boolean
     ): { type: QuestionType; difficulty: DifficultyLevel } {
         if (wasCorrect) {

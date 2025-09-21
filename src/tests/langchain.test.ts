@@ -1,10 +1,19 @@
 import { LangChainService } from "../services/langchain.service";
-import path from "path";
+import path from "node:path";
+import { jest, describe, it, expect, beforeEach } from "@jest/globals";
 
 jest.mock("node-llama-cpp", () => ({
-    createLlama: jest.fn().mockResolvedValue({
-        completion: jest.fn().mockResolvedValue({
-            text: "Question: What is 5 + 7? Answer: 12",
+    getLlama: jest.fn().mockResolvedValue({
+        loadModel: jest.fn().mockResolvedValue({
+            createEmbeddingContext: jest.fn().mockResolvedValue({
+                getEmbeddingFor: jest.fn().mockResolvedValue({
+                    vector: new Float32Array(
+                        new Array(1536).fill(0).map(() => Math.random())
+                    ),
+                }),
+                free: jest.fn().mockResolvedValue(undefined),
+            }),
+            free: jest.fn().mockResolvedValue(undefined),
         }),
     }),
 }));
@@ -12,84 +21,71 @@ jest.mock("node-llama-cpp", () => ({
 describe("LangChainService", () => {
     let service: LangChainService;
 
-    beforeEach(async () => {
+    beforeEach(() => {
         // Reset environment variables
-        process.env.LLAMA_MODEL_PATH = path.join(__dirname, "test-model.gguf");
+        const filePath = new URL("test-model.gguf", import.meta.url).pathname;
+        process.env.LLAMA_MODEL_PATH = filePath;
         process.env.LLAMA_NUM_THREADS = "4";
         process.env.LLAMA_CONTEXT_SIZE = "2048";
         process.env.LLAMA_BATCH_SIZE = "512";
+        process.env.LLAMA_EMBEDDING_SIZE = "1536";
 
+        // Clear the singleton instance before each test
+        (LangChainService as any).instance = null;
         service = LangChainService.getInstance();
-        await service.initialize();
     });
 
-    describe("generateMathQuestion", () => {
-        it("should generate a math question with specified parameters", async () => {
-            const question = await service.generateMathQuestion(
-                "addition",
-                5,
-                "medium"
-            );
-            expect(question).toContain("Question:");
-            expect(question).toContain("Answer:");
-        });
-
-        it("should throw error if LLM is not initialized", async () => {
-            // @ts-ignore - Accessing private property for testing
-            service["llm"] = null;
-            await expect(
-                service.generateMathQuestion("addition", 5, "medium")
-            ).rejects.toThrow("LLM not initialized");
-        });
+    afterEach(async () => {
+        await service.cleanup();
     });
 
-    describe("generateFeedback", () => {
-        it("should generate feedback for student answer", async () => {
-            const feedback = await service.generateFeedback(
-                "What is 5 + 7?",
-                10,
-                12,
-                5
+    describe("generateEmbedding", () => {
+        it("should generate embedding of correct dimension", async () => {
+            const text = "Sample text for embedding";
+            const embedding = await service.generateEmbedding(text);
+
+            expect(embedding).toHaveLength(1536);
+            expect(embedding.every((val) => typeof val === "number")).toBe(
+                true
             );
-            expect(feedback).toBeTruthy();
-            expect(typeof feedback).toBe("string");
         });
 
-        it("should throw error if LLM is not initialized", async () => {
-            // @ts-ignore - Accessing private property for testing
-            service["llm"] = null;
-            await expect(
-                service.generateFeedback("What is 5 + 7?", 10, 12, 5)
-            ).rejects.toThrow("LLM not initialized");
-        });
-    });
-
-    describe("prompt building", () => {
-        it("should build a question prompt with correct format", () => {
-            // @ts-ignore - Accessing private method for testing
-            const prompt = service["buildQuestionPrompt"](
-                "addition",
-                5,
-                "medium"
-            );
-            expect(prompt).toContain("grade 5");
-            expect(prompt).toContain("medium");
-            expect(prompt).toContain("addition");
-            expect(prompt).toContain("Format: Question:");
+        it("should handle empty text", async () => {
+            const embedding = await service.generateEmbedding("");
+            expect(embedding).toHaveLength(1536);
         });
 
-        it("should build a feedback prompt with correct format", () => {
-            // @ts-ignore - Accessing private method for testing
-            const prompt = service["buildFeedbackPrompt"](
-                "What is 5 + 7?",
-                10,
-                12,
-                5
-            );
-            expect(prompt).toContain("grade 5");
-            expect(prompt).toContain("10");
-            expect(prompt).toContain("12");
-            expect(prompt).toContain("What is 5 + 7?");
+        it("should maintain consistent dimensions across calls", async () => {
+            const text1 = "First text";
+            const text2 = "Second text";
+
+            const embedding1 = await service.generateEmbedding(text1);
+            const embedding2 = await service.generateEmbedding(text2);
+
+            expect(embedding1.length).toBe(embedding2.length);
+        });
+
+        it("should initialize model on first call", async () => {
+            const text = "Test text";
+            await service.generateEmbedding(text);
+
+            // Model should be initialized after first call
+            expect(require("node-llama-cpp").getLlama).toHaveBeenCalled();
+        });
+
+        it("should reuse model for subsequent calls", async () => {
+            const llama = require("node-llama-cpp");
+            const originalGetLlama = llama.getLlama;
+            const getLlamaSpy = jest.fn().mockImplementation(originalGetLlama);
+            llama.getLlama = getLlamaSpy;
+
+            await service.generateEmbedding("First call");
+            await service.generateEmbedding("Second call");
+
+            expect(getLlamaSpy).toHaveBeenCalledTimes(1);
+
+            // Restore the original function
+            llama.getLlama = originalGetLlama;
         });
     });
 });

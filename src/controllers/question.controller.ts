@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { QuestionGenerationService } from "../services/questionGeneration.service";
+import { QuestionGenerationService } from "../services/questionGeneration.service.js";
 import {
     QuestionType,
     DifficultyLevel,
