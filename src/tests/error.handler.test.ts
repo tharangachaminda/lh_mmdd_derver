@@ -1,5 +1,5 @@
 import { jest, describe, it, expect, beforeEach } from "@jest/globals";
-import { ApiError, errorHandler } from "../utils/error.handler";
+import { ApiError, errorHandler } from "../utils/error.handler.js";
 import { Request, Response, NextFunction } from "express";
 
 describe("Error Handler", () => {

@@ -1,59 +1,38 @@
 import { LangChainService } from "../services/langchain.service.js";
 import { jest, describe, it, expect, beforeEach } from "@jest/globals";
 
-// Define types for our mocked objects
-type MockEmbeddingResult = {
-    vector: Float32Array;
-};
-
-type MockContext = {
-    getEmbeddingFor: jest.MockedFunction<
-        (text: string) => Promise<MockEmbeddingResult>
-    >;
-    free: jest.MockedFunction<() => Promise<void>>;
-};
-
-type MockModel = {
-    createEmbeddingContext: jest.MockedFunction<() => Promise<MockContext>>;
-    free: jest.MockedFunction<() => Promise<void>>;
-};
-
-type MockLlamaInstance = {
-    loadModel: jest.MockedFunction<
-        (options: {
-            modelPath: string;
-            gpuLayers?: number;
-        }) => Promise<MockModel>
-    >;
-};
-
-// Mock the module before any imports or test setup
+// Mock the llama-cpp module
 jest.mock("node-llama-cpp", () => {
-    const mockContext: MockContext = {
-        getEmbeddingFor: jest.fn(async () => ({
-            vector: new Float32Array(new Array(1536).fill(0.1)),
-        })),
-        free: jest.fn(async () => undefined),
+    const mockEmbeddingVector = new Float32Array(new Array(1536).fill(0.1));
+
+    const mockContext = {
+        getEmbeddingFor: jest
+            .fn()
+            .mockImplementation(() =>
+                Promise.resolve({ vector: mockEmbeddingVector })
+            ),
+        free: jest.fn().mockImplementation(() => Promise.resolve()),
     };
 
-    const mockModel: MockModel = {
-        createEmbeddingContext: jest.fn(async () => mockContext),
-        free: jest.fn(async () => undefined),
+    const mockModel = {
+        createEmbeddingContext: jest
+            .fn()
+            .mockImplementation(() => Promise.resolve(mockContext)),
+        free: jest.fn().mockImplementation(() => Promise.resolve()),
     };
 
-    const mockLlama: MockLlamaInstance = {
-        loadModel: jest.fn(async (options) => {
-            if (!options?.modelPath) {
-                throw new Error("Model path not provided");
-            }
-            return mockModel;
-        }),
+    const mockLlama = {
+        loadModel: jest
+            .fn()
+            .mockImplementation(() => Promise.resolve(mockModel)),
     };
 
     return {
-        getLlama: jest.fn(() => mockLlama),
+        getLlama: jest.fn().mockImplementation(() => mockLlama),
     };
 });
+
+// Test suite begins
 
 describe("LangChainService", () => {
     let service: LangChainService;
@@ -97,13 +76,17 @@ describe("LangChainService", () => {
             await service.generateEmbedding("Test text");
 
             // Assert
-            const module = jest.requireMock("node-llama-cpp") as {
-                getLlama: jest.MockedFunction<() => MockLlamaInstance>;
+            const mockModule = jest.requireMock("node-llama-cpp") as {
+                getLlama: jest.MockedFunction<
+                    () => {
+                        loadModel: jest.MockedFunction<
+                            (opts: any) => Promise<any>
+                        >;
+                    }
+                >;
             };
-            const mockGetLlama = module.getLlama;
-            const mockLlama = mockGetLlama();
-            expect(mockGetLlama).toHaveBeenCalled();
-            expect(mockLlama.loadModel).toHaveBeenCalledWith({
+            expect(mockModule.getLlama).toHaveBeenCalled();
+            expect(mockModule.getLlama().loadModel).toHaveBeenCalledWith({
                 modelPath: expect.any(String),
                 gpuLayers: 0,
             });
@@ -115,13 +98,17 @@ describe("LangChainService", () => {
             await service.generateEmbedding("Second call");
 
             // Assert
-            const module = jest.requireMock("node-llama-cpp") as {
-                getLlama: jest.MockedFunction<() => MockLlamaInstance>;
+            const mockModule = jest.requireMock("node-llama-cpp") as {
+                getLlama: jest.MockedFunction<
+                    () => {
+                        loadModel: jest.MockedFunction<
+                            (opts: any) => Promise<any>
+                        >;
+                    }
+                >;
             };
-            const mockGetLlama = module.getLlama;
-            const mockLlama = mockGetLlama();
-            expect(mockGetLlama).toHaveBeenCalledTimes(1);
-            expect(mockLlama.loadModel).toHaveBeenCalledTimes(1);
+            expect(mockModule.getLlama).toHaveBeenCalledTimes(1);
+            expect(mockModule.getLlama().loadModel).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -134,10 +121,16 @@ describe("LangChainService", () => {
             await service.cleanup();
 
             // Assert
-            const module = jest.requireMock("node-llama-cpp") as {
-                getLlama: jest.MockedFunction<() => MockLlamaInstance>;
+            const mockModule = jest.requireMock("node-llama-cpp") as {
+                getLlama: jest.MockedFunction<
+                    () => {
+                        loadModel: jest.MockedFunction<
+                            (opts: any) => Promise<any>
+                        >;
+                    }
+                >;
             };
-            const mockGetLlama = module.getLlama;
+            const mockGetLlama = mockModule.getLlama;
             const mockLlama = mockGetLlama();
             const mockModel = await mockLlama.loadModel({
                 modelPath: "/mock/model/path",

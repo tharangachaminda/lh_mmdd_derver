@@ -1,6 +1,6 @@
 import request from "supertest";
-import { app } from "../app";
-import { QuestionType, DifficultyLevel } from "../models/question";
+import { app } from "../app.js";
+import { QuestionType, DifficultyLevel } from "../models/question.js";
 
 describe("Question API Endpoints", () => {
     describe("GET /api/questions/generate", () => {

@@ -3,8 +3,8 @@ import {
     SampleQuestion,
     MathConcept,
     CurriculumValidationResult,
-} from "../models/curriculum";
-import { QuestionType, DifficultyLevel } from "../models/question";
+} from "../models/curriculum.js";
+import { QuestionType, DifficultyLevel } from "../models/question.js";
 
 export class CurriculumValidator {
     /**
