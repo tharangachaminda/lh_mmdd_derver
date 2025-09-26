@@ -5,10 +5,10 @@ import { CurriculumDataService } from "../services/curriculumData.service.js";
 import { CurriculumContent } from "../models/curriculum.js";
 import { QuestionType, DifficultyLevel } from "../models/question.js";
 import { Client } from "@opensearch-project/opensearch";
-import { 
-    loadCurriculumFromJSON, 
-    validateCurriculumData, 
-    processCurriculumBatch 
+import {
+    loadCurriculumFromJSON,
+    validateCurriculumData,
+    processCurriculumBatch,
 } from "../utils/curriculum.loader.js";
 
 // Mock OpenSearch client using the same structure as existing tests
@@ -38,13 +38,13 @@ const mockClient = {
                     _source: {
                         id: "test-curriculum-id",
                         grade: 2,
-                        topic: "Addition"
+                        topic: "Addition",
                     },
-                    _score: 0.95
-                }
-            ]
-        }
-    }
+                    _score: 0.95,
+                },
+            ],
+        },
+    },
 });
 
 // Mock the language model service
@@ -62,23 +62,29 @@ describe("Curriculum Vector Indexing", () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        
+
         // Set up mock embedding response
         const mockEmbedding = Array.from({ length: 1536 }, () => Math.random());
         (mockGenerateEmbedding as any).mockResolvedValue(mockEmbedding);
-        
-        curriculumService = new CurriculumDataService(mockClient, mockLanguageModel as any);
+
+        curriculumService = new CurriculumDataService(
+            mockClient,
+            mockLanguageModel as any
+        );
     });
 
     describe("JSON Data Loading", () => {
         it("should load curriculum data from JSON file", async () => {
             // This test expects a JSON loader utility to exist
             // Currently will fail because we haven't implemented it
-            const jsonPath = path.join(process.cwd(), "sample-curriculum-data.json");
-            
+            const jsonPath = path.join(
+                process.cwd(),
+                "sample-curriculum-data.json"
+            );
+
             // We expect a utility function to load and parse curriculum JSON
             const loadedData = await loadCurriculumFromJSON(jsonPath);
-            
+
             expect(loadedData).toBeDefined();
             expect(loadedData.id).toBe("math-grade2-addition-basic");
             expect(loadedData.grade).toBe(2);
@@ -87,11 +93,14 @@ describe("Curriculum Vector Indexing", () => {
         });
 
         it("should validate curriculum data structure", async () => {
-            const jsonPath = path.join(process.cwd(), "sample-curriculum-data.json");
-            
+            const jsonPath = path.join(
+                process.cwd(),
+                "sample-curriculum-data.json"
+            );
+
             // This test expects validation function to exist
             const isValid = await validateCurriculumData(jsonPath);
-            
+
             expect(isValid).toBe(true);
         });
     });
@@ -101,14 +110,14 @@ describe("Curriculum Vector Indexing", () => {
             sampleCurriculumData = {
                 id: "test-curriculum-001",
                 grade: 2,
-                subject: "Mathematics", 
+                subject: "Mathematics",
                 topic: "Addition",
                 subtopic: "Single Digit Addition",
                 concept: {
                     id: "concept-single-digit-addition",
-                    name: "Single Digit Addition", 
+                    name: "Single Digit Addition",
                     description: "Addition of two single-digit numbers (0-9)",
-                    keywords: ["addition", "single digit", "sum"]
+                    keywords: ["addition", "single digit", "sum"],
                 },
                 difficulty: DifficultyLevel.EASY,
                 questionTypes: [QuestionType.ADDITION],
@@ -119,46 +128,50 @@ describe("Curriculum Vector Indexing", () => {
                         answer: 7,
                         explanation: "Count forward 4 steps from 3",
                         type: QuestionType.ADDITION,
-                        keywords: ["addition", "basic"]
-                    }
+                        keywords: ["addition", "basic"],
+                    },
                 ],
                 prerequisites: ["Number recognition"],
                 learningObjectives: ["Add single-digit numbers"],
                 commonMistakes: ["Confusing with subtraction"],
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                version: 1
+                version: 1,
             };
         });
 
         it("should generate embeddings for curriculum content", async () => {
             // Test that embeddings are generated for the content description
-            const result = await curriculumService.storeCurriculumContent(sampleCurriculumData);
-            
+            const result = await curriculumService.storeCurriculumContent(
+                sampleCurriculumData
+            );
+
             expect(result).toBeDefined();
             expect(mockClient.index).toHaveBeenCalledWith({
                 index: "curriculum",
                 id: "test-curriculum-001",
                 body: expect.objectContaining({
                     ...sampleCurriculumData,
-                    embedding: expect.any(Array)
-                })
+                    embedding: expect.any(Array),
+                }),
             });
         });
 
         it("should store curriculum data with vector embeddings", async () => {
-            const curriculumId = await curriculumService.storeCurriculumContent(sampleCurriculumData);
-            
+            const curriculumId = await curriculumService.storeCurriculumContent(
+                sampleCurriculumData
+            );
+
             expect(curriculumId).toBe("test-curriculum-id");
             expect(mockClient.index).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    index: "curriculum", 
+                    index: "curriculum",
                     id: "test-curriculum-001",
                     body: expect.objectContaining({
                         grade: 2,
                         topic: "Addition",
-                        embedding: expect.any(Array)
-                    })
+                        embedding: expect.any(Array),
+                    }),
                 })
             );
         });
@@ -168,11 +181,11 @@ describe("Curriculum Vector Indexing", () => {
                 "addition problems for grade 2",
                 { grade: 2, limit: 3 }
             );
-            
+
             expect(searchResults).toBeDefined();
             expect(searchResults.length).toBeGreaterThan(0);
-            expect(searchResults[0]).toHaveProperty('content');
-            expect(searchResults[0]).toHaveProperty('score');
+            expect(searchResults[0]).toHaveProperty("content");
+            expect(searchResults[0]).toHaveProperty("score");
             expect(searchResults[0].score).toBeGreaterThan(0);
         });
     });
@@ -180,11 +193,14 @@ describe("Curriculum Vector Indexing", () => {
     describe("Batch Processing", () => {
         it("should process multiple curriculum items from JSON array", async () => {
             // This test expects batch processing functionality
-            const jsonArrayPath = path.join(process.cwd(), "curriculum-batch-sample.json");
-            
+            const jsonArrayPath = path.join(
+                process.cwd(),
+                "curriculum-batch-sample.json"
+            );
+
             // Expected to fail - batch processing not implemented yet
             const results = await processCurriculumBatch(jsonArrayPath);
-            
+
             expect(results).toBeDefined();
             expect(Array.isArray(results)).toBe(true);
             expect(results.length).toBeGreaterThan(0);
@@ -192,11 +208,13 @@ describe("Curriculum Vector Indexing", () => {
 
         it("should handle errors gracefully during batch processing", async () => {
             const invalidJsonPath = "non-existent-file.json";
-            
+
             // Should handle file not found gracefully
-            await expect(processCurriculumBatch(invalidJsonPath))
-                .rejects.toThrow(/File not found|Failed to process curriculum batch/);
+            await expect(
+                processCurriculumBatch(invalidJsonPath)
+            ).rejects.toThrow(
+                /File not found|Failed to process curriculum batch/
+            );
         });
     });
 });
-
