@@ -1,0 +1,95 @@
+[
+    {
+        "id": "math-grade2-addition-basic",
+        "grade": 2,
+        "subject": "Mathematics",
+        "topic": "Addition", 
+        "subtopic": "Single Digit Addition",
+        "concept": {
+            "id": "concept-single-digit-addition",
+            "name": "Single Digit Addition",
+            "description": "Addition of two single-digit numbers (0-9) without regrouping",
+            "keywords": ["addition", "single digit", "sum", "plus", "basic arithmetic"]
+        },
+        "difficulty": "easy",
+        "questionTypes": ["addition"],
+        "sampleQuestions": [
+            {
+                "id": "q-001",
+                "question": "What is 3 + 4?",
+                "answer": 7,
+                "explanation": "Start at 3 and count forward 4 steps: 4, 5, 6, 7",
+                "type": "addition",
+                "keywords": ["addition", "basic", "3", "4"]
+            }
+        ],
+        "prerequisites": ["Number recognition 1-10", "Counting forward"],
+        "learningObjectives": ["Add single-digit numbers without regrouping", "Understand the concept of 'sum'"],
+        "commonMistakes": ["Confusing addition with subtraction", "Miscounting when using fingers"],
+        "createdAt": "2024-01-15T10:00:00.000Z",
+        "updatedAt": "2024-01-15T10:00:00.000Z",
+        "version": 1
+    },
+    {
+        "id": "math-grade2-subtraction-basic", 
+        "grade": 2,
+        "subject": "Mathematics",
+        "topic": "Subtraction",
+        "subtopic": "Single Digit Subtraction",
+        "concept": {
+            "id": "concept-single-digit-subtraction",
+            "name": "Single Digit Subtraction",
+            "description": "Subtraction of single-digit numbers (0-9) without borrowing",
+            "keywords": ["subtraction", "single digit", "difference", "minus", "take away"]
+        },
+        "difficulty": "easy",
+        "questionTypes": ["subtraction"],
+        "sampleQuestions": [
+            {
+                "id": "q-002", 
+                "question": "What is 8 - 3?",
+                "answer": 5,
+                "explanation": "Start at 8 and count backward 3 steps: 7, 6, 5",
+                "type": "subtraction",
+                "keywords": ["subtraction", "basic", "8", "3"]
+            }
+        ],
+        "prerequisites": ["Number recognition 1-10", "Counting backward", "Addition basics"],
+        "learningObjectives": ["Subtract single-digit numbers without borrowing", "Understand the concept of 'difference'"],
+        "commonMistakes": ["Confusing subtraction with addition", "Getting the order wrong (3-8 vs 8-3)"],
+        "createdAt": "2024-01-15T11:00:00.000Z", 
+        "updatedAt": "2024-01-15T11:00:00.000Z",
+        "version": 1
+    },
+    {
+        "id": "math-grade3-multiplication-basic",
+        "grade": 3,
+        "subject": "Mathematics", 
+        "topic": "Multiplication",
+        "subtopic": "Basic Multiplication",
+        "concept": {
+            "id": "concept-basic-multiplication",
+            "name": "Basic Multiplication",
+            "description": "Multiplication as repeated addition with factors 0-5",
+            "keywords": ["multiplication", "repeated addition", "times", "groups", "arrays"]
+        },
+        "difficulty": "medium",
+        "questionTypes": ["multiplication"],
+        "sampleQuestions": [
+            {
+                "id": "q-003",
+                "question": "What is 3 × 4?", 
+                "answer": 12,
+                "explanation": "3 groups of 4: 4 + 4 + 4 = 12, or 4 groups of 3: 3 + 3 + 3 + 3 = 12",
+                "type": "multiplication",
+                "keywords": ["multiplication", "groups", "3", "4", "arrays"]
+            }
+        ],
+        "prerequisites": ["Addition fluency", "Skip counting", "Understanding of groups/arrays"],
+        "learningObjectives": ["Understand multiplication as repeated addition", "Solve basic multiplication facts"],
+        "commonMistakes": ["Adding instead of multiplying", "Confusing the order of factors"],
+        "createdAt": "2024-01-15T12:00:00.000Z",
+        "updatedAt": "2024-01-15T12:00:00.000Z", 
+        "version": 1
+    }
+]
