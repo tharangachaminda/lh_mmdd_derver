@@ -5,18 +5,25 @@ import {
     CurriculumSearchOptions,
     CurriculumSearchResult,
 } from "../models/curriculum.js";
-import { LangChainService } from "./langchain.service.js";
+import { LanguageModelFactory } from "./language-model.factory.js";
+import { ILanguageModel } from "../interfaces/language-model.interface.js";
 
 export class CurriculumDataService {
     private readonly indexName = "curriculum";
-    private readonly langchainService: LangChainService;
+    private readonly langchainService: ILanguageModel;
 
+    /**
+     * Constructor for CurriculumDataService
+     * @param client - OpenSearch client instance
+     * @param langchainService - Optional language model service (uses factory default if not provided)
+     */
     constructor(
         private readonly client: OpenSearchClient,
-        langchainService?: LangChainService
+        langchainService?: ILanguageModel
     ) {
         this.langchainService =
-            langchainService || LangChainService.getInstance();
+            langchainService ||
+            LanguageModelFactory.getInstance().createModel();
     }
 
     /**

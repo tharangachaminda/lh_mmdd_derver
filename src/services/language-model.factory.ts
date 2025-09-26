@@ -20,7 +20,7 @@ export class LanguageModelFactory {
     }
 
     public createModel(
-        type: LanguageModelType = LanguageModelType.LLAMA_CPP
+        type: LanguageModelType = LanguageModelType.OLLAMA
     ): ILanguageModel {
         switch (type) {
             case LanguageModelType.OLLAMA:

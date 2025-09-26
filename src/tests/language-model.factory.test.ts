@@ -18,9 +18,9 @@ describe("LanguageModelFactory", () => {
         expect(instance1).toBe(instance2);
     });
 
-    it("should create LangChainService by default", () => {
+    it("should create OllamaLanguageModel by default", () => {
         const model = factory.createModel();
-        expect(model).toBeInstanceOf(LangChainService);
+        expect(model).toBeInstanceOf(OllamaLanguageModel);
     });
 
     it("should create LangChainService when specified", () => {

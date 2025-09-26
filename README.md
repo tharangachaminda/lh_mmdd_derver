@@ -11,10 +11,12 @@ A math learning application backend powered by LLM for elementary school student
 
 ## Tech Stack
 
--   Express.js with TypeScript
--   LangChain & LangGraph for LLM integration
--   OpenSearch for vector storage and RAG
--   Jest for testing
+-   **Backend**: Express.js with TypeScript
+-   **LLM Provider**: Ollama REST API (default) with factory pattern support
+-   **Vector Database**: OpenSearch for curriculum RAG and semantic search
+-   **Architecture**: Factory pattern for flexible LLM provider switching
+-   **Testing**: Jest with comprehensive TDD coverage
+-   **Optional**: LangChain & LangGraph for advanced workflows
 
 ## Getting Started
 
@@ -29,6 +31,21 @@ A math learning application backend powered by LLM for elementary school student
 2. Install dependencies:
     ```bash
     npm install
+    ```
+3. Configure environment variables (create `.env` file):
+
+    ```bash
+    # Ollama Configuration (Default LLM Provider)
+    OLLAMA_BASE_URL=http://127.0.0.1:11434  # Optional, defaults to local Ollama
+    OLLAMA_MODEL_NAME=llama2                 # Optional, defaults to llama2
+
+    # OpenSearch Configuration (for RAG/Vector Database)
+    OPENSEARCH_NODE=http://localhost:9200   # Optional, defaults to local OpenSearch
+    OPENSEARCH_USERNAME=admin               # Optional
+    OPENSEARCH_PASSWORD=admin               # Optional
+
+    # Legacy Configuration (no longer needed with Ollama default)
+    # LLAMA_MODEL_PATH=/path/to/model.gguf  # Only if using LangChain directly
     ```
 
 ### Development

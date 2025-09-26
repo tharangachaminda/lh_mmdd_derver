@@ -4,15 +4,21 @@ import {
     QuestionType,
     QuestionValidationResult,
 } from "../models/question.js";
-import { LangChainService } from "./langchain.service.js";
+import { LanguageModelFactory } from "./language-model.factory.js";
+import { ILanguageModel } from "../interfaces/language-model.interface.js";
 
 export class QuestionGenerationService {
-    private langchainService: LangChainService;
+    private langchainService: ILanguageModel;
     private questionCounter = 0;
 
-    constructor(langchainService?: LangChainService) {
+    /**
+     * Constructor for QuestionGenerationService
+     * @param langchainService - Optional language model service (uses factory default if not provided)
+     */
+    constructor(langchainService?: ILanguageModel) {
         this.langchainService =
-            langchainService || LangChainService.getInstance();
+            langchainService ||
+            LanguageModelFactory.getInstance().createModel();
     }
     async generateQuestion(
         type: QuestionType,

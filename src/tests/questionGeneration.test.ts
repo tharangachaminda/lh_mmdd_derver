@@ -1,8 +1,4 @@
-import {
-    QuestionType,
-    DifficultyLevel,
-    MathQuestion,
-} from "../models/question.js";
+import { QuestionType, DifficultyLevel, Question } from "../models/question.js";
 import { QuestionGenerationService } from "../services/questionGeneration.service.js";
 
 describe("QuestionGenerationService", () => {
@@ -10,6 +6,20 @@ describe("QuestionGenerationService", () => {
 
     beforeEach(() => {
         questionService = new QuestionGenerationService();
+    });
+
+    describe("constructor", () => {
+        it("should use LanguageModelFactory to create language model by default", () => {
+            // This test expects the service to use factory pattern
+            // Currently it uses direct LangChainService, so this will fail
+            const service = new QuestionGenerationService();
+
+            // We expect the service to use factory.createModel() which should return OllamaLanguageModel
+            // This will fail until we refactor the constructor
+            const langService = (service as any).langchainService;
+            // Should be OllamaLanguageModel after factory refactor
+            expect(langService.constructor.name).toBe("OllamaLanguageModel");
+        });
     });
 
     describe("generateQuestion", () => {
