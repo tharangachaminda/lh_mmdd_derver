@@ -1,4 +1,4 @@
-import { QuestionType, DifficultyLevel } from "./question";
+import { QuestionType, DifficultyLevel } from "./question.js";
 
 /**
  * Represents a sample question in the curriculum

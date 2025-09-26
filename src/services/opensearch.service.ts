@@ -1,19 +1,51 @@
 import { Client } from "@opensearch-project/opensearch";
 
 // Type for all OpenSearch responses
-type OSResponse<T> = { body: T };
+export interface OSResponse<T> {
+    body: T;
+    statusCode?: number;
+}
+
+// Types for request parameters
+export interface IndexParams {
+    index: string;
+    body: Record<string, any>;
+}
+
+export interface SearchParams extends IndexParams {
+    body: {
+        size?: number;
+        query: Record<string, any>;
+    };
+}
+
+export interface DeleteByQueryParams extends IndexParams {
+    body: {
+        query: Record<string, any>;
+    };
+}
 
 // Basic client interfaces
-interface MinimalClient {
+export interface MinimalClient {
     indices: {
-        exists: (params: any) => Promise<OSResponse<boolean>>;
-        create: (params: any) => Promise<OSResponse<{}>>;
+        exists: (params: { index: string }) => Promise<OSResponse<boolean>>;
+        create: (
+            params: IndexParams
+        ) => Promise<OSResponse<{ acknowledged: boolean }>>;
     };
-    index: (params: any) => Promise<OSResponse<{ result: string }>>;
-    search: (params: any) => Promise<OSResponse<{ hits: { hits: any[] } }>>;
-    deleteByQuery: (params: any) => Promise<OSResponse<{ deleted: number }>>;
+    index: (
+        params: IndexParams
+    ) => Promise<OSResponse<{ result: string; _id: string }>>;
+    search: (
+        params: SearchParams
+    ) => Promise<OSResponse<{ hits: { hits: any[] } }>>;
+    deleteByQuery: (
+        params: DeleteByQueryParams
+    ) => Promise<OSResponse<{ deleted: number }>>;
     cluster: {
-        health: (params: any) => Promise<OSResponse<{ status: string }>>;
+        health: () => Promise<
+            OSResponse<{ status: string; cluster_name: string }>
+        >;
     };
 }
 
@@ -105,7 +137,15 @@ class OpenSearchService {
     public async searchSimilarQuestions(
         embedding: number[],
         size: number = 5
-    ): Promise<any[]> {
+    ): Promise<
+        Array<{
+            score: number;
+            questionId: string;
+            question: string;
+            topic: string;
+            difficulty: string;
+        }>
+    > {
         const response = await this.client.search({
             index: this.indexName,
             body: {
@@ -124,15 +164,18 @@ class OpenSearchService {
                         ],
                     },
                 },
-            } as any,
+            },
         });
 
-        // Using ES2023 methods for better immutability
-        return response.body.hits.hits
-            .toSorted((a: any, b: any) => b._score - a._score)
-            .map((hit: any) => ({
-                score: hit._score,
-                ...hit._source,
+        // Sort results by score and map to the desired format
+        return [...response.body.hits.hits]
+            .sort((a, b) => (b._score || 0) - (a._score || 0))
+            .map((hit) => ({
+                score: hit._score || 0,
+                questionId: hit._source.questionId,
+                question: hit._source.question,
+                topic: hit._source.topic,
+                difficulty: hit._source.difficulty,
             }));
     }
 
@@ -153,8 +196,11 @@ class OpenSearchService {
     /**
      * Get the health status of the OpenSearch cluster
      */
-    public async getClusterHealth(): Promise<any> {
-        const response = await this.client.cluster.health({});
+    public async getClusterHealth(): Promise<{
+        status: string;
+        cluster_name: string;
+    }> {
+        const response = await this.client.cluster.health();
         return response.body;
     }
 

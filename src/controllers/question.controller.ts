@@ -1,10 +1,6 @@
 import { Request, Response } from "express";
 import { QuestionGenerationService } from "../services/questionGeneration.service.js";
-import {
-    QuestionType,
-    DifficultyLevel,
-    MathQuestion,
-} from "../models/question";
+import { QuestionType, DifficultyLevel, Question } from "../models/question.js";
 
 export class QuestionController {
     private questionService: QuestionGenerationService;
@@ -61,7 +57,7 @@ export class QuestionController {
         }
     };
 
-    private questions = new Map<string, MathQuestion>();
+    private questions = new Map<string, Question>();
 
     public validateAnswer = async (
         req: Request,
@@ -80,7 +76,7 @@ export class QuestionController {
 
             // For now, we'll use a mock question since we don't have persistence
             // In a real implementation, we'd fetch this from a database
-            const mockQuestion: MathQuestion = {
+            const mockQuestion: Question = {
                 id: questionId,
                 type: QuestionType.ADDITION,
                 difficulty: DifficultyLevel.EASY,
