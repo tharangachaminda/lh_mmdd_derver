@@ -57,10 +57,10 @@ class OpenSearchService {
         this.client =
             client ??
             new Client({
-                node: "https://localhost:9200",
+                node: process.env.OPENSEARCH_NODE || "https://localhost:9200",
                 auth: {
-                    username: "admin",
-                    password: "h7F!q9rT#4vL",
+                    username: process.env.OPENSEARCH_USERNAME || "admin",
+                    password: process.env.OPENSEARCH_PASSWORD || "h7F!q9rT#4vL",
                 },
                 // Add additional configuration options
                 ssl: {

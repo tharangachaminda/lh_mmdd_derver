@@ -520,7 +520,9 @@ async function validateCurriculumItemDetailed(
             // Check keywords requirement
             const keywordCount = item.concept.keywords?.length || 0;
             if (options.minKeywords && keywordCount < options.minKeywords) {
-                result.errors.push(`Concept must have at least ${options.minKeywords} keywords, found ${keywordCount}`);
+                result.errors.push(
+                    `Concept must have at least ${options.minKeywords} keywords, found ${keywordCount}`
+                );
                 result.isValid = false;
             }
         }

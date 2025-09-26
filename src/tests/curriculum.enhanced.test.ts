@@ -162,14 +162,12 @@ describe("Enhanced Curriculum Utilities", () => {
 
         it("should handle file not found errors", async () => {
             const invalidPath = "non-existent-batch-file.json";
-            
+
             const result = await processCurriculumBatchDetailed(invalidPath);
-            
+
             expect(result.processedIds).toHaveLength(0);
             expect(result.errors).toHaveLength(1);
-            
 
-            
             expect(result.errors[0].error).toMatch(
                 /File not found|Failed to process curriculum batch/
             );
