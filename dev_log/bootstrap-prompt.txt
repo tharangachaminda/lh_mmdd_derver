@@ -1,9 +1,0 @@
-Using the template and methodology in dev_log/00_mmdd.md,
-generate a 00_main.md file for my project that I want to build a math learning application for school kids in age of 10 or below. I'm planing to do it using one of the llama models. LLM will be used to generate questions. The questions will be in different categories like addition, multiplication, division, and pattern recognition. I'm going to use TypeScript, LangChain, LangGraph for this application. Please explain me the best setup for this application and explain how to architecture this application for more accurate and reliable results. 
-Create a project plan for above project. The project should be planed to use following technologies.
-1. I want to build only the backend application using Express.js
-2. LangChain
-3. LangGraph
-4.  retrieval/RAG for curriculum/context using embeddings + a vector DB using Open Search
-5. I want to implement this project in TDD (Test Driven Development).
-Work in small, reviewable steps and clearly document decisions, alternatives, and next actions.
