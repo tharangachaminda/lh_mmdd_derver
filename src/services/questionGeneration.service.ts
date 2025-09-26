@@ -1,23 +1,35 @@
 import {
     DifficultyLevel,
-    MathQuestion,
+    Question,
     QuestionType,
     QuestionValidationResult,
-} from "../models/question";
-import { langChainService } from "./langchain.service";
+} from "../models/question.js";
+import { LanguageModelFactory } from "./language-model.factory.js";
+import { ILanguageModel } from "../interfaces/language-model.interface.js";
 
 export class QuestionGenerationService {
+    private langchainService: ILanguageModel;
     private questionCounter = 0;
+
+    /**
+     * Constructor for QuestionGenerationService
+     * @param langchainService - Optional language model service (uses factory default if not provided)
+     */
+    constructor(langchainService?: ILanguageModel) {
+        this.langchainService =
+            langchainService ||
+            LanguageModelFactory.getInstance().createModel();
+    }
     async generateQuestion(
         type: QuestionType,
         difficulty: DifficultyLevel,
         grade?: number
-    ): Promise<MathQuestion> {
+    ): Promise<Question> {
         const effectiveGrade = grade || 1;
 
         try {
             // Get AI-generated question
-            const aiResponse = await langChainService.generateMathQuestion(
+            const aiResponse = await this.langchainService.generateMathQuestion(
                 type,
                 effectiveGrade,
                 difficulty
@@ -79,14 +91,14 @@ export class QuestionGenerationService {
     }
 
     async validateAnswer(
-        question: MathQuestion,
+        question: Question,
         studentAnswer: number
     ): Promise<QuestionValidationResult> {
         const correct = studentAnswer === question.answer;
 
         try {
             // Generate personalized feedback using LangChain
-            const feedback = await langChainService.generateFeedback(
+            const feedback = await this.langchainService.generateFeedback(
                 question.question,
                 studentAnswer,
                 question.answer,
@@ -196,7 +208,7 @@ export class QuestionGenerationService {
     }
 
     private getNextQuestionSuggestion(
-        currentQuestion: MathQuestion,
+        currentQuestion: Question,
         wasCorrect: boolean
     ): { type: QuestionType; difficulty: DifficultyLevel } {
         if (wasCorrect) {

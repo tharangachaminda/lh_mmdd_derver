@@ -1,6 +1,6 @@
-import { ApiError, errorHandler } from "../utils/error.handler";
-import { Request, Response } from "express";
-import { NextFunction } from "express";
+import { jest, describe, it, expect, beforeEach } from "@jest/globals";
+import { ApiError, errorHandler } from "../utils/error.handler.js";
+import { Request, Response, NextFunction } from "express";
 
 describe("Error Handler", () => {
     let mockRequest: Partial<Request>;

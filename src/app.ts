@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
-import questionRoutes from "./routes/question.routes";
-import { errorHandler } from "./utils/error.handler";
+import questionRoutes from "./routes/question.routes.js";
+import { errorHandler } from "./utils/error.handler.js";
 
 const app = express();
 export { app };
