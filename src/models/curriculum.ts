@@ -1,4 +1,11 @@
-import { QuestionType, DifficultyLevel } from "./question.js";
+import {
+    QuestionType,
+    DifficultyLevel,
+    Subject,
+    MathTopic,
+    MathSubtopic,
+    GradeLevel,
+} from "./question.js";
 
 /**
  * Represents a sample question in the curriculum
@@ -42,14 +49,14 @@ export interface MathConcept {
 export interface CurriculumContent {
     /** Unique identifier for the curriculum content */
     id: string;
-    /** Grade level (1-6 for elementary) */
-    grade: number;
-    /** Subject (Mathematics) */
-    subject: string;
-    /** Main topic (e.g., "Fractions", "Addition", etc.) */
-    topic: string;
+    /** Grade level (0-6 for K-6 elementary) */
+    grade: GradeLevel;
+    /** Subject area */
+    subject: Subject;
+    /** Main mathematical topic */
+    topic: MathTopic;
     /** Optional subtopic for more specific categorization */
-    subtopic?: string;
+    subtopic?: MathSubtopic;
     /** The specific concept being covered */
     concept: MathConcept;
     /** Difficulty level of the content */
@@ -77,9 +84,13 @@ export interface CurriculumContent {
  */
 export interface CurriculumSearchOptions {
     /** Grade level to filter by */
-    grade?: number;
+    grade?: GradeLevel;
     /** Topic to filter by */
-    topic?: string;
+    topic?: MathTopic;
+    /** Subtopic to filter by */
+    subtopic?: MathSubtopic;
+    /** Subject to filter by */
+    subject?: Subject;
     /** Difficulty level to filter by */
     difficulty?: DifficultyLevel;
     /** Question type to filter by */

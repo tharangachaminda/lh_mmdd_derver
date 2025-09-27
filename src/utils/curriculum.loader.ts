@@ -6,6 +6,20 @@ import {
     CurriculumBatchOptions,
     CurriculumBatchResult,
 } from "../interfaces/curriculum-loader.interface.js";
+import {
+    parseSubject,
+    parseMathTopic,
+    parseMathSubtopic,
+    parseGradeLevel,
+    parseDifficultyLevel,
+    parseQuestionType,
+    isValidGradeLevel,
+    isValidSubject,
+    isValidMathTopic,
+    isValidMathSubtopic,
+    isValidDifficultyLevel,
+    isValidQuestionType,
+} from "./curriculum-types.util.js";
 
 /**
  * Loads curriculum data from a JSON file
