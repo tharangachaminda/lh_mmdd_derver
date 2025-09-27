@@ -49,7 +49,7 @@ export interface MathConcept {
 export interface CurriculumContent {
     /** Unique identifier for the curriculum content */
     id: string;
-    /** Grade level (0-6 for K-6 elementary) */
+    /** Grade level (3-8 for elementary-middle school mathematics) */
     grade: GradeLevel;
     /** Subject area */
     subject: Subject;
@@ -71,6 +71,12 @@ export interface CurriculumContent {
     learningObjectives: string[];
     /** Common mistakes or misconceptions */
     commonMistakes?: string[];
+    /** Grade level standards alignment */
+    gradeLevelStandards?: {
+        grade: number;
+        standard: string;
+        description: string;
+    };
     /** Creation timestamp */
     createdAt: Date;
     /** Last update timestamp */

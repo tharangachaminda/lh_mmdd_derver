@@ -1,0 +1,146 @@
+[
+    {
+        "id": "math-grade3-multiplication-tables",
+        "grade": 3,
+        "subject": "Mathematics",
+        "topic": "Multiplication",
+        "subtopic": "Multiplication Tables",
+        "concept": {
+            "id": "concept-multiplication-tables",
+            "name": "Multiplication Tables",
+            "description": "Memorizing and understanding multiplication facts from 1×1 to 12×12 to build fluency in basic multiplication.",
+            "keywords": ["multiplication", "times tables", "facts", "fluency", "memorization"]
+        },
+        "difficulty": "easy",
+        "questionTypes": ["multiplication"],
+        "sampleQuestions": [
+            {
+                "id": "q-mult-001",
+                "question": "What is 7 × 8?",
+                "answer": 56,
+                "explanation": "7 × 8 = 56. You can think of this as 7 groups of 8, or adding 8 seven times: 8+8+8+8+8+8+8 = 56.",
+                "type": "multiplication",
+                "keywords": ["multiplication facts", "times tables", "7 times 8"]
+            }
+        ],
+        "prerequisites": ["Skip counting", "Understanding of multiplication concept"],
+        "learningObjectives": ["Memorize multiplication facts through 12×12", "Understand multiplication as repeated addition"],
+        "commonMistakes": ["Confusing multiplication with addition", "Not practicing enough for automaticity"],
+        "gradeLevelStandards": {
+            "grade": 3,
+            "standard": "3.OA.7",
+            "description": "Fluently multiply within 100, using strategies such as the relationship between multiplication and division."
+        },
+        "createdAt": "2024-01-15T10:00:00.000Z",
+        "updatedAt": "2024-01-15T10:00:00.000Z",
+        "version": 1
+    },
+    {
+        "id": "math-grade4-division-remainders",
+        "grade": 4,
+        "subject": "Mathematics",
+        "topic": "Division",
+        "subtopic": "Division with Remainders",
+        "concept": {
+            "id": "concept-division-remainders",
+            "name": "Division with Remainders",
+            "description": "Understanding that not all division problems result in whole numbers, and learning to express the leftover amount as a remainder.",
+            "keywords": ["division", "remainders", "quotient", "dividend", "divisor"]
+        },
+        "difficulty": "medium",
+        "questionTypes": ["division"],
+        "sampleQuestions": [
+            {
+                "id": "q-div-001",
+                "question": "What is 17 ÷ 5?",
+                "answer": "3 R2",
+                "explanation": "17 ÷ 5 = 3 with remainder 2. This means 5 goes into 17 three times (5×3=15), with 2 left over.",
+                "type": "division",
+                "keywords": ["division", "remainders", "quotient"]
+            }
+        ],
+        "prerequisites": ["Multiplication facts", "Basic division concepts"],
+        "learningObjectives": ["Divide multi-digit numbers with remainders", "Understand the relationship between multiplication and division"],
+        "commonMistakes": ["Forgetting to include the remainder", "Not checking answers using multiplication"],
+        "gradeLevelStandards": {
+            "grade": 4,
+            "standard": "4.NBT.6",
+            "description": "Find whole-number quotients and remainders with up to four-digit dividends."
+        },
+        "createdAt": "2024-01-15T11:00:00.000Z",
+        "updatedAt": "2024-01-15T11:00:00.000Z",
+        "version": 1
+    },
+    {
+        "id": "math-grade6-ratios-unit-rates",
+        "grade": 6,
+        "subject": "Mathematics",
+        "topic": "Ratios",
+        "subtopic": "Unit Rates",
+        "concept": {
+            "id": "concept-unit-rates",
+            "name": "Unit Rates",
+            "description": "A unit rate is a rate with a denominator of 1. It shows how much of one quantity corresponds to 1 unit of another quantity.",
+            "keywords": ["unit rate", "ratios", "rates", "per unit", "comparison"]
+        },
+        "difficulty": "medium",
+        "questionTypes": ["unit_rate"],
+        "sampleQuestions": [
+            {
+                "id": "q-rate-001",
+                "question": "If 3 pounds of apples cost $4.50, what is the unit rate per pound?",
+                "answer": "$1.50",
+                "explanation": "To find the unit rate, divide the total cost by the number of pounds: $4.50 ÷ 3 = $1.50 per pound.",
+                "type": "unit_rate",
+                "keywords": ["unit rate", "cost per unit", "division"]
+            }
+        ],
+        "prerequisites": ["Division with decimals", "Understanding of ratios"],
+        "learningObjectives": ["Calculate unit rates", "Compare quantities using unit rates", "Solve real-world rate problems"],
+        "commonMistakes": ["Dividing in the wrong order", "Not including units in the answer"],
+        "gradeLevelStandards": {
+            "grade": 6,
+            "standard": "6.RP.2",
+            "description": "Understand the concept of a unit rate and use rate language in the context of a ratio relationship."
+        },
+        "createdAt": "2024-01-15T12:00:00.000Z",
+        "updatedAt": "2024-01-15T12:00:00.000Z",
+        "version": 1
+    },
+    {
+        "id": "math-grade8-functions-linear",
+        "grade": 8,
+        "subject": "Mathematics",
+        "topic": "Functions",
+        "subtopic": "Graphing Linear Equations",
+        "concept": {
+            "id": "concept-linear-functions",
+            "name": "Linear Functions",
+            "description": "Understanding linear functions as relationships where the rate of change is constant, and learning to graph them using slope and y-intercept.",
+            "keywords": ["linear functions", "slope", "y-intercept", "graphing", "rate of change", "coordinate plane"]
+        },
+        "difficulty": "hard",
+        "questionTypes": ["graphing"],
+        "sampleQuestions": [
+            {
+                "id": "q-func-001",
+                "question": "What is the slope of the line passing through points (2, 5) and (6, 13)?",
+                "answer": "2",
+                "explanation": "Use the slope formula: m = (y₂-y₁)/(x₂-x₁) = (13-5)/(6-2) = 8/4 = 2.",
+                "type": "slope_calculation",
+                "keywords": ["slope", "linear functions", "coordinate points"]
+            }
+        ],
+        "prerequisites": ["Coordinate plane", "Solving two-step equations", "Understanding of ratios"],
+        "learningObjectives": ["Calculate slope between two points", "Graph linear equations", "Interpret slope as rate of change"],
+        "commonMistakes": ["Confusing x and y coordinates", "Incorrect application of slope formula", "Not simplifying fractions"],
+        "gradeLevelStandards": {
+            "grade": 8,
+            "standard": "8.F.3",
+            "description": "Interpret the equation y = mx + b as defining a linear function whose graph is a straight line."
+        },
+        "createdAt": "2024-01-15T13:00:00.000Z",
+        "updatedAt": "2024-01-15T13:00:00.000Z",
+        "version": 1
+    }
+]

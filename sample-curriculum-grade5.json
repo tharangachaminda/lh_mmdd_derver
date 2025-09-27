@@ -1,0 +1,73 @@
+{
+    "id": "math-grade5-fractions-multiplication",
+    "grade": 5,
+    "subject": "Mathematics",
+    "topic": "Fractions",
+    "subtopic": "Multiplying Fractions",
+    "concept": {
+        "id": "concept-multiplying-fractions",
+        "name": "Multiplying Fractions",
+        "description": "Understanding how to multiply fractions by multiplying numerators together and denominators together, and simplifying the result when possible.",
+        "keywords": [
+            "fractions",
+            "multiplication",
+            "numerator",
+            "denominator",
+            "simplify",
+            "product",
+            "mixed numbers"
+        ]
+    },
+    "difficulty": "medium",
+    "questionTypes": ["fraction_multiplication"],
+    "sampleQuestions": [
+        {
+            "id": "q-frac-mult-001",
+            "question": "What is 2/3 × 3/4?",
+            "answer": "1/2",
+            "explanation": "To multiply fractions, multiply the numerators together (2 × 3 = 6) and the denominators together (3 × 4 = 12). This gives us 6/12, which simplifies to 1/2.",
+            "type": "fraction_multiplication",
+            "keywords": ["fraction multiplication", "simplifying", "numerator", "denominator"]
+        },
+        {
+            "id": "q-frac-mult-002",
+            "question": "A recipe calls for 3/4 cup of flour. If you want to make 2/3 of the recipe, how much flour do you need?",
+            "answer": "1/2",
+            "explanation": "To find 2/3 of 3/4, multiply: (2/3) × (3/4) = 6/12 = 1/2 cup of flour.",
+            "type": "word_problem_multiplication",
+            "keywords": ["word problem", "fraction multiplication", "recipe", "real world"]
+        },
+        {
+            "id": "q-frac-mult-003",
+            "question": "What is 1 1/2 × 2/5?",
+            "answer": "3/5",
+            "explanation": "First convert the mixed number: 1 1/2 = 3/2. Then multiply: (3/2) × (2/5) = 6/10 = 3/5.",
+            "type": "fraction_multiplication",
+            "keywords": ["mixed numbers", "fraction multiplication", "converting"]
+        }
+    ],
+    "prerequisites": [
+        "Understanding fraction basics",
+        "Simplifying fractions",
+        "Converting mixed numbers to improper fractions"
+    ],
+    "learningObjectives": [
+        "Multiply fractions by multiplying numerators and denominators",
+        "Simplify fraction products when possible",
+        "Multiply mixed numbers by converting to improper fractions first",
+        "Solve real-world problems involving fraction multiplication"
+    ],
+    "commonMistakes": [
+        "Adding numerators and denominators instead of multiplying",
+        "Forgetting to simplify the final answer",
+        "Not converting mixed numbers to improper fractions before multiplying"
+    ],
+    "gradeLevelStandards": {
+        "grade": 5,
+        "standard": "5.NF.4",
+        "description": "Apply and extend previous understandings of multiplication to multiply a fraction or whole number by a fraction."
+    },
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z",
+    "version": 1
+}
