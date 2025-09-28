@@ -8,9 +8,9 @@ export class OllamaLanguageModel implements ILanguageModel {
 
     protected constructor() {
         this.baseUrl = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
-        this.modelName = process.env.OLLAMA_MODEL_NAME || "llama2";
+        this.modelName = process.env.OLLAMA_MODEL_NAME || "llama3.1:latest";
         this.alternativeModel =
-            process.env.OLLAMA_ALTERNATIVE_MODEL || this.modelName;
+            process.env.OLLAMA_ALTERNATIVE_MODEL || "qwen3:14b";
     }
 
     // For testing purposes only

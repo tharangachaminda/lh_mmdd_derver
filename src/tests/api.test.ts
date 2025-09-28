@@ -65,7 +65,7 @@ describe("Question API Endpoints", () => {
             expect(response.body).toHaveProperty("metadata");
             expect(Array.isArray(response.body.questions)).toBe(true);
             expect(response.body.questions).toHaveLength(3);
-            
+
             // Verify each question has required properties
             response.body.questions.forEach((question: any) => {
                 expect(question).toHaveProperty("id");
@@ -85,7 +85,9 @@ describe("Question API Endpoints", () => {
 
             expect(response.status).toBe(400);
             expect(response.body).toHaveProperty("error");
-            expect(response.body.error).toContain("Count must be between 1 and 10");
+            expect(response.body.error).toContain(
+                "Count must be between 1 and 10"
+            );
         });
 
         it("should return 400 for invalid count", async () => {

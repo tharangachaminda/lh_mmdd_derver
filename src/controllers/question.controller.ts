@@ -1,12 +1,15 @@
 import { Request, Response } from "express";
 import { QuestionGenerationService } from "../services/questionGeneration.service.js";
+import { AgenticQuestionService } from "../services/agentic-question.service.js";
 import { QuestionType, DifficultyLevel, Question } from "../models/question.js";
 
 export class QuestionController {
     private questionService: QuestionGenerationService;
+    private agenticService: AgenticQuestionService;
 
     constructor() {
         this.questionService = new QuestionGenerationService();
+        this.agenticService = new AgenticQuestionService();
     }
 
     public generateQuestion = async (
@@ -27,7 +30,11 @@ export class QuestionController {
             // Validate and set count parameter
             let questionCount = 1; // default value
             if (count !== undefined) {
-                if (isNaN(Number(count)) || Number(count) < 1 || Number(count) > 10) {
+                if (
+                    isNaN(Number(count)) ||
+                    Number(count) < 1 ||
+                    Number(count) > 10
+                ) {
                     res.status(400).json({
                         error: "Count must be between 1 and 10",
                     });
@@ -54,23 +61,97 @@ export class QuestionController {
 
             const gradeNumber = Number(grade);
 
-            // Generate multiple questions if count > 1
+            // Generate questions using agentic workflow
+            try {
+                if (questionCount === 1) {
+                    // Generate single question using agentic workflow
+                    const agenticResult =
+                        await this.agenticService.generateSingleQuestion({
+                            type: questionType || QuestionType.ADDITION,
+                            difficulty: difficultyLevel || DifficultyLevel.EASY,
+                            grade: gradeNumber,
+                        });
+
+                    if (agenticResult.question) {
+                        res.status(200).json({
+                            ...agenticResult.question,
+                            agenticMetadata: {
+                                workflowUsed: true,
+                                qualityChecks:
+                                    agenticResult.metadata.qualityChecks,
+                                vectorContext:
+                                    agenticResult.metadata.vectorContext,
+                                workflowPerformance:
+                                    agenticResult.metadata.workflow,
+                            },
+                        });
+                        return;
+                    }
+                } else {
+                    // Generate multiple questions using agentic workflow
+                    const agenticResult =
+                        await this.agenticService.generateQuestions({
+                            type: questionType || QuestionType.ADDITION,
+                            difficulty: difficultyLevel || DifficultyLevel.EASY,
+                            grade: gradeNumber,
+                            count: questionCount,
+                        });
+
+                    if (agenticResult.questions.length > 0) {
+                        res.status(200).json({
+                            questions: agenticResult.questions,
+                            count: agenticResult.questions.length,
+                            agenticMetadata: {
+                                workflowUsed: true,
+                                qualityChecks:
+                                    agenticResult.metadata.qualityChecks,
+                                vectorContext:
+                                    agenticResult.metadata.vectorContext,
+                                enhancedQuestions:
+                                    agenticResult.metadata.enhancedQuestions,
+                                workflowPerformance:
+                                    agenticResult.metadata.workflow,
+                            },
+                        });
+                        return;
+                    }
+                }
+
+                // Fallback to basic service if agentic workflow fails
+                console.warn(
+                    "Agentic workflow failed, falling back to basic service"
+                );
+            } catch (agenticError) {
+                console.error("Agentic workflow error:", agenticError);
+                console.warn(
+                    "Falling back to basic question generation service"
+                );
+            }
+
+            // Fallback: Generate using basic service
             if (questionCount === 1) {
                 const question = await this.questionService.generateQuestion(
                     questionType || QuestionType.ADDITION,
                     difficultyLevel || DifficultyLevel.EASY,
                     gradeNumber
                 );
-                res.status(200).json(question);
+                res.status(200).json({
+                    ...question,
+                    agenticMetadata: {
+                        workflowUsed: false,
+                        fallbackReason: "Agentic workflow unavailable",
+                    },
+                });
             } else {
-                // Generate multiple questions
+                // Generate multiple questions using basic service
                 const questions = [];
                 for (let i = 0; i < questionCount; i++) {
-                    const question = await this.questionService.generateQuestion(
-                        questionType || QuestionType.ADDITION,
-                        difficultyLevel || DifficultyLevel.EASY,
-                        gradeNumber
-                    );
+                    const question =
+                        await this.questionService.generateQuestion(
+                            questionType || QuestionType.ADDITION,
+                            difficultyLevel || DifficultyLevel.EASY,
+                            gradeNumber
+                        );
                     questions.push(question);
                 }
                 res.status(200).json({
@@ -81,6 +162,10 @@ export class QuestionController {
                         type: questionType,
                         difficulty: difficultyLevel,
                         context: context || null,
+                    },
+                    agenticMetadata: {
+                        workflowUsed: false,
+                        fallbackReason: "Agentic workflow unavailable",
                     },
                 });
             }
