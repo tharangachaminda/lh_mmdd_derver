@@ -1,0 +1,1236 @@
+{
+    "id": "grade5-comprehensive-2025",
+    "grade": 5,
+    "subject": "Mathematics",
+    "topic": "Comprehensive Grade 5 Mathematics",
+    "subtopic": "All Topics",
+    "concept": {
+        "id": "grade5-all-concepts",
+        "name": "Grade 5 Comprehensive Mathematics Concepts",
+        "description": "Complete coverage of Grade 5 mathematics concepts aligned with New Zealand curriculum including numbers, algebra, measurement, geometry, statistics, and probability",
+        "keywords": [
+            "grade 5",
+            "mathematics",
+            "comprehensive",
+            "new zealand curriculum",
+            "numbers",
+            "fractions",
+            "decimals",
+            "measurement",
+            "geometry",
+            "statistics"
+        ]
+    },
+    "questionTypes": [
+        "whole_number_addition",
+        "whole_number_subtraction",
+        "whole_number_multiplication",
+        "division_with_remainders",
+        "long_division",
+        "fraction_addition",
+        "fraction_subtraction",
+        "fraction_multiplication",
+        "fraction_comparison",
+        "decimal_addition",
+        "decimal_subtraction",
+        "decimal_multiplication",
+        "decimal_comparison",
+        "area_calculation",
+        "perimeter_calculation",
+        "angle_measurement",
+        "shape_identification",
+        "word_problem_addition",
+        "word_problem_subtraction",
+        "word_problem_multiplication",
+        "word_problem_division",
+        "data_interpretation",
+        "mean_calculation",
+        "probability_calculation",
+        "pattern",
+        "sequence"
+    ],
+    "sampleQuestions": [
+        {
+            "id": "g5-easy-001",
+            "question": "Calculate: 4,567 + 2,834",
+            "answer": 7401,
+            "explanation": "Adding the numbers column by column: 7+4=11 (write 1, carry 1), 6+3+1=10 (write 0, carry 1), 5+8+1=14 (write 4, carry 1), 4+2+1=7. Result: 7,401",
+            "type": "whole_number_addition",
+            "difficulty": "easy",
+            "keywords": ["addition", "multi-digit", "carrying", "place value"],
+            "remainder": null
+        },
+        {
+            "id": "g5-easy-002",
+            "question": "What is 63 ÷ 7?",
+            "answer": 9,
+            "explanation": "63 divided by 7 equals 9. This uses the 7 times table: 7 × 9 = 63",
+            "type": "division",
+            "difficulty": "easy",
+            "keywords": ["division", "times tables", "7 times table"],
+            "remainder": 0
+        },
+        {
+            "id": "g5-easy-003",
+            "question": "Sarah has 24 stickers. She wants to share them equally among her 3 friends. How many stickers will each friend get?",
+            "answer": 8,
+            "explanation": "24 ÷ 3 = 8. Each friend will get 8 stickers. We can check: 8 × 3 = 24",
+            "type": "word_problem_division",
+            "difficulty": "easy",
+            "keywords": ["division", "sharing", "equal groups", "word problem"],
+            "remainder": 0
+        },
+        {
+            "id": "g5-easy-004",
+            "question": "Compare these decimals using <, >, or =: 3.25 __ 3.52",
+            "answer": "<",
+            "explanation": "3.25 < 3.52 because when comparing decimals with the same whole number part, we compare the decimal places. 25 hundredths is less than 52 hundredths",
+            "type": "decimal_comparison",
+            "keywords": ["decimals", "comparison", "place value", "hundredths"],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-easy-005",
+            "question": "What fraction of this shape is shaded if 3 out of 8 equal parts are shaded?",
+            "answer": "3/8",
+            "explanation": "When 3 parts out of 8 equal parts are shaded, the fraction is 3/8 (three-eighths)",
+            "type": "fraction_basics",
+            "difficulty": "easy",
+            "keywords": ["fractions", "parts of whole", "visual fractions"]
+        },
+        {
+            "id": "g5-easy-006",
+            "question": "A rectangle has a length of 8 cm and width of 5 cm. What is its perimeter?",
+            "answer": 26,
+            "explanation": "Perimeter of rectangle = 2 × (length + width) = 2 × (8 + 5) = 2 × 13 = 26 cm",
+            "type": "perimeter_calculation",
+            "keywords": [
+                "perimeter",
+                "rectangle",
+                "measurement",
+                "centimetres"
+            ],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-easy-007",
+            "question": "Tom bought 4 packets of chips for $2.50 each. How much did he spend in total?",
+            "answer": 10,
+            "explanation": "4 × $2.50 = $10.00. Tom spent $10.00 in total",
+            "type": "word_problem_multiplication",
+            "keywords": [
+                "multiplication",
+                "money",
+                "decimal multiplication",
+                "word problem"
+            ],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-easy-008",
+            "question": "What type of angle is shown if it measures 45°?",
+            "answer": "acute",
+            "explanation": "An angle measuring 45° is an acute angle because it is less than 90° (a right angle)",
+            "type": "angle_measurement",
+            "keywords": ["angles", "acute angle", "degrees", "measurement"],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-easy-009",
+            "question": "Complete the pattern: 5, 10, 15, 20, ___",
+            "answer": 25,
+            "explanation": "This is a pattern of counting by 5s. Each number increases by 5: 5, 10, 15, 20, 25",
+            "type": "pattern",
+            "keywords": ["patterns", "skip counting", "multiples of 5"],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-easy-010",
+            "question": "The temperature was 15°C in the morning and rose by 8°C by noon. What was the temperature at noon?",
+            "answer": 23,
+            "explanation": "15°C + 8°C = 23°C. The temperature at noon was 23°C",
+            "type": "word_problem_addition",
+            "keywords": ["temperature", "addition", "celsius", "word problem"],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-medium-001",
+            "question": "Calculate: 8,906 - 3,478",
+            "answer": 5428,
+            "explanation": "Subtracting column by column with borrowing: 6-8 (borrow from tens: 16-8=8), 0-7 (borrow from hundreds: 10-7=3, but we borrowed 1, so 9-7=2), 9-4=5, 8-3=5. Result: 5,428",
+            "type": "whole_number_subtraction",
+            "keywords": [
+                "subtraction",
+                "multi-digit",
+                "borrowing",
+                "regrouping"
+            ],
+            "remainder": null,
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-medium-002",
+            "question": "What is 847 ÷ 7? Give your answer with remainder.",
+            "answer": 121,
+            "explanation": "847 ÷ 7 = 121 remainder 0. We can check: 121 × 7 = 847",
+            "type": "long_division",
+            "keywords": [
+                "long division",
+                "7 times table",
+                "division algorithm"
+            ],
+            "remainder": 0,
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-medium-003",
+            "question": "A school has 456 students. If they sit in rows of 8, how many complete rows will there be and how many students will be left over?",
+            "answer": 57,
+            "explanation": "456 ÷ 8 = 57 remainder 0. There will be 57 complete rows with no students left over",
+            "type": "word_problem_division",
+            "keywords": ["division", "remainders", "grouping", "word problem"],
+            "remainder": 0,
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-medium-004",
+            "question": "Add these decimals: 15.67 + 8.95",
+            "answer": 24.62,
+            "explanation": "Aligning decimal points: 15.67 + 8.95 = 24.62. Add hundredths: 7+5=12 (write 2, carry 1), tenths: 6+9+1=16 (write 6, carry 1), ones: 5+8+1=14 (write 4, carry 1), tens: 1+0+1=2",
+            "type": "decimal_addition",
+            "keywords": [
+                "decimal addition",
+                "place value",
+                "carrying",
+                "hundredths"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-medium-005",
+            "question": "Which is larger: 2/3 or 5/8? Explain your reasoning.",
+            "answer": "2/3",
+            "explanation": "2/3 is larger than 5/8. Converting to decimals: 2/3 ≈ 0.67 and 5/8 = 0.625. Or using common denominators: 2/3 = 16/24 and 5/8 = 15/24, so 16/24 > 15/24",
+            "type": "fraction_comparison",
+            "keywords": [
+                "fractions",
+                "comparison",
+                "equivalent fractions",
+                "reasoning"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-medium-006",
+            "question": "A rectangular garden is 12 metres long and 8 metres wide. What is its area?",
+            "answer": 96,
+            "explanation": "Area of rectangle = length × width = 12 m × 8 m = 96 square metres (or 96 m²)",
+            "type": "area_calculation",
+            "keywords": [
+                "area",
+                "rectangle",
+                "square metres",
+                "multiplication"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-medium-007",
+            "question": "Lisa saved $4.75 each week for 6 weeks. How much money did she save in total?",
+            "answer": 28.5,
+            "explanation": "$4.75 × 6 = $28.50. Lisa saved $28.50 in total over 6 weeks",
+            "type": "word_problem_multiplication",
+            "keywords": [
+                "multiplication",
+                "decimals",
+                "money",
+                "saving",
+                "word problem"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-medium-008",
+            "question": "An angle measures 135°. What type of angle is this?",
+            "answer": "obtuse",
+            "explanation": "An angle measuring 135° is an obtuse angle because it is greater than 90° but less than 180°",
+            "type": "angle_measurement",
+            "keywords": ["angles", "obtuse angle", "degrees", "angle types"],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-medium-009",
+            "question": "The data shows test scores: 85, 92, 78, 85, 90, 88, 85. What is the mode?",
+            "answer": 85,
+            "explanation": "The mode is the number that appears most frequently. In this data set, 85 appears 3 times, which is more than any other number",
+            "type": "mode_calculation",
+            "keywords": ["mode", "statistics", "frequency", "data analysis"],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-medium-010",
+            "question": "Jake walks 2.5 km to school each morning and the same distance home each afternoon. How far does he walk in total each day?",
+            "answer": 5,
+            "explanation": "Jake walks 2.5 km to school + 2.5 km home = 5.0 km total each day",
+            "type": "word_problem_addition",
+            "keywords": [
+                "addition",
+                "decimals",
+                "distance",
+                "kilometres",
+                "word problem"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-hard-001",
+            "question": "Calculate: 7,843 × 6",
+            "answer": 47058,
+            "explanation": "Using the standard algorithm: 3×6=18 (write 8, carry 1), 4×6+1=25 (write 5, carry 2), 8×6+2=50 (write 0, carry 5), 7×6+5=47. Result: 47,058",
+            "type": "whole_number_multiplication",
+            "keywords": [
+                "multiplication",
+                "multi-digit",
+                "carrying",
+                "standard algorithm"
+            ],
+            "remainder": null,
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-hard-002",
+            "question": "What is 1,847 ÷ 9? Give your answer with remainder.",
+            "answer": 205,
+            "explanation": "1,847 ÷ 9 = 205 remainder 2. Check: 205 × 9 = 1,845, and 1,845 + 2 = 1,847",
+            "type": "division_with_remainders",
+            "keywords": [
+                "long division",
+                "remainders",
+                "9 times table",
+                "division algorithm"
+            ],
+            "remainder": 2,
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-hard-003",
+            "question": "A factory produces 1,356 toys per day. If the toys are packed in boxes of 24, how many full boxes can be made and how many toys will be left over?",
+            "answer": 56,
+            "explanation": "1,356 ÷ 24 = 56 remainder 12. The factory can make 56 full boxes with 12 toys left over. Check: 56 × 24 = 1,344, and 1,344 + 12 = 1,356",
+            "type": "word_problem_division",
+            "keywords": [
+                "division",
+                "remainders",
+                "real-world application",
+                "word problem"
+            ],
+            "remainder": 12,
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-hard-004",
+            "question": "Calculate: 45.78 - 28.99",
+            "answer": 16.79,
+            "explanation": "Subtracting with borrowing across decimal places: 45.78 - 28.99. In hundredths: 8-9 (borrow: 18-9=9), tenths: 7-1-9 (borrow: 17-1-9=7), ones: 5-1-8 (borrow: 15-1-8=6), tens: 4-1-2=1. Result: 16.79",
+            "type": "decimal_subtraction",
+            "keywords": [
+                "decimal subtraction",
+                "borrowing",
+                "regrouping",
+                "place value"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-hard-005",
+            "question": "Add these fractions: 3/4 + 2/3",
+            "answer": 1.417,
+            "explanation": "To add fractions with different denominators, find common denominator: 3/4 = 9/12 and 2/3 = 8/12. Then 9/12 + 8/12 = 17/12 (or 1 5/12 as a mixed number)",
+            "type": "fraction_addition",
+            "keywords": [
+                "fraction addition",
+                "common denominators",
+                "mixed numbers",
+                "equivalent fractions"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-hard-006",
+            "question": "A parallelogram has a base of 15 cm and a height of 8 cm. What is its area?",
+            "answer": 120,
+            "explanation": "Area of parallelogram = base × height = 15 cm × 8 cm = 120 cm²",
+            "type": "area_calculation",
+            "keywords": [
+                "area",
+                "parallelogram",
+                "base",
+                "height",
+                "square centimetres"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-hard-007",
+            "question": "Emma bought 5 books for $8.75 each and 3 pens for $1.25 each. What was the total cost of her purchase?",
+            "answer": 47.5,
+            "explanation": "Books: 5 × $8.75 = $43.75. Pens: 3 × $1.25 = $3.75. Total: $43.75 + $3.75 = $47.50",
+            "type": "word_problem_mixed",
+            "keywords": [
+                "multiplication",
+                "addition",
+                "money",
+                "multi-step",
+                "word problem"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-hard-008",
+            "question": "Two angles are supplementary. If one angle measures 127°, what is the measure of the other angle?",
+            "answer": 53,
+            "explanation": "Supplementary angles add up to 180°. So the other angle = 180° - 127° = 53°",
+            "type": "angle_measurement",
+            "keywords": [
+                "supplementary angles",
+                "angle relationships",
+                "subtraction",
+                "degrees"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-hard-009",
+            "question": "The test scores for a class are: 76, 82, 91, 85, 88, 76, 94, 89. What is the mean (average) score?",
+            "answer": 85.125,
+            "explanation": "Mean = sum of all scores ÷ number of scores. Sum = 76+82+91+85+88+76+94+89 = 681. Mean = 681 ÷ 8 = 85.125",
+            "type": "mean_calculation",
+            "keywords": [
+                "mean",
+                "average",
+                "statistics",
+                "division",
+                "data analysis"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-hard-010",
+            "question": "A recipe needs 2.25 cups of flour to make 8 muffins. How much flour is needed to make 32 muffins?",
+            "answer": 9,
+            "explanation": "32 muffins is 4 times as many as 8 muffins (32 ÷ 8 = 4). So flour needed = 2.25 × 4 = 9.0 cups",
+            "type": "word_problem_multiplication",
+            "keywords": [
+                "multiplication",
+                "decimals",
+                "scaling",
+                "proportional reasoning",
+                "word problem"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-comp-001",
+            "question": "What is 283 ÷ 4? Give your answer with remainder.",
+            "answer": 70,
+            "explanation": "283 ÷ 4 = 70 remainder 3. Check: 70 × 4 = 280, and 280 + 3 = 283",
+            "type": "division_with_remainders",
+            "keywords": ["division", "remainders", "4 times table"],
+            "remainder": 3,
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-002",
+            "question": "A bus can carry 45 passengers. If 378 people need to travel, how many buses are needed?",
+            "answer": 9,
+            "explanation": "378 ÷ 45 = 8 remainder 18. Since there are people left over, we need 9 buses total (8 full buses plus 1 more for the remaining 18 people)",
+            "type": "word_problem_division",
+            "keywords": [
+                "division",
+                "remainders",
+                "real-world application",
+                "rounding up"
+            ],
+            "remainder": 18,
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-003",
+            "question": "Calculate: 6.8 × 4",
+            "answer": 27.2,
+            "explanation": "6.8 × 4 = 27.2. When multiplying decimals by whole numbers, multiply as if they were whole numbers (68 × 4 = 272), then place the decimal point (one decimal place in 6.8 means one decimal place in answer)",
+            "type": "decimal_multiplication",
+            "keywords": [
+                "decimal multiplication",
+                "place value",
+                "decimal point placement"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-comp-004",
+            "question": "Round 67.348 to the nearest tenth.",
+            "answer": 67.3,
+            "explanation": "To round to the nearest tenth, look at the hundredths place (4). Since 4 < 5, round down. 67.348 rounds to 67.3",
+            "type": "decimal_rounding",
+            "keywords": [
+                "rounding",
+                "decimals",
+                "place value",
+                "nearest tenth"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-005",
+            "question": "What is 2/5 of 40?",
+            "answer": 16,
+            "explanation": "2/5 of 40 = (2/5) × 40 = (2 × 40) ÷ 5 = 80 ÷ 5 = 16",
+            "type": "fraction_multiplication",
+            "keywords": ["fractions", "of", "multiplication", "whole numbers"],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-006",
+            "question": "Convert 7/4 to a mixed number.",
+            "answer": "1 3/4",
+            "explanation": "7/4 = 1 3/4 because 7 ÷ 4 = 1 remainder 3, so we have 1 whole and 3/4 remaining",
+            "type": "fraction_conversion",
+            "keywords": [
+                "improper fractions",
+                "mixed numbers",
+                "conversion",
+                "division"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-007",
+            "question": "The clock shows 2:45 PM. What time will it be in 2 hours and 30 minutes?",
+            "answer": "5:15 PM",
+            "explanation": "2:45 PM + 2 hours 30 minutes = 5:15 PM. Add 2 hours: 2:45 PM → 4:45 PM, then add 30 minutes: 4:45 PM → 5:15 PM",
+            "type": "time_calculation",
+            "keywords": ["time", "addition", "hours", "minutes", "PM"],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-008",
+            "question": "A triangle has sides measuring 6 cm, 8 cm, and 10 cm. What is its perimeter?",
+            "answer": 24,
+            "explanation": "Perimeter of triangle = sum of all sides = 6 cm + 8 cm + 10 cm = 24 cm",
+            "type": "perimeter_calculation",
+            "keywords": ["perimeter", "triangle", "addition", "centimetres"],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-009",
+            "question": "How many faces does a rectangular prism (cuboid) have?",
+            "answer": 6,
+            "explanation": "A rectangular prism has 6 faces: top, bottom, front, back, left side, and right side",
+            "type": "shape_identification",
+            "keywords": ["3D shapes", "rectangular prism", "faces", "geometry"],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-010",
+            "question": "If you roll a fair six-sided die, what is the probability of rolling an even number?",
+            "answer": "1/2",
+            "explanation": "Even numbers on a die are 2, 4, and 6 (3 outcomes). Total outcomes are 6. Probability = 3/6 = 1/2",
+            "type": "probability_calculation",
+            "keywords": ["probability", "dice", "even numbers", "fractions"],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-011",
+            "question": "Maria has 36 marbles. She gives 1/4 of them to her brother. How many marbles does she give away?",
+            "answer": 9,
+            "explanation": "1/4 of 36 = 36 ÷ 4 = 9 marbles. Maria gives away 9 marbles to her brother",
+            "type": "word_problem_fraction",
+            "keywords": ["fractions", "of", "division", "word problem"],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-012",
+            "question": "What is the next number in this sequence: 3, 7, 11, 15, ___?",
+            "answer": 19,
+            "explanation": "This sequence increases by 4 each time: 3+4=7, 7+4=11, 11+4=15, 15+4=19",
+            "type": "sequence",
+            "keywords": [
+                "patterns",
+                "arithmetic sequence",
+                "addition",
+                "differences"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-013",
+            "question": "A square has a side length of 9 cm. What is its area?",
+            "answer": 81,
+            "explanation": "Area of square = side × side = 9 cm × 9 cm = 81 cm²",
+            "type": "area_calculation",
+            "keywords": [
+                "area",
+                "square",
+                "multiplication",
+                "square centimetres"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-014",
+            "question": "Convert 0.6 to a fraction in its simplest form.",
+            "answer": "3/5",
+            "explanation": "0.6 = 6/10. To simplify, divide both numerator and denominator by their GCD (2): 6÷2 = 3, 10÷2 = 5. So 0.6 = 3/5",
+            "type": "decimal_to_fraction",
+            "keywords": [
+                "decimals",
+                "fractions",
+                "conversion",
+                "simplification"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-015",
+            "question": "The temperature dropped from 8°C to -3°C. By how many degrees did it drop?",
+            "answer": 11,
+            "explanation": "The temperature dropped by 8°C - (-3°C) = 8°C + 3°C = 11°C",
+            "type": "integer_subtraction",
+            "keywords": [
+                "integers",
+                "temperature",
+                "subtraction",
+                "negative numbers"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-016",
+            "question": "A bag contains 5 red balls, 3 blue balls, and 2 green balls. What fraction of the balls are blue?",
+            "answer": "3/10",
+            "explanation": "Total balls = 5 + 3 + 2 = 10. Blue balls = 3. Fraction of blue balls = 3/10",
+            "type": "fraction_basics",
+            "keywords": [
+                "fractions",
+                "parts of whole",
+                "probability",
+                "counting"
+            ],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-017",
+            "question": "Calculate: 15.4 ÷ 2",
+            "answer": 7.7,
+            "explanation": "15.4 ÷ 2 = 7.7. When dividing decimals by whole numbers, divide as normal and keep the decimal point in the same relative position",
+            "type": "decimal_division",
+            "keywords": [
+                "decimal division",
+                "place value",
+                "division algorithm"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-018",
+            "question": "A parking lot has 8 rows with 12 cars in each row. How many cars are in the parking lot?",
+            "answer": 96,
+            "explanation": "8 rows × 12 cars per row = 96 cars in total",
+            "type": "word_problem_multiplication",
+            "keywords": [
+                "multiplication",
+                "arrays",
+                "rows and columns",
+                "word problem"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-comp-019",
+            "question": "What is 0.25 as a percentage?",
+            "answer": 25,
+            "explanation": "To convert decimal to percentage, multiply by 100: 0.25 × 100 = 25%",
+            "type": "percentage_calculation",
+            "keywords": [
+                "percentages",
+                "decimals",
+                "conversion",
+                "multiplication"
+            ],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-020",
+            "question": "An obtuse angle measures more than ___ degrees but less than ___ degrees.",
+            "answer": "90, 180",
+            "explanation": "An obtuse angle measures more than 90 degrees but less than 180 degrees",
+            "type": "angle_measurement",
+            "keywords": [
+                "obtuse angles",
+                "angle measurement",
+                "degrees",
+                "angle types"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-021",
+            "question": "Find the median of this data set: 12, 8, 15, 10, 11",
+            "answer": 11,
+            "explanation": "First order the data: 8, 10, 11, 12, 15. The median is the middle value when data is ordered, which is 11",
+            "type": "median_calculation",
+            "keywords": [
+                "median",
+                "statistics",
+                "ordering data",
+                "middle value"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-022",
+            "question": "A recipe calls for 3/4 cup of sugar. If you want to make half the recipe, how much sugar do you need?",
+            "answer": "3/8",
+            "explanation": "Half of 3/4 = (1/2) × (3/4) = 3/8 cup of sugar",
+            "type": "fraction_multiplication",
+            "keywords": [
+                "fractions",
+                "multiplication",
+                "halving",
+                "cooking",
+                "word problem"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-comp-023",
+            "question": "How many minutes are there in 2.5 hours?",
+            "answer": 150,
+            "explanation": "2.5 hours = 2.5 × 60 minutes = 150 minutes",
+            "type": "time_conversion",
+            "keywords": [
+                "time",
+                "conversion",
+                "hours",
+                "minutes",
+                "multiplication"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-024",
+            "question": "A cylinder has a radius of 4 cm and height of 10 cm. What is its volume? (Use π ≈ 3.14)",
+            "answer": 502.4,
+            "explanation": "Volume of cylinder = π × r² × h = 3.14 × 4² × 10 = 3.14 × 16 × 10 = 502.4 cm³",
+            "type": "volume_calculation",
+            "keywords": [
+                "volume",
+                "cylinder",
+                "pi",
+                "radius",
+                "height",
+                "cubic centimetres"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-comp-025",
+            "question": "Express 24/36 in its simplest form.",
+            "answer": "2/3",
+            "explanation": "To simplify 24/36, find the GCD of 24 and 36, which is 12. 24÷12 = 2, 36÷12 = 3. So 24/36 = 2/3",
+            "type": "fraction_simplification",
+            "keywords": [
+                "fractions",
+                "simplification",
+                "GCD",
+                "equivalent fractions"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-026",
+            "question": "Alex runs 1.6 km each morning and 2.4 km each evening. How far does he run in one week?",
+            "answer": 28,
+            "explanation": "Daily distance = 1.6 + 2.4 = 4.0 km. Weekly distance = 4.0 × 7 = 28.0 km",
+            "type": "word_problem_mixed",
+            "keywords": [
+                "addition",
+                "multiplication",
+                "decimals",
+                "distance",
+                "week",
+                "word problem"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-comp-027",
+            "question": "What is 40% of 75?",
+            "answer": 30,
+            "explanation": "40% of 75 = 0.40 × 75 = 30",
+            "type": "percentage_of_number",
+            "keywords": ["percentages", "of", "multiplication", "decimals"],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-028",
+            "question": "A book has 240 pages. Jamie has read 3/5 of the book. How many pages has she read?",
+            "answer": 144,
+            "explanation": "3/5 of 240 = (3 × 240) ÷ 5 = 720 ÷ 5 = 144 pages",
+            "type": "word_problem_fraction",
+            "keywords": [
+                "fractions",
+                "of",
+                "multiplication",
+                "division",
+                "word problem"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-029",
+            "question": "What is the area of a triangle with base 12 cm and height 8 cm?",
+            "answer": 48,
+            "explanation": "Area of triangle = (1/2) × base × height = (1/2) × 12 × 8 = (1/2) × 96 = 48 cm²",
+            "type": "area_calculation",
+            "keywords": ["area", "triangle", "base", "height", "formula"],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-030",
+            "question": "Round 4,567 to the nearest hundred.",
+            "answer": 4600,
+            "explanation": "To round to the nearest hundred, look at the tens digit (6). Since 6 ≥ 5, round up. 4,567 rounds to 4,600",
+            "type": "rounding",
+            "keywords": [
+                "rounding",
+                "place value",
+                "nearest hundred",
+                "estimation"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-031",
+            "question": "A train travels 450 km in 5 hours. What is its average speed per hour?",
+            "answer": 90,
+            "explanation": "Average speed = total distance ÷ time = 450 km ÷ 5 hours = 90 km/h",
+            "type": "word_problem_division",
+            "keywords": [
+                "division",
+                "speed",
+                "distance",
+                "time",
+                "average",
+                "word problem"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-032",
+            "question": "Compare using <, >, or =: 4.08 __ 4.8",
+            "answer": "<",
+            "explanation": "4.08 < 4.8 because 4.08 = 4.08 and 4.8 = 4.80, and 8 hundredths < 80 hundredths",
+            "type": "decimal_comparison",
+            "keywords": ["decimals", "comparison", "place value", "hundredths"],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-033",
+            "question": "How many edges does a cube have?",
+            "answer": 12,
+            "explanation": "A cube has 12 edges. Each face is a square with 4 edges, and there are 6 faces, but edges are shared, giving us 12 unique edges",
+            "type": "shape_identification",
+            "keywords": ["3D shapes", "cube", "edges", "geometry"],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-034",
+            "question": "The pattern rule is 'multiply by 2 then add 1'. If the first term is 3, what is the fourth term?",
+            "answer": 29,
+            "explanation": "First term: 3. Second: 3×2+1=7. Third: 7×2+1=15. Fourth: 15×2+1=31. Wait, let me recalculate: 3→7→15→31. The fourth term is 31",
+            "type": "pattern",
+            "keywords": [
+                "patterns",
+                "rules",
+                "multiplication",
+                "addition",
+                "sequences"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-comp-035",
+            "question": "Subtract: 8 1/4 - 3 3/4",
+            "answer": 4.5,
+            "explanation": "8 1/4 - 3 3/4 = (8-3) + (1/4 - 3/4) = 5 + (-2/4) = 5 - 1/2 = 4 1/2. Alternatively: convert to improper fractions: 33/4 - 15/4 = 18/4 = 4 1/2",
+            "type": "fraction_subtraction",
+            "keywords": [
+                "mixed numbers",
+                "fraction subtraction",
+                "borrowing",
+                "conversion"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-036",
+            "question": "A pizza is cut into 8 equal slices. Tom eats 3 slices and Sarah eats 2 slices. What fraction of the pizza is left?",
+            "answer": "3/8",
+            "explanation": "Total eaten = 3 + 2 = 5 slices. Remaining = 8 - 5 = 3 slices. Fraction left = 3/8",
+            "type": "word_problem_fraction",
+            "keywords": [
+                "fractions",
+                "subtraction",
+                "parts of whole",
+                "word problem"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-comp-037",
+            "question": "What is 7.5 ÷ 0.5?",
+            "answer": 15,
+            "explanation": "7.5 ÷ 0.5 = 15. Think of it as 'how many 0.5s make 7.5?' or convert: 7.5 ÷ 0.5 = 75 ÷ 5 = 15",
+            "type": "decimal_division",
+            "keywords": [
+                "decimal division",
+                "division by decimals",
+                "place value"
+            ],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-038",
+            "question": "The coordinates of point A are (3, 5). What are the coordinates if we move 2 units left and 1 unit down?",
+            "answer": "(1, 4)",
+            "explanation": "Moving left decreases x-coordinate: 3 - 2 = 1. Moving down decreases y-coordinate: 5 - 1 = 4. New coordinates: (1, 4)",
+            "type": "coordinate_geometry",
+            "keywords": [
+                "coordinates",
+                "movement",
+                "x-axis",
+                "y-axis",
+                "ordered pairs"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-comp-039",
+            "question": "A rectangle has an area of 72 cm² and width of 8 cm. What is its length?",
+            "answer": 9,
+            "explanation": "Area = length × width, so length = area ÷ width = 72 ÷ 8 = 9 cm",
+            "type": "area_calculation",
+            "keywords": ["area", "rectangle", "division", "inverse operations"],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-040",
+            "question": "Express 125% as a decimal.",
+            "answer": 1.25,
+            "explanation": "To convert percentage to decimal, divide by 100: 125% = 125 ÷ 100 = 1.25",
+            "type": "percentage_conversion",
+            "keywords": ["percentages", "decimals", "conversion", "division"],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-041",
+            "question": "The scale on a map shows that 1 cm represents 5 km. If two cities are 3.5 cm apart on the map, what is the actual distance?",
+            "answer": 17.5,
+            "explanation": "Actual distance = map distance × scale = 3.5 cm × 5 km/cm = 17.5 km",
+            "type": "scale_factor",
+            "keywords": [
+                "scale",
+                "maps",
+                "multiplication",
+                "proportion",
+                "kilometres"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-comp-042",
+            "question": "Order these fractions from smallest to largest: 1/2, 2/3, 3/4, 1/3",
+            "answer": "1/3, 1/2, 2/3, 3/4",
+            "explanation": "Converting to decimals: 1/3≈0.33, 1/2=0.5, 2/3≈0.67, 3/4=0.75. Order: 1/3, 1/2, 2/3, 3/4",
+            "type": "fraction_comparison",
+            "keywords": ["fractions", "ordering", "comparison", "decimals"],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-043",
+            "question": "A car uses 8 litres of petrol to travel 100 km. How much petrol is needed for 350 km?",
+            "answer": 28,
+            "explanation": "Rate = 8 litres per 100 km. For 350 km: (350 ÷ 100) × 8 = 3.5 × 8 = 28 litres",
+            "type": "proportion_solving",
+            "keywords": [
+                "proportions",
+                "rates",
+                "multiplication",
+                "division",
+                "litres",
+                "word problem"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-044",
+            "question": "What is the perimeter of a regular pentagon with side length 6 cm?",
+            "answer": 30,
+            "explanation": "A regular pentagon has 5 equal sides. Perimeter = 5 × 6 cm = 30 cm",
+            "type": "perimeter_calculation",
+            "keywords": [
+                "perimeter",
+                "pentagon",
+                "regular polygon",
+                "multiplication"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-045",
+            "question": "Sarah scored 85, 92, 78, and 89 on her four tests. What is her average score?",
+            "answer": 86,
+            "explanation": "Average = sum ÷ number of tests = (85 + 92 + 78 + 89) ÷ 4 = 344 ÷ 4 = 86",
+            "type": "mean_calculation",
+            "keywords": [
+                "mean",
+                "average",
+                "addition",
+                "division",
+                "test scores"
+            ],
+            "difficulty": "hard"
+        },
+        {
+            "id": "g5-comp-046",
+            "question": "Convert 3 hours 45 minutes to minutes.",
+            "answer": 225,
+            "explanation": "3 hours = 3 × 60 = 180 minutes. Total = 180 + 45 = 225 minutes",
+            "type": "time_conversion",
+            "keywords": [
+                "time",
+                "conversion",
+                "hours",
+                "minutes",
+                "multiplication",
+                "addition"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-047",
+            "question": "A spinner has 5 equal sections: red, blue, green, yellow, and orange. What is the probability of spinning blue?",
+            "answer": "1/5",
+            "explanation": "There is 1 blue section out of 5 total sections. Probability = 1/5",
+            "type": "probability_calculation",
+            "keywords": [
+                "probability",
+                "spinner",
+                "fractions",
+                "equally likely outcomes"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-048",
+            "question": "What is 6.4 - 2.95?",
+            "answer": 3.45,
+            "explanation": "6.4 - 2.95 = 6.40 - 2.95. Subtracting: 6.40 - 2.95 = 3.45",
+            "type": "decimal_subtraction",
+            "keywords": ["decimal subtraction", "place value", "borrowing"],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-049",
+            "question": "A garden bed is 4.5 m long and 2.8 m wide. What is its area?",
+            "answer": 12.6,
+            "explanation": "Area = length × width = 4.5 m × 2.8 m = 12.6 m²",
+            "type": "area_calculation",
+            "keywords": [
+                "area",
+                "rectangle",
+                "decimal multiplication",
+                "square metres"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-050",
+            "question": "What is 5/6 - 1/3?",
+            "answer": 0.5,
+            "explanation": "To subtract fractions, use common denominator: 5/6 - 1/3 = 5/6 - 2/6 = 3/6 = 1/2",
+            "type": "fraction_subtraction",
+            "keywords": [
+                "fraction subtraction",
+                "common denominators",
+                "simplification"
+            ],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-051",
+            "question": "A reflex angle measures more than ___ degrees.",
+            "answer": 180,
+            "explanation": "A reflex angle measures more than 180 degrees (and less than 360 degrees)",
+            "type": "angle_measurement",
+            "keywords": [
+                "reflex angles",
+                "angle measurement",
+                "degrees",
+                "angle types"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-052",
+            "question": "The temperature was -5°C at midnight and rose 12°C by noon. What was the temperature at noon?",
+            "answer": 7,
+            "explanation": "-5°C + 12°C = 7°C. The temperature at noon was 7°C",
+            "type": "integer_addition",
+            "keywords": [
+                "integers",
+                "temperature",
+                "addition",
+                "negative numbers",
+                "word problem"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-053",
+            "question": "How many vertices does a triangular prism have?",
+            "answer": 6,
+            "explanation": "A triangular prism has 6 vertices: 3 on the top triangular face and 3 on the bottom triangular face",
+            "type": "shape_identification",
+            "keywords": [
+                "3D shapes",
+                "triangular prism",
+                "vertices",
+                "geometry"
+            ],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-054",
+            "question": "What is 8 × 0.6?",
+            "answer": 4.8,
+            "explanation": "8 × 0.6 = 4.8. Multiply as whole numbers (8 × 6 = 48), then place decimal point (one decimal place)",
+            "type": "decimal_multiplication",
+            "keywords": [
+                "decimal multiplication",
+                "place value",
+                "whole numbers"
+            ],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-055",
+            "question": "A box contains 20 chocolates. If 3/5 of them are milk chocolate, how many are milk chocolate?",
+            "answer": 12,
+            "explanation": "3/5 of 20 = (3 × 20) ÷ 5 = 60 ÷ 5 = 12 milk chocolates",
+            "type": "word_problem_fraction",
+            "keywords": [
+                "fractions",
+                "of",
+                "multiplication",
+                "division",
+                "word problem"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-056",
+            "question": "Find the range of this data set: 23, 18, 31, 15, 27, 19",
+            "answer": 16,
+            "explanation": "Range = highest value - lowest value = 31 - 15 = 16",
+            "type": "range_calculation",
+            "keywords": [
+                "range",
+                "statistics",
+                "maximum",
+                "minimum",
+                "subtraction"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-057",
+            "question": "What is 2.5 + 1.75 + 0.8?",
+            "answer": 5.05,
+            "explanation": "Line up decimal points: 2.50 + 1.75 + 0.80 = 5.05",
+            "type": "decimal_addition",
+            "keywords": ["decimal addition", "multiple addends", "place value"],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-058",
+            "question": "A square has perimeter 36 cm. What is its area?",
+            "answer": 81,
+            "explanation": "If perimeter = 36 cm, then each side = 36 ÷ 4 = 9 cm. Area = 9 × 9 = 81 cm²",
+            "type": "area_calculation",
+            "keywords": ["square", "perimeter", "area", "division", "squaring"],
+            "difficulty": "easy"
+        },
+        {
+            "id": "g5-comp-059",
+            "question": "Express 0.875 as a fraction in simplest form.",
+            "answer": "7/8",
+            "explanation": "0.875 = 875/1000. Simplify by dividing by GCD (125): 875÷125 = 7, 1000÷125 = 8. So 0.875 = 7/8",
+            "type": "decimal_to_fraction",
+            "keywords": [
+                "decimals",
+                "fractions",
+                "conversion",
+                "simplification",
+                "GCD"
+            ],
+            "difficulty": "medium"
+        },
+        {
+            "id": "g5-comp-060",
+            "question": "A recipe needs 2/3 cup of oil for 12 muffins. How much oil is needed for 18 muffins?",
+            "answer": 1,
+            "explanation": "18 muffins is 1.5 times as much as 12 muffins (18÷12 = 1.5). Oil needed = 2/3 × 1.5 = 2/3 × 3/2 = 6/6 = 1 cup",
+            "type": "proportion_solving",
+            "keywords": [
+                "proportions",
+                "fractions",
+                "multiplication",
+                "scaling",
+                "word problem"
+            ],
+            "difficulty": "medium"
+        }
+    ],
+    "prerequisites": [
+        "Grade 4 mathematics concepts",
+        "Basic multiplication tables (up to 6 times table)",
+        "Place value understanding",
+        "Basic fraction concepts"
+    ],
+    "learningObjectives": [
+        "Add and subtract numbers up to 10,000",
+        "Multiply and divide 3-digit numbers",
+        "Learn 7, 8, and 9 times tables",
+        "Work with remainders in division",
+        "Order, compare, add, and subtract decimals to 2 places",
+        "Find simple fractions of whole amounts",
+        "Solve problems involving money",
+        "Measure perimeter using appropriate units",
+        "Identify and classify angles",
+        "Solve time problems",
+        "Identify and describe 2D and 3D shapes",
+        "Collect, organize and interpret data",
+        "Conduct probability experiments"
+    ],
+    "gradeLevelStandards": {
+        "grade": 5,
+        "standard": "New Zealand Curriculum Level 3",
+        "description": "Students explore number strategies and knowledge, including fractions, decimals, and percentages. They measure and use properties of shapes and objects. They collect, sort, and display data, and explore simple probability activities."
+    },
+    "createdAt": "2025-09-28T10:00:00Z",
+    "updatedAt": "2025-09-28T10:00:00Z",
+    "version": 1
+}
