@@ -47,6 +47,7 @@ export class QuestionGenerationService {
                 );
                 const question = this.formatQuestion(type, numbers);
                 const answer = this.calculateAnswer(type, numbers);
+                const remainder = this.calculateRemainder(type, numbers);
                 return {
                     id: `q${++this.questionCounter}`,
                     type,
@@ -54,6 +55,7 @@ export class QuestionGenerationService {
                     grade: effectiveGrade,
                     question,
                     answer,
+                    remainder,
                     createdAt: new Date(),
                 };
             }
@@ -78,6 +80,7 @@ export class QuestionGenerationService {
             );
             const question = this.formatQuestion(type, numbers);
             const answer = this.calculateAnswer(type, numbers);
+            const remainder = this.calculateRemainder(type, numbers);
             return {
                 id: `q${++this.questionCounter}`,
                 type,
@@ -85,6 +88,7 @@ export class QuestionGenerationService {
                 grade: effectiveGrade,
                 question,
                 answer,
+                remainder,
                 createdAt: new Date(),
             };
         }
@@ -186,6 +190,14 @@ export class QuestionGenerationService {
                 return `What is ${a} × ${b}?`;
             case QuestionType.DIVISION:
                 return `What is ${a} ÷ ${b}?`;
+            case QuestionType.WHOLE_NUMBER_DIVISION:
+                return `What is ${a} ÷ ${b}? (Give your answer as a whole number and remainder)`;
+            case QuestionType.DIVISION_WITH_REMAINDERS:
+                return `Divide ${a} by ${b}. What is the quotient and remainder?`;
+            case QuestionType.LONG_DIVISION:
+                return `Use long division to find ${a} ÷ ${b}. Show quotient and remainder.`;
+            case QuestionType.DECIMAL_DIVISION_EXACT:
+                return `What is ${a} ÷ ${b}? (Express as a decimal)`;
             default:
                 throw new Error(`Question type ${type} not implemented`);
         }
@@ -202,8 +214,32 @@ export class QuestionGenerationService {
                 return a * b;
             case QuestionType.DIVISION:
                 return Math.round((a / b) * 100) / 100; // Round to 2 decimal places
+            case QuestionType.WHOLE_NUMBER_DIVISION:
+            case QuestionType.DIVISION_WITH_REMAINDERS:
+            case QuestionType.LONG_DIVISION:
+                return Math.floor(a / b); // Return quotient for remainder-based division
+            case QuestionType.DECIMAL_DIVISION_EXACT:
+                return Math.round((a / b) * 100) / 100; // Round to 2 decimal places
             default:
                 throw new Error(`Question type ${type} not implemented`);
+        }
+    }
+
+    /**
+     * Calculate remainder for division questions
+     */
+    private calculateRemainder(
+        type: QuestionType,
+        numbers: number[]
+    ): number | undefined {
+        const [a, b] = numbers;
+        switch (type) {
+            case QuestionType.WHOLE_NUMBER_DIVISION:
+            case QuestionType.DIVISION_WITH_REMAINDERS:
+            case QuestionType.LONG_DIVISION:
+                return a % b; // Return remainder
+            default:
+                return undefined; // No remainder for non-division questions
         }
     }
 

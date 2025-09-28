@@ -1,0 +1,69 @@
+{
+    "id": "math-grade2-addition-basic",
+    "grade": 2,
+    "subject": "Mathematics",
+    "topic": "Addition",
+    "subtopic": "Single Digit Addition",
+    "concept": {
+        "id": "concept-single-digit-addition",
+        "name": "Single Digit Addition",
+        "description": "Addition of two single-digit numbers (0-9) including the concept of combining quantities and understanding that addition increases the value.",
+        "keywords": [
+            "addition",
+            "single digit",
+            "combining",
+            "sum",
+            "plus",
+            "total",
+            "altogether"
+        ]
+    },
+    "difficulty": "easy",
+    "questionTypes": ["addition"],
+    "sampleQuestions": [
+        {
+            "id": "q-add-001",
+            "question": "What is 3 + 4?",
+            "answer": 7,
+            "explanation": "To solve 3 + 4, we can count forward 4 steps from 3: 4, 5, 6, 7. Or we can think of it as having 3 objects and adding 4 more objects, which gives us 7 objects in total.",
+            "type": "addition",
+            "keywords": ["addition", "basic", "single digit", "counting"]
+        },
+        {
+            "id": "q-add-002",
+            "question": "If you have 2 apples and your friend gives you 5 more apples, how many apples do you have altogether?",
+            "answer": 7,
+            "explanation": "Start with 2 apples, then add 5 more: 2 + 5 = 7 apples. The word 'altogether' is a clue that we need to add the numbers.",
+            "type": "addition",
+            "keywords": ["addition", "word problem", "real world", "altogether"]
+        },
+        {
+            "id": "q-add-003",
+            "question": "What is 6 + 3?",
+            "answer": 9,
+            "explanation": "We can solve 6 + 3 by counting up from 6: 7, 8, 9. Or use the fact that 6 + 3 = 9.",
+            "type": "addition",
+            "keywords": ["addition", "basic", "counting up"]
+        }
+    ],
+    "prerequisites": [
+        "Number recognition 0-9",
+        "Counting to 20",
+        "Understanding quantity"
+    ],
+    "learningObjectives": [
+        "Students will be able to add two single-digit numbers",
+        "Students will understand that addition means combining quantities",
+        "Students will recognize addition word problems with keywords like 'altogether', 'total', 'sum'",
+        "Students will be able to solve addition problems using counting strategies"
+    ],
+    "commonMistakes": [
+        "Confusing addition with subtraction",
+        "Miscounting when using finger counting strategy",
+        "Not recognizing addition keywords in word problems",
+        "Starting count from 1 instead of continuing from the first number"
+    ],
+    "createdAt": "2025-09-26T10:00:00.000Z",
+    "updatedAt": "2025-09-26T10:00:00.000Z",
+    "version": 1
+}

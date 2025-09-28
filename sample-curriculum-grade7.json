@@ -1,0 +1,84 @@
+{
+    "id": "math-grade7-algebra-equations",
+    "grade": 7,
+    "subject": "Mathematics",
+    "topic": "Algebraic Expressions",
+    "subtopic": "Solving Two-Step Equations",
+    "concept": {
+        "id": "concept-two-step-equations",
+        "name": "Solving Two-Step Equations",
+        "description": "Using inverse operations to solve equations that require two steps: first undoing addition/subtraction, then undoing multiplication/division.",
+        "keywords": [
+            "algebra",
+            "equations",
+            "inverse operations",
+            "two-step",
+            "variables",
+            "solving",
+            "isolate"
+        ]
+    },
+    "difficulty": "medium",
+    "questionTypes": ["solving_equations"],
+    "sampleQuestions": [
+        {
+            "id": "q-algebra-eq-001",
+            "question": "Solve for x: 3x + 7 = 22",
+            "answer": "5",
+            "explanation": "First subtract 7 from both sides: 3x = 15. Then divide both sides by 3: x = 5. Check: 3(5) + 7 = 15 + 7 = 22 ✓",
+            "type": "solving_equations",
+            "keywords": [
+                "two-step equations",
+                "inverse operations",
+                "checking solutions"
+            ]
+        },
+        {
+            "id": "q-algebra-eq-002",
+            "question": "Solve for y: 2y - 9 = 13",
+            "answer": "11",
+            "explanation": "First add 9 to both sides: 2y = 22. Then divide both sides by 2: y = 11. Check: 2(11) - 9 = 22 - 9 = 13 ✓",
+            "type": "solving_equations",
+            "keywords": ["two-step equations", "subtraction", "division"]
+        },
+        {
+            "id": "q-algebra-eq-003",
+            "question": "A movie theater charges $8 per ticket plus a $3 service fee. If the total cost is $35, how many tickets were purchased?",
+            "answer": "4",
+            "explanation": "Set up the equation: 8x + 3 = 35. Subtract 3 from both sides: 8x = 32. Divide by 8: x = 4 tickets.",
+            "type": "word_problem_mixed",
+            "keywords": [
+                "word problem",
+                "two-step equations",
+                "real world",
+                "cost"
+            ]
+        }
+    ],
+    "prerequisites": [
+        "Understanding variables and expressions",
+        "One-step equation solving",
+        "Basic arithmetic operations",
+        "Order of operations"
+    ],
+    "learningObjectives": [
+        "Solve two-step linear equations using inverse operations",
+        "Check solutions by substituting back into original equation",
+        "Apply two-step equation solving to real-world problems",
+        "Understand the concept of maintaining equality"
+    ],
+    "commonMistakes": [
+        "Performing operations in the wrong order",
+        "Forgetting to apply operations to both sides of the equation",
+        "Not checking the solution",
+        "Confusing addition/subtraction with multiplication/division"
+    ],
+    "gradeLevelStandards": {
+        "grade": 7,
+        "standard": "7.EE.4",
+        "description": "Use variables to represent quantities in a real-world or mathematical problem, and construct simple equations to solve problems."
+    },
+    "createdAt": "2024-01-15T11:00:00.000Z",
+    "updatedAt": "2024-01-15T11:00:00.000Z",
+    "version": 1
+}

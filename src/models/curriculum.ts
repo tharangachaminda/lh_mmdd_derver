@@ -1,4 +1,11 @@
-import { QuestionType, DifficultyLevel } from "./question.js";
+import {
+    QuestionType,
+    DifficultyLevel,
+    Subject,
+    MathTopic,
+    MathSubtopic,
+    GradeLevel,
+} from "./question.js";
 
 /**
  * Represents a sample question in the curriculum
@@ -18,6 +25,8 @@ export interface SampleQuestion {
     keywords?: string[];
     /** Vector embedding of the question for similarity search */
     embedding?: number[];
+    /** Remainder for division questions (optional) */
+    remainder?: number;
 }
 
 /**
@@ -42,14 +51,14 @@ export interface MathConcept {
 export interface CurriculumContent {
     /** Unique identifier for the curriculum content */
     id: string;
-    /** Grade level (1-6 for elementary) */
-    grade: number;
-    /** Subject (Mathematics) */
-    subject: string;
-    /** Main topic (e.g., "Fractions", "Addition", etc.) */
-    topic: string;
+    /** Grade level (3-8 for elementary-middle school mathematics) */
+    grade: GradeLevel;
+    /** Subject area */
+    subject: Subject;
+    /** Main mathematical topic */
+    topic: MathTopic;
     /** Optional subtopic for more specific categorization */
-    subtopic?: string;
+    subtopic?: MathSubtopic;
     /** The specific concept being covered */
     concept: MathConcept;
     /** Difficulty level of the content */
@@ -64,6 +73,12 @@ export interface CurriculumContent {
     learningObjectives: string[];
     /** Common mistakes or misconceptions */
     commonMistakes?: string[];
+    /** Grade level standards alignment */
+    gradeLevelStandards?: {
+        grade: number;
+        standard: string;
+        description: string;
+    };
     /** Creation timestamp */
     createdAt: Date;
     /** Last update timestamp */
@@ -77,9 +92,13 @@ export interface CurriculumContent {
  */
 export interface CurriculumSearchOptions {
     /** Grade level to filter by */
-    grade?: number;
+    grade?: GradeLevel;
     /** Topic to filter by */
-    topic?: string;
+    topic?: MathTopic;
+    /** Subtopic to filter by */
+    subtopic?: MathSubtopic;
+    /** Subject to filter by */
+    subject?: Subject;
     /** Difficulty level to filter by */
     difficulty?: DifficultyLevel;
     /** Question type to filter by */
