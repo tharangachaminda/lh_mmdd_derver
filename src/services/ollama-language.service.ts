@@ -4,10 +4,12 @@ export class OllamaLanguageModel implements ILanguageModel {
     private static instance?: OllamaLanguageModel;
     private baseUrl: string;
     private modelName: string;
+    private alternativeModel: string;
 
     protected constructor() {
         this.baseUrl = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
         this.modelName = process.env.OLLAMA_MODEL_NAME || "llama2";
+        this.alternativeModel = process.env.OLLAMA_ALTERNATIVE_MODEL || this.modelName;
     }
 
     // For testing purposes only
@@ -25,7 +27,9 @@ export class OllamaLanguageModel implements ILanguageModel {
         difficulty: string
     ): Promise<string> {
         const prompt = this.buildQuestionPrompt(type, grade, difficulty);
-        const response = await this.generateCompletion(prompt);
+        // Use complex model for hard/medium questions, simple for easy questions
+        const complexity = difficulty === 'easy' ? 'simple' : 'complex';
+        const response = await this.generateCompletion(prompt, complexity);
         return response;
     }
 
@@ -71,7 +75,52 @@ export class OllamaLanguageModel implements ILanguageModel {
         // No cleanup needed for Ollama as it manages resources
     }
 
-    private async generateCompletion(prompt: string): Promise<string> {
+    /**
+     * Intelligently selects the appropriate model based on task complexity
+     * @param complexity - Simple tasks use primary model, complex tasks use alternative model
+     * @returns The model name to use for the request
+     */
+    private selectModel(complexity: 'simple' | 'complex' = 'simple'): string {
+        // Use alternative model (qwen3:14b) for complex reasoning tasks
+        // Use primary model (llama3.1) for simple, fast tasks
+        return complexity === 'complex' && this.alternativeModel !== this.modelName 
+            ? this.alternativeModel 
+            : this.modelName;
+    }
+
+    /**
+     * Generate completion with automatic model selection based on complexity
+     * @param prompt - The prompt to send to the model
+     * @param complexity - Whether to use simple or complex model
+     * @returns Generated text response
+     */
+    private async generateCompletion(prompt: string, complexity: 'simple' | 'complex' = 'simple'): Promise<string> {
+        const selectedModel = this.selectModel(complexity);
+        
+        const response = await fetch(`${this.baseUrl}/api/generate`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                model: selectedModel,
+                prompt: prompt,
+                stream: false,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Failed to generate completion with ${selectedModel}: ${response.statusText}`
+            );
+        }
+
+        const data = (await response.json()) as { response: string };
+        return data.response;
+    }
+
+    private async generateCompletionLegacy(prompt: string): Promise<string> {
+        // Legacy method - always uses primary model for backward compatibility
         const response = await fetch(`${this.baseUrl}/api/generate`, {
             method: "POST",
             headers: {
