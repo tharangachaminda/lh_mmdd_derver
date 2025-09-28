@@ -48,6 +48,57 @@ describe("Question API Endpoints", () => {
             expect(response.status).toBe(400);
             expect(response.body).toHaveProperty("error");
         });
+
+        it("should generate multiple questions when count is specified", async () => {
+            const response = await request(app)
+                .post("/api/questions/generate")
+                .send({
+                    grade: 5,
+                    type: QuestionType.ADDITION,
+                    difficulty: DifficultyLevel.EASY,
+                    count: 3,
+                });
+
+            expect(response.status).toBe(200);
+            expect(response.body).toHaveProperty("questions");
+            expect(response.body).toHaveProperty("count", 3);
+            expect(response.body).toHaveProperty("metadata");
+            expect(Array.isArray(response.body.questions)).toBe(true);
+            expect(response.body.questions).toHaveLength(3);
+            
+            // Verify each question has required properties
+            response.body.questions.forEach((question: any) => {
+                expect(question).toHaveProperty("id");
+                expect(question).toHaveProperty("question");
+                expect(question).toHaveProperty("answer");
+                expect(question).toHaveProperty("type");
+            });
+        });
+
+        it("should return 400 for count exceeding maximum", async () => {
+            const response = await request(app)
+                .post("/api/questions/generate")
+                .send({
+                    grade: 5,
+                    count: 15, // Exceeds maximum of 10
+                });
+
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty("error");
+            expect(response.body.error).toContain("Count must be between 1 and 10");
+        });
+
+        it("should return 400 for invalid count", async () => {
+            const response = await request(app)
+                .post("/api/questions/generate")
+                .send({
+                    grade: 5,
+                    count: 0, // Invalid count
+                });
+
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty("error");
+        });
     });
 
     describe("POST /api/questions/validate", () => {

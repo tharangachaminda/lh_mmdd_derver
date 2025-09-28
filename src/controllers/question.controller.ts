@@ -14,7 +14,7 @@ export class QuestionController {
         res: Response
     ): Promise<void> => {
         try {
-            const { grade, type, difficulty, context } = req.body;
+            const { grade, type, difficulty, context, count } = req.body;
 
             // Validate required parameters
             if (!grade || isNaN(Number(grade))) {
@@ -22,6 +22,18 @@ export class QuestionController {
                     error: "Valid grade parameter is required",
                 });
                 return;
+            }
+
+            // Validate and set count parameter
+            let questionCount = 1; // default value
+            if (count !== undefined) {
+                if (isNaN(Number(count)) || Number(count) < 1 || Number(count) > 10) {
+                    res.status(400).json({
+                        error: "Count must be between 1 and 10",
+                    });
+                    return;
+                }
+                questionCount = Number(count);
             }
 
             // Convert and validate type
@@ -41,13 +53,37 @@ export class QuestionController {
                 ) || DifficultyLevel.EASY;
 
             const gradeNumber = Number(grade);
-            const question = await this.questionService.generateQuestion(
-                questionType || QuestionType.ADDITION,
-                difficultyLevel || DifficultyLevel.EASY,
-                gradeNumber
-            );
 
-            res.status(200).json(question);
+            // Generate multiple questions if count > 1
+            if (questionCount === 1) {
+                const question = await this.questionService.generateQuestion(
+                    questionType || QuestionType.ADDITION,
+                    difficultyLevel || DifficultyLevel.EASY,
+                    gradeNumber
+                );
+                res.status(200).json(question);
+            } else {
+                // Generate multiple questions
+                const questions = [];
+                for (let i = 0; i < questionCount; i++) {
+                    const question = await this.questionService.generateQuestion(
+                        questionType || QuestionType.ADDITION,
+                        difficultyLevel || DifficultyLevel.EASY,
+                        gradeNumber
+                    );
+                    questions.push(question);
+                }
+                res.status(200).json({
+                    questions,
+                    count: questions.length,
+                    metadata: {
+                        grade: gradeNumber,
+                        type: questionType,
+                        difficulty: difficultyLevel,
+                        context: context || null,
+                    },
+                });
+            }
         } catch (error) {
             res.status(500).json({
                 error: "Internal server error",
