@@ -19,7 +19,9 @@ export class EmbeddingService {
             process.env.OLLAMA_ENDPOINT ||
             "http://localhost:11434";
         this.modelName =
-            options?.model || process.env.OLLAMA_EMBEDDING_MODEL || "nomic-embed-text";
+            options?.model ||
+            process.env.OLLAMA_EMBEDDING_MODEL ||
+            "nomic-embed-text";
         this.timeout = options?.timeout || 30000;
     }
 

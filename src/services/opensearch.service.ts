@@ -77,7 +77,8 @@ export interface EnhancedQuestion {
 class OpenSearchService {
     private readonly client: Client | MinimalClient;
     private readonly indexName = "math-questions";
-    private readonly enhancedIndexName = process.env.VECTOR_INDEX_NAME || "enhanced_questions";
+    private readonly enhancedIndexName =
+        process.env.VECTOR_INDEX_NAME || "enhanced_questions";
 
     constructor(client?: Client | MinimalClient) {
         this.client =
