@@ -26,6 +26,7 @@
         "@opensearch-project/opensearch": "^3.5.1",
         "@types/express": "^5.0.3",
         "@types/node": "^24.5.2",
+        "axios": "^1.12.2",
         "dotenv": "^17.2.2",
         "express": "^5.1.0",
         "langchain": "^0.3.34",
