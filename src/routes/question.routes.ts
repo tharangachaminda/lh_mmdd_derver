@@ -5,7 +5,7 @@ const router = Router();
 const questionController = new QuestionController();
 
 // Question generation endpoint
-router.get("/generate", questionController.generateQuestion);
+router.post("/generate", questionController.generateQuestion);
 
 // Answer validation endpoint
 router.post("/validate", questionController.validateAnswer);

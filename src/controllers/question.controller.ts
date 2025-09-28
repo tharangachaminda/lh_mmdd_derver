@@ -14,9 +14,9 @@ export class QuestionController {
         res: Response
     ): Promise<void> => {
         try {
-            const { grade, type, difficulty } = req.query;
+            const { grade, type, difficulty, context } = req.body;
 
-            // Validate query parameters
+            // Validate required parameters
             if (!grade || isNaN(Number(grade))) {
                 res.status(400).json({
                     error: "Valid grade parameter is required",
