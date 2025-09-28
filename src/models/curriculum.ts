@@ -25,6 +25,8 @@ export interface SampleQuestion {
     keywords?: string[];
     /** Vector embedding of the question for similarity search */
     embedding?: number[];
+    /** Remainder for division questions (optional) */
+    remainder?: number;
 }
 
 /**

@@ -56,14 +56,14 @@ describe("Curriculum Type Utilities", () => {
 
     describe("parseMathSubtopic", () => {
         it("should parse valid math subtopics correctly", () => {
-            expect(parseMathSubtopic("Single Digit Addition")).toBe(
-                MathSubtopic.SINGLE_DIGIT_ADDITION
+            expect(parseMathSubtopic("Multi-Digit Addition")).toBe(
+                MathSubtopic.MULTI_DIGIT_ADDITION
             );
-            expect(parseMathSubtopic("Basic Multiplication")).toBe(
-                MathSubtopic.BASIC_MULTIPLICATION
+            expect(parseMathSubtopic("Multi-Digit Multiplication")).toBe(
+                MathSubtopic.MULTI_DIGIT_MULTIPLICATION
             );
-            expect(parseMathSubtopic("Single Digit Subtraction")).toBe(
-                MathSubtopic.SINGLE_DIGIT_SUBTRACTION
+            expect(parseMathSubtopic("Division with Remainders")).toBe(
+                MathSubtopic.DIVISION_WITH_REMAINDERS
             );
         });
 
@@ -117,6 +117,55 @@ describe("Curriculum Type Utilities", () => {
             );
         });
 
+        it("should parse division question types correctly", () => {
+            expect(parseQuestionType("division")).toBe(QuestionType.DIVISION);
+            expect(parseQuestionType("whole_number_division")).toBe(
+                QuestionType.WHOLE_NUMBER_DIVISION
+            );
+            expect(parseQuestionType("division_with_remainders")).toBe(
+                QuestionType.DIVISION_WITH_REMAINDERS
+            );
+            expect(parseQuestionType("long_division")).toBe(
+                QuestionType.LONG_DIVISION
+            );
+        });
+
+        it("should parse whole number operation types correctly", () => {
+            expect(parseQuestionType("whole_number_addition")).toBe(
+                QuestionType.WHOLE_NUMBER_ADDITION
+            );
+            expect(parseQuestionType("whole_number_subtraction")).toBe(
+                QuestionType.WHOLE_NUMBER_SUBTRACTION
+            );
+            expect(parseQuestionType("whole_number_multiplication")).toBe(
+                QuestionType.WHOLE_NUMBER_MULTIPLICATION
+            );
+        });
+
+        it("should parse decimal operation types correctly", () => {
+            expect(parseQuestionType("decimal_addition")).toBe(
+                QuestionType.DECIMAL_ADDITION
+            );
+            expect(parseQuestionType("decimal_subtraction")).toBe(
+                QuestionType.DECIMAL_SUBTRACTION
+            );
+            expect(parseQuestionType("decimal_multiplication")).toBe(
+                QuestionType.DECIMAL_MULTIPLICATION
+            );
+        });
+
+        it("should parse word problem types correctly", () => {
+            expect(parseQuestionType("word_problem_addition")).toBe(
+                QuestionType.WORD_PROBLEM_ADDITION
+            );
+            expect(parseQuestionType("word_problem_subtraction")).toBe(
+                QuestionType.WORD_PROBLEM_SUBTRACTION
+            );
+            expect(parseQuestionType("word_problem_division")).toBe(
+                QuestionType.WORD_PROBLEM_DIVISION
+            );
+        });
+
         it("should throw error for unknown question types", () => {
             expect(() => parseQuestionType("unknown_type")).toThrow(
                 "Unknown question type: unknown_type"
@@ -148,8 +197,8 @@ describe("Curriculum Type Utilities", () => {
         });
 
         it("should validate math subtopics correctly", () => {
-            expect(isValidMathSubtopic("Single Digit Addition")).toBe(true);
-            expect(isValidMathSubtopic("Basic Multiplication")).toBe(true);
+            expect(isValidMathSubtopic("Multi-Digit Addition")).toBe(true);
+            expect(isValidMathSubtopic("Division with Remainders")).toBe(true);
             expect(isValidMathSubtopic("Unknown Subtopic")).toBe(false);
         });
 
@@ -172,7 +221,7 @@ describe("Curriculum Type Utilities", () => {
             expect(CurriculumValidValues.subjects).toContain("Mathematics");
             expect(CurriculumValidValues.mathTopics).toContain("Addition");
             expect(CurriculumValidValues.mathSubtopics).toContain(
-                "Single Digit Addition"
+                "Multi-Digit Addition"
             );
             expect(CurriculumValidValues.gradeLevels).toContain(2);
             expect(CurriculumValidValues.difficultyLevels).toContain("easy");
@@ -181,10 +230,10 @@ describe("Curriculum Type Utilities", () => {
 
         it("should have correct counts for each category", () => {
             expect(CurriculumValidValues.subjects).toHaveLength(4);
-            expect(CurriculumValidValues.mathTopics).toHaveLength(14);
+            expect(CurriculumValidValues.mathTopics).toHaveLength(39); // Updated count for all math topics
             expect(CurriculumValidValues.gradeLevels).toHaveLength(7);
             expect(CurriculumValidValues.difficultyLevels).toHaveLength(3);
-            expect(CurriculumValidValues.questionTypes).toHaveLength(9);
+            expect(CurriculumValidValues.questionTypes).toHaveLength(57); // Updated count for all question types
         });
     });
 
@@ -195,7 +244,7 @@ describe("Curriculum Type Utilities", () => {
             expect(() => parseSubject("Mathematics")).not.toThrow();
             expect(() => parseMathTopic("Addition")).not.toThrow();
             expect(() =>
-                parseMathSubtopic("Single Digit Addition")
+                parseMathSubtopic("Multi-Digit Addition")
             ).not.toThrow();
             expect(() => parseDifficultyLevel("easy")).not.toThrow();
             expect(() => parseQuestionType("addition")).not.toThrow();
@@ -206,12 +255,51 @@ describe("Curriculum Type Utilities", () => {
             expect(() => parseMathTopic("Subtraction")).not.toThrow();
             expect(() => parseMathTopic("Multiplication")).not.toThrow();
             expect(() =>
-                parseMathSubtopic("Single Digit Subtraction")
+                parseMathSubtopic("Multi-Digit Subtraction")
             ).not.toThrow();
             expect(() =>
-                parseMathSubtopic("Basic Multiplication")
+                parseMathSubtopic("Multi-Digit Multiplication")
             ).not.toThrow();
             expect(() => parseDifficultyLevel("medium")).not.toThrow();
+        });
+
+        it("should handle Grade 5 curriculum data question types correctly", () => {
+            // Test question types from curriculum-batch-grades3-8.json
+            expect(() =>
+                parseQuestionType("division_with_remainders")
+            ).not.toThrow();
+            expect(() =>
+                parseQuestionType("whole_number_division")
+            ).not.toThrow();
+            expect(() => parseQuestionType("long_division")).not.toThrow();
+            expect(() =>
+                parseQuestionType("word_problem_division")
+            ).not.toThrow();
+            expect(() =>
+                parseQuestionType("whole_number_subtraction")
+            ).not.toThrow();
+            expect(() =>
+                parseQuestionType("decimal_subtraction")
+            ).not.toThrow();
+            expect(() =>
+                parseQuestionType("word_problem_subtraction")
+            ).not.toThrow();
+            expect(() =>
+                parseQuestionType("whole_number_addition")
+            ).not.toThrow();
+            expect(() => parseQuestionType("decimal_addition")).not.toThrow();
+            expect(() =>
+                parseQuestionType("word_problem_addition")
+            ).not.toThrow();
+            expect(() =>
+                parseQuestionType("whole_number_multiplication")
+            ).not.toThrow();
+            expect(() =>
+                parseQuestionType("decimal_multiplication")
+            ).not.toThrow();
+            expect(() =>
+                parseQuestionType("word_problem_multiplication")
+            ).not.toThrow();
         });
     });
 });

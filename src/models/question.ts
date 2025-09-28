@@ -4,7 +4,18 @@ export enum QuestionType {
     SUBTRACTION = "subtraction",
     MULTIPLICATION = "multiplication",
     DIVISION = "division",
-    
+
+    // Whole Number Operations (specific types used in curriculum)
+    WHOLE_NUMBER_ADDITION = "whole_number_addition",
+    WHOLE_NUMBER_SUBTRACTION = "whole_number_subtraction",
+    WHOLE_NUMBER_MULTIPLICATION = "whole_number_multiplication",
+
+    // Division with Remainders
+    WHOLE_NUMBER_DIVISION = "whole_number_division",
+    DIVISION_WITH_REMAINDERS = "division_with_remainders",
+    LONG_DIVISION = "long_division",
+    DECIMAL_DIVISION_EXACT = "decimal_division_exact",
+
     // Fraction Operations
     FRACTION_ADDITION = "fraction_addition",
     FRACTION_SUBTRACTION = "fraction_subtraction",
@@ -12,7 +23,7 @@ export enum QuestionType {
     FRACTION_DIVISION = "fraction_division",
     FRACTION_COMPARISON = "fraction_comparison",
     FRACTION_SIMPLIFICATION = "fraction_simplification",
-    
+
     // Decimal Operations
     DECIMAL_ADDITION = "decimal_addition",
     DECIMAL_SUBTRACTION = "decimal_subtraction",
@@ -20,52 +31,52 @@ export enum QuestionType {
     DECIMAL_DIVISION = "decimal_division",
     DECIMAL_COMPARISON = "decimal_comparison",
     DECIMAL_ROUNDING = "decimal_rounding",
-    
+
     // Percentage
     PERCENTAGE_CALCULATION = "percentage_calculation",
     PERCENTAGE_OF_NUMBER = "percentage_of_number",
     PERCENTAGE_INCREASE = "percentage_increase",
     PERCENTAGE_DECREASE = "percentage_decrease",
-    
+
     // Integer Operations
     INTEGER_ADDITION = "integer_addition",
     INTEGER_SUBTRACTION = "integer_subtraction",
     INTEGER_MULTIPLICATION = "integer_multiplication",
     INTEGER_DIVISION = "integer_division",
-    
+
     // Algebra
     ALGEBRAIC_EXPRESSION = "algebraic_expression",
     SOLVING_EQUATIONS = "solving_equations",
     GRAPHING = "graphing",
     SLOPE_CALCULATION = "slope_calculation",
-    
+
     // Geometry
     AREA_CALCULATION = "area_calculation",
     PERIMETER_CALCULATION = "perimeter_calculation",
     VOLUME_CALCULATION = "volume_calculation",
     ANGLE_MEASUREMENT = "angle_measurement",
     SHAPE_IDENTIFICATION = "shape_identification",
-    
+
     // Ratios and Proportions
     RATIO_SIMPLIFICATION = "ratio_simplification",
     PROPORTION_SOLVING = "proportion_solving",
     UNIT_RATE = "unit_rate",
     SCALE_FACTOR = "scale_factor",
-    
+
     // Statistics and Probability
     MEAN_CALCULATION = "mean_calculation",
     MEDIAN_CALCULATION = "median_calculation",
     MODE_CALCULATION = "mode_calculation",
     PROBABILITY_CALCULATION = "probability_calculation",
     DATA_INTERPRETATION = "data_interpretation",
-    
+
     // Word Problems
     WORD_PROBLEM_ADDITION = "word_problem_addition",
     WORD_PROBLEM_SUBTRACTION = "word_problem_subtraction",
     WORD_PROBLEM_MULTIPLICATION = "word_problem_multiplication",
     WORD_PROBLEM_DIVISION = "word_problem_division",
     WORD_PROBLEM_MIXED = "word_problem_mixed",
-    
+
     // Pattern Recognition
     PATTERN = "pattern",
     SEQUENCE = "sequence",
@@ -104,7 +115,7 @@ export enum MathTopic {
     RATIONAL_NUMBERS = "Rational Numbers",
     NUMBER_SENSE = "Number Sense",
     PLACE_VALUE = "Place Value",
-    
+
     // Algebra
     ALGEBRAIC_EXPRESSIONS = "Algebraic Expressions",
     EQUATIONS = "Equations",
@@ -112,7 +123,7 @@ export enum MathTopic {
     FUNCTIONS = "Functions",
     PATTERNS_AND_SEQUENCES = "Patterns and Sequences",
     COORDINATE_PLANE = "Coordinate Plane",
-    
+
     // Geometry
     SHAPES_AND_SOLIDS = "Shapes and Solids",
     ANGLES = "Angles",
@@ -121,7 +132,7 @@ export enum MathTopic {
     TRANSFORMATIONS = "Transformations",
     SIMILARITY_AND_CONGRUENCE = "Similarity and Congruence",
     PYTHAGOREAN_THEOREM = "Pythagorean Theorem",
-    
+
     // Measurement
     LENGTH_AND_DISTANCE = "Length and Distance",
     WEIGHT_AND_MASS = "Weight and Mass",
@@ -129,14 +140,14 @@ export enum MathTopic {
     TIME = "Time",
     TEMPERATURE = "Temperature",
     MONEY = "Money",
-    
+
     // Statistics and Probability
     DATA_COLLECTION = "Data Collection",
     GRAPHS_AND_CHARTS = "Graphs and Charts",
     MEAN_MEDIAN_MODE = "Mean, Median, and Mode",
     PROBABILITY = "Probability",
     COMBINATIONS_AND_PERMUTATIONS = "Combinations and Permutations",
-    
+
     // Ratios and Proportions
     RATIOS = "Ratios",
     PROPORTIONS = "Proportions",
@@ -155,7 +166,7 @@ export enum MathSubtopic {
     MULTI_DIGIT_MULTIPLICATION = "Multi-Digit Multiplication",
     LONG_DIVISION = "Long Division",
     DIVISION_WITH_REMAINDERS = "Division with Remainders",
-    
+
     // Fractions (Grades 3-6)
     FRACTION_BASICS = "Fraction Basics",
     EQUIVALENT_FRACTIONS = "Equivalent Fractions",
@@ -166,7 +177,7 @@ export enum MathSubtopic {
     DIVIDING_FRACTIONS = "Dividing Fractions",
     MIXED_NUMBERS = "Mixed Numbers",
     IMPROPER_FRACTIONS = "Improper Fractions",
-    
+
     // Decimals (Grades 4-6)
     DECIMAL_PLACE_VALUE = "Decimal Place Value",
     COMPARING_DECIMALS = "Comparing Decimals",
@@ -175,14 +186,14 @@ export enum MathSubtopic {
     MULTIPLYING_DECIMALS = "Multiplying Decimals",
     DIVIDING_DECIMALS = "Dividing Decimals",
     ROUNDING_DECIMALS = "Rounding Decimals",
-    
+
     // Percentages (Grades 5-8)
     PERCENT_BASICS = "Percent Basics",
     PERCENT_OF_NUMBER = "Percent of a Number",
     PERCENT_INCREASE_DECREASE = "Percent Increase and Decrease",
     SALES_TAX_AND_DISCOUNTS = "Sales Tax and Discounts",
     SIMPLE_INTEREST = "Simple Interest",
-    
+
     // Integers (Grades 6-8)
     POSITIVE_AND_NEGATIVE_NUMBERS = "Positive and Negative Numbers",
     ADDING_INTEGERS = "Adding Integers",
@@ -190,7 +201,7 @@ export enum MathSubtopic {
     MULTIPLYING_INTEGERS = "Multiplying Integers",
     DIVIDING_INTEGERS = "Dividing Integers",
     INTEGER_ORDER = "Integer Order",
-    
+
     // Algebra (Grades 6-8)
     VARIABLES_AND_EXPRESSIONS = "Variables and Expressions",
     EVALUATING_EXPRESSIONS = "Evaluating Expressions",
@@ -200,7 +211,7 @@ export enum MathSubtopic {
     SOLVING_MULTI_STEP_EQUATIONS = "Solving Multi-Step Equations",
     GRAPHING_LINEAR_EQUATIONS = "Graphing Linear Equations",
     SLOPE = "Slope",
-    
+
     // Geometry (Grades 3-8)
     BASIC_SHAPES = "Basic Shapes",
     ANGLES_AND_MEASUREMENT = "Angles and Measurement",
@@ -215,7 +226,7 @@ export enum MathSubtopic {
     VOLUME_OF_RECTANGULAR_PRISMS = "Volume of Rectangular Prisms",
     VOLUME_OF_CYLINDERS = "Volume of Cylinders",
     SURFACE_AREA = "Surface Area",
-    
+
     // Ratios and Proportions (Grades 6-8)
     RATIO_BASICS = "Ratio Basics",
     EQUIVALENT_RATIOS = "Equivalent Ratios",
@@ -223,7 +234,7 @@ export enum MathSubtopic {
     PROPORTIONAL_RELATIONSHIPS = "Proportional Relationships",
     SOLVING_PROPORTIONS = "Solving Proportions",
     SCALE_DRAWINGS = "Scale Drawings",
-    
+
     // Statistics (Grades 6-8)
     DATA_DISPLAYS = "Data Displays",
     BAR_GRAPHS = "Bar Graphs",
@@ -233,7 +244,7 @@ export enum MathSubtopic {
     SCATTER_PLOTS = "Scatter Plots",
     MEASURES_OF_CENTER = "Measures of Center",
     MEASURES_OF_SPREAD = "Measures of Spread",
-    
+
     // Probability (Grades 7-8)
     PROBABILITY_BASICS = "Probability Basics",
     THEORETICAL_PROBABILITY = "Theoretical Probability",
@@ -270,6 +281,8 @@ export interface Question {
     context?: string;
     hints?: string[];
     createdAt: Date;
+    /** Remainder for division questions (optional) */
+    remainder?: number;
 }
 
 export interface QuestionValidationResult {
