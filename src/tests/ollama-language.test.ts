@@ -174,7 +174,9 @@ describe("OllamaLanguageModel", () => {
             // Act & Assert
             await expect(
                 service.generateMathQuestion("addition", 3, "easy")
-            ).rejects.toThrow("Failed to generate completion with llama2: Bad Request");
+            ).rejects.toThrow(
+                "Failed to generate completion with llama2: Bad Request"
+            );
         });
     });
 

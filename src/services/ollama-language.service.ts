@@ -9,7 +9,8 @@ export class OllamaLanguageModel implements ILanguageModel {
     protected constructor() {
         this.baseUrl = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
         this.modelName = process.env.OLLAMA_MODEL_NAME || "llama2";
-        this.alternativeModel = process.env.OLLAMA_ALTERNATIVE_MODEL || this.modelName;
+        this.alternativeModel =
+            process.env.OLLAMA_ALTERNATIVE_MODEL || this.modelName;
     }
 
     // For testing purposes only
@@ -28,7 +29,7 @@ export class OllamaLanguageModel implements ILanguageModel {
     ): Promise<string> {
         const prompt = this.buildQuestionPrompt(type, grade, difficulty);
         // Use complex model for hard/medium questions, simple for easy questions
-        const complexity = difficulty === 'easy' ? 'simple' : 'complex';
+        const complexity = difficulty === "easy" ? "simple" : "complex";
         const response = await this.generateCompletion(prompt, complexity);
         return response;
     }
@@ -80,11 +81,12 @@ export class OllamaLanguageModel implements ILanguageModel {
      * @param complexity - Simple tasks use primary model, complex tasks use alternative model
      * @returns The model name to use for the request
      */
-    private selectModel(complexity: 'simple' | 'complex' = 'simple'): string {
+    private selectModel(complexity: "simple" | "complex" = "simple"): string {
         // Use alternative model (qwen3:14b) for complex reasoning tasks
         // Use primary model (llama3.1) for simple, fast tasks
-        return complexity === 'complex' && this.alternativeModel !== this.modelName 
-            ? this.alternativeModel 
+        return complexity === "complex" &&
+            this.alternativeModel !== this.modelName
+            ? this.alternativeModel
             : this.modelName;
     }
 
@@ -94,9 +96,12 @@ export class OllamaLanguageModel implements ILanguageModel {
      * @param complexity - Whether to use simple or complex model
      * @returns Generated text response
      */
-    private async generateCompletion(prompt: string, complexity: 'simple' | 'complex' = 'simple'): Promise<string> {
+    private async generateCompletion(
+        prompt: string,
+        complexity: "simple" | "complex" = "simple"
+    ): Promise<string> {
         const selectedModel = this.selectModel(complexity);
-        
+
         const response = await fetch(`${this.baseUrl}/api/generate`, {
             method: "POST",
             headers: {
