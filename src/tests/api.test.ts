@@ -3,11 +3,11 @@ import { app } from "../app.js";
 import { QuestionType, DifficultyLevel } from "../models/question.js";
 
 describe("Question API Endpoints", () => {
-    describe("GET /api/questions/generate", () => {
+    describe("POST /api/questions/generate", () => {
         it("should generate a question with default parameters", async () => {
             const response = await request(app)
-                .get("/api/questions/generate")
-                .query({ grade: "5" });
+                .post("/api/questions/generate")
+                .send({ grade: 5 });
 
             expect(response.status).toBe(200);
             expect(response.body).toHaveProperty("id");
@@ -17,9 +17,9 @@ describe("Question API Endpoints", () => {
 
         it("should generate a question with specific type and difficulty", async () => {
             const response = await request(app)
-                .get("/api/questions/generate")
-                .query({
-                    grade: "5",
+                .post("/api/questions/generate")
+                .send({
+                    grade: 5,
                     type: QuestionType.ADDITION,
                     difficulty: DifficultyLevel.EASY,
                 });
@@ -30,9 +30,9 @@ describe("Question API Endpoints", () => {
 
         it("should use default type for invalid question type", async () => {
             const response = await request(app)
-                .get("/api/questions/generate")
-                .query({
-                    grade: "5",
+                .post("/api/questions/generate")
+                .send({
+                    grade: 5,
                     type: "INVALID_TYPE",
                 });
 
@@ -42,8 +42,61 @@ describe("Question API Endpoints", () => {
 
         it("should return 400 for invalid grade", async () => {
             const response = await request(app)
-                .get("/api/questions/generate")
-                .query({ grade: "invalid" });
+                .post("/api/questions/generate")
+                .send({ grade: "invalid" });
+
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty("error");
+        });
+
+        it("should generate multiple questions when count is specified", async () => {
+            const response = await request(app)
+                .post("/api/questions/generate")
+                .send({
+                    grade: 5,
+                    type: QuestionType.ADDITION,
+                    difficulty: DifficultyLevel.EASY,
+                    count: 3,
+                });
+
+            expect(response.status).toBe(200);
+            expect(response.body).toHaveProperty("questions");
+            expect(response.body).toHaveProperty("count", 3);
+            expect(response.body).toHaveProperty("metadata");
+            expect(Array.isArray(response.body.questions)).toBe(true);
+            expect(response.body.questions).toHaveLength(3);
+
+            // Verify each question has required properties
+            response.body.questions.forEach((question: any) => {
+                expect(question).toHaveProperty("id");
+                expect(question).toHaveProperty("question");
+                expect(question).toHaveProperty("answer");
+                expect(question).toHaveProperty("type");
+            });
+        });
+
+        it("should return 400 for count exceeding maximum", async () => {
+            const response = await request(app)
+                .post("/api/questions/generate")
+                .send({
+                    grade: 5,
+                    count: 15, // Exceeds maximum of 10
+                });
+
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty("error");
+            expect(response.body.error).toContain(
+                "Count must be between 1 and 10"
+            );
+        });
+
+        it("should return 400 for invalid count", async () => {
+            const response = await request(app)
+                .post("/api/questions/generate")
+                .send({
+                    grade: 5,
+                    count: 0, // Invalid count
+                });
 
             expect(response.status).toBe(400);
             expect(response.body).toHaveProperty("error");
@@ -54,8 +107,8 @@ describe("Question API Endpoints", () => {
         it("should validate correct answer", async () => {
             // First generate a question
             const questionResponse = await request(app)
-                .get("/api/questions/generate")
-                .query({ grade: "5" });
+                .post("/api/questions/generate")
+                .send({ grade: 5 });
 
             const question = questionResponse.body;
 

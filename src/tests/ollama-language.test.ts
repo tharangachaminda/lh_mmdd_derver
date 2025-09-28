@@ -33,7 +33,7 @@ describe("OllamaLanguageModel", () => {
     describe("generateEmbedding", () => {
         it("should call Ollama API with correct parameters", async () => {
             // Arrange
-            const mockEmbedding = new Array(1536).fill(0.1);
+            const mockEmbedding = new Array(768).fill(0.1);
             mockFetch.mockImplementationOnce(
                 async () =>
                     ({
@@ -55,7 +55,7 @@ describe("OllamaLanguageModel", () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        model: "llama2",
+                        model: "llama3.1:latest",
                         prompt: "test text",
                     }),
                 }
@@ -113,7 +113,7 @@ describe("OllamaLanguageModel", () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        model: "llama2",
+                        model: "llama3.1:latest",
                         prompt: expectedPrompt,
                         stream: false,
                     }),
@@ -150,7 +150,7 @@ describe("OllamaLanguageModel", () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        model: "llama2",
+                        model: "llama3.1:latest",
                         prompt: expectedPrompt,
                         stream: false,
                     }),
@@ -174,7 +174,9 @@ describe("OllamaLanguageModel", () => {
             // Act & Assert
             await expect(
                 service.generateMathQuestion("addition", 3, "easy")
-            ).rejects.toThrow("Failed to generate completion: Bad Request");
+            ).rejects.toThrow(
+                "Failed to generate completion with llama3.1:latest: Bad Request"
+            );
         });
     });
 
@@ -216,7 +218,7 @@ describe("OllamaLanguageModel", () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        model: "llama2",
+                        model: "llama3.1:latest",
                         prompt: "test",
                     }),
                 })
