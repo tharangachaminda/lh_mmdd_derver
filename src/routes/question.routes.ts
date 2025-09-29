@@ -8,8 +8,15 @@ import {
 const router = Router();
 const questionController = new QuestionController();
 
-// Question generation endpoint
+// Question generation endpoints
 router.post("/generate", questionController.generateQuestion);
+router.post(
+    "/generate/simplified",
+    questionController.generateQuestionsSimplified
+);
+
+// Question type information
+router.get("/types", questionController.getAvailableTypes);
 
 // Answer validation endpoint
 router.post("/validate", questionController.validateAnswer);
