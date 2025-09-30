@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { QuestionType } from "./question.js";
 
 /**
  * Main question types exposed to users - simplified API
@@ -273,37 +274,8 @@ export const QuestionGenerationRequestSchema = z.object({
 });
 
 /**
- * Legacy question type enum (for backward compatibility)
- * @deprecated Use MainQuestionType and QuestionSubType instead
+ * Convert QuestionSubType to legacy QuestionType for vector-enhanced service
  */
-export enum QuestionType {
-    // Main types (mapped to new system)
-    ADDITION = "addition",
-    SUBTRACTION = "subtraction",
-    MULTIPLICATION = "multiplication",
-    DIVISION = "division",
-    PATTERN = "pattern_recognition",
-
-    // Legacy specific types (still supported but discouraged)
-    WHOLE_NUMBER_ADDITION = "whole_number_addition",
-    WHOLE_NUMBER_SUBTRACTION = "whole_number_subtraction",
-    WHOLE_NUMBER_MULTIPLICATION = "whole_number_multiplication",
-    WHOLE_NUMBER_DIVISION = "whole_number_division",
-    DIVISION_WITH_REMAINDERS = "division_with_remainders",
-    LONG_DIVISION = "long_division",
-    DECIMAL_ADDITION = "decimal_addition",
-    DECIMAL_SUBTRACTION = "decimal_subtraction",
-    DECIMAL_MULTIPLICATION = "decimal_multiplication",
-    DECIMAL_DIVISION = "decimal_division",
-    FRACTION_ADDITION = "fraction_addition",
-    FRACTION_SUBTRACTION = "fraction_subtraction",
-    FRACTION_MULTIPLICATION = "fraction_multiplication",
-    FRACTION_DIVISION = "fraction_division",
-    WORD_PROBLEM_ADDITION = "word_problem_addition",
-    WORD_PROBLEM_SUBTRACTION = "word_problem_subtraction",
-    WORD_PROBLEM_MULTIPLICATION = "word_problem_multiplication",
-    WORD_PROBLEM_DIVISION = "word_problem_division",
-}
 
 export enum DifficultyLevel {
     EASY = "easy",
@@ -378,6 +350,79 @@ export function convertLegacyToMainType(
     };
 
     return legacyToMainMap[legacyType] || MainQuestionType.ADDITION;
+}
+
+/**
+ * Convert QuestionSubType to legacy QuestionType for vector-enhanced service
+ */
+export function convertSubTypeToLegacy(subType: QuestionSubType): QuestionType {
+    const subTypeToLegacyMap: Record<QuestionSubType, QuestionType> = {
+        // Addition sub-types
+        [QuestionSubType.BASIC_ADDITION]: QuestionType.ADDITION,
+        [QuestionSubType.WHOLE_NUMBER_ADDITION]:
+            QuestionType.WHOLE_NUMBER_ADDITION,
+        [QuestionSubType.DECIMAL_ADDITION]: QuestionType.DECIMAL_ADDITION,
+        [QuestionSubType.FRACTION_ADDITION]: QuestionType.FRACTION_ADDITION,
+        [QuestionSubType.WORD_PROBLEM_ADDITION]:
+            QuestionType.WORD_PROBLEM_ADDITION,
+
+        // Subtraction sub-types
+        [QuestionSubType.BASIC_SUBTRACTION]: QuestionType.SUBTRACTION,
+        [QuestionSubType.WHOLE_NUMBER_SUBTRACTION]:
+            QuestionType.WHOLE_NUMBER_SUBTRACTION,
+        [QuestionSubType.DECIMAL_SUBTRACTION]: QuestionType.DECIMAL_SUBTRACTION,
+        [QuestionSubType.FRACTION_SUBTRACTION]:
+            QuestionType.FRACTION_SUBTRACTION,
+        [QuestionSubType.WORD_PROBLEM_SUBTRACTION]:
+            QuestionType.WORD_PROBLEM_SUBTRACTION,
+
+        // Multiplication sub-types
+        [QuestionSubType.BASIC_MULTIPLICATION]: QuestionType.MULTIPLICATION,
+        [QuestionSubType.WHOLE_NUMBER_MULTIPLICATION]:
+            QuestionType.WHOLE_NUMBER_MULTIPLICATION,
+        [QuestionSubType.DECIMAL_MULTIPLICATION]:
+            QuestionType.DECIMAL_MULTIPLICATION,
+        [QuestionSubType.FRACTION_MULTIPLICATION]:
+            QuestionType.FRACTION_MULTIPLICATION,
+        [QuestionSubType.WORD_PROBLEM_MULTIPLICATION]:
+            QuestionType.WORD_PROBLEM_MULTIPLICATION,
+
+        // Division sub-types
+        [QuestionSubType.BASIC_DIVISION]: QuestionType.DIVISION,
+        [QuestionSubType.WHOLE_NUMBER_DIVISION]:
+            QuestionType.WHOLE_NUMBER_DIVISION,
+        [QuestionSubType.DIVISION_WITH_REMAINDERS]:
+            QuestionType.DIVISION_WITH_REMAINDERS,
+        [QuestionSubType.LONG_DIVISION]: QuestionType.LONG_DIVISION,
+        [QuestionSubType.DECIMAL_DIVISION]: QuestionType.DECIMAL_DIVISION,
+        [QuestionSubType.FRACTION_DIVISION]: QuestionType.FRACTION_DIVISION,
+        [QuestionSubType.WORD_PROBLEM_DIVISION]:
+            QuestionType.WORD_PROBLEM_DIVISION,
+
+        // Pattern recognition sub-types
+        [QuestionSubType.NUMBER_PATTERN]: QuestionType.PATTERN,
+        [QuestionSubType.SEQUENCE_PATTERN]: QuestionType.PATTERN,
+        [QuestionSubType.SHAPE_PATTERN]: QuestionType.PATTERN,
+        [QuestionSubType.FUNCTION_TABLE]: QuestionType.PATTERN,
+        [QuestionSubType.ALGEBRAIC_PATTERN]: QuestionType.PATTERN,
+    };
+
+    return subTypeToLegacyMap[subType] || QuestionType.ADDITION;
+}
+
+/**
+ * Convert difficulty string to DifficultyLevel enum
+ */
+export function convertDifficultyStringToEnum(
+    difficulty: string
+): DifficultyLevel {
+    const difficultyMap: Record<string, DifficultyLevel> = {
+        easy: DifficultyLevel.EASY,
+        medium: DifficultyLevel.MEDIUM,
+        hard: DifficultyLevel.HARD,
+    };
+
+    return difficultyMap[difficulty.toLowerCase()] || DifficultyLevel.MEDIUM;
 }
 
 /**

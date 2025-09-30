@@ -34,7 +34,7 @@ const CONFIG = {
     node: process.env.OPENSEARCH_NODE || 'https://localhost:9200',
     username: process.env.OPENSEARCH_USERNAME || 'admin',
     password: process.env.OPENSEARCH_PASSWORD || 'h7F!q9rT#4vL',
-    indexName: 'enhanced-math-questions',
+    indexName: 'enhanced_questions',
     
     // Command line options
     listIndices: process.argv.includes('--list-indices'),

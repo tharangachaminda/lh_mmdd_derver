@@ -9,17 +9,23 @@ import {
     MultipleQuestionsOutputSchema,
     selectSubTypes,
     getSubTypesForGrade,
+    convertSubTypeToLegacy,
+    convertDifficultyStringToEnum,
 } from "../models/simplified-question-types.js";
 import { LanguageModelFactory } from "./language-model.factory.js";
+import { VectorEnhancedQuestionService } from "./vector-enhanced-question.service.js";
+import { QuestionType, DifficultyLevel } from "../models/question.js";
 
 /**
  * Service for managing simplified question types and structured AI output
  */
 export class SimplifiedQuestionService {
     private languageModelFactory: LanguageModelFactory;
+    private vectorEnhancedService: VectorEnhancedQuestionService;
 
     constructor() {
         this.languageModelFactory = LanguageModelFactory.getInstance();
+        this.vectorEnhancedService = new VectorEnhancedQuestionService();
     }
 
     /**
@@ -114,43 +120,83 @@ export class SimplifiedQuestionService {
         const { mainType, subType, grade, difficulty, context } = params;
 
         try {
-            // Build structured prompt for AI
-            const prompt = this.buildStructuredPrompt(
-                mainType,
-                subType,
-                grade,
-                difficulty,
-                context
-            );
+            // Convert to legacy types for vector-enhanced service
+            const legacyType = convertSubTypeToLegacy(subType);
+            const difficultyLevel = convertDifficultyStringToEnum(difficulty);
 
-            // Get AI model and generate
-            const model = this.languageModelFactory.createModel();
-            const response = await model.generateMathQuestion(
-                `${mainType}_${subType}`,
-                grade,
-                difficulty
-            );
+            // Use vector-enhanced service for context-aware generation
+            const vectorResult =
+                await this.vectorEnhancedService.generateVectorEnhancedQuestion(
+                    {
+                        type: legacyType,
+                        difficulty: difficultyLevel,
+                        grade: grade,
+                        useVectorContext: true,
+                        maxSimilarQuestions: 3,
+                    }
+                );
 
-            // Parse and validate AI response
-            const parsedQuestion = this.parseAIResponse(
-                response,
-                subType,
-                grade,
-                difficulty
-            );
-
-            return QuestionOutputSchema.parse(parsedQuestion);
+            // Convert vector-enhanced result to simplified format
+            return QuestionOutputSchema.parse({
+                question: vectorResult.question,
+                answer: vectorResult.answer.toString(),
+                subType: subType,
+                difficulty: difficulty,
+                grade: grade,
+                context: context,
+                explanation: vectorResult.explanation,
+                vectorContext: vectorResult.vectorContext,
+                generationMetadata: vectorResult.generationMetadata,
+            });
         } catch (error) {
-            console.error(`Error generating ${subType} question:`, error);
-
-            // Fallback to deterministic generation
-            return this.generateFallbackQuestion(
-                mainType,
-                subType,
-                grade,
-                difficulty,
-                context
+            console.error(
+                `Error generating ${subType} question with vector enhancement:`,
+                error
             );
+
+            // Fallback to AI generation without vector context
+            try {
+                // Build structured prompt for AI
+                const prompt = this.buildStructuredPrompt(
+                    mainType,
+                    subType,
+                    grade,
+                    difficulty,
+                    context
+                );
+
+                // Get AI model and generate
+                const model = this.languageModelFactory.createModel();
+                const response = await model.generateMathQuestion(
+                    `${mainType}_${subType}`,
+                    grade,
+                    difficulty
+                );
+
+                // Parse and validate AI response
+                const parsedQuestion = this.parseAIResponse(
+                    response,
+                    subType,
+                    grade,
+                    difficulty
+                );
+
+                return QuestionOutputSchema.parse(parsedQuestion);
+            } catch (fallbackError) {
+                console.error(
+                    `Fallback generation also failed for ${subType}:`,
+                    fallbackError
+                );
+
+                // Final fallback to deterministic generation
+                return this.generateFallbackQuestion(
+                    mainType,
+                    subType,
+                    grade,
+                    difficulty,
+                    context
+                );
+            }
         }
     }
 
