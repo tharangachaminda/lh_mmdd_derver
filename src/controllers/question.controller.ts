@@ -1,15 +1,23 @@
 import { Request, Response } from "express";
 import { QuestionGenerationService } from "../services/questionGeneration.service.js";
 import { AgenticQuestionService } from "../services/agentic-question.service.js";
+import { SimplifiedQuestionService } from "../services/simplified-question.service.js";
 import { QuestionType, DifficultyLevel, Question } from "../models/question.js";
+import {
+    MainQuestionType,
+    QuestionGenerationRequestSchema,
+    convertLegacyToMainType,
+} from "../models/simplified-question-types.js";
 
 export class QuestionController {
     private questionService: QuestionGenerationService;
     private agenticService: AgenticQuestionService;
+    private simplifiedService: SimplifiedQuestionService;
 
     constructor() {
         this.questionService = new QuestionGenerationService();
         this.agenticService = new AgenticQuestionService();
+        this.simplifiedService = new SimplifiedQuestionService();
     }
 
     public generateQuestion = async (
@@ -220,4 +228,130 @@ export class QuestionController {
             });
         }
     };
+
+    /**
+     * Generate questions using simplified main types with intelligent sub-type selection
+     */
+    public generateQuestionsSimplified = async (
+        req: Request,
+        res: Response
+    ): Promise<void> => {
+        try {
+            // Validate request body with Zod
+            const validatedRequest = QuestionGenerationRequestSchema.parse(
+                req.body
+            );
+
+            console.log(
+                "🚀 Simplified question generation request:",
+                validatedRequest
+            );
+
+            // Generate questions using simplified service
+            const result = await this.simplifiedService.generateQuestions(
+                validatedRequest
+            );
+
+            console.log("✅ Simplified questions generated:", {
+                count: result.questions.length,
+                subTypes: result.metadata.subTypesUsed,
+                generationTime: result.metadata.generationTime,
+            });
+
+            res.status(200).json({
+                success: true,
+                ...result,
+                apiVersion: "simplified-v1",
+                timestamp: new Date().toISOString(),
+            });
+        } catch (error) {
+            console.error("❌ Simplified question generation error:", error);
+
+            if (error instanceof Error && error.name === "ZodError") {
+                res.status(400).json({
+                    success: false,
+                    error: "Invalid request format",
+                    details: error.message,
+                    apiVersion: "simplified-v1",
+                });
+                return;
+            }
+
+            res.status(500).json({
+                success: false,
+                error: "Failed to generate questions",
+                details:
+                    error instanceof Error ? error.message : "Unknown error",
+                apiVersion: "simplified-v1",
+            });
+        }
+    };
+
+    /**
+     * Get available question types and sub-types for a grade
+     */
+    public getAvailableTypes = async (
+        req: Request,
+        res: Response
+    ): Promise<void> => {
+        try {
+            const { grade } = req.query;
+
+            if (!grade || isNaN(Number(grade))) {
+                res.status(400).json({
+                    success: false,
+                    error: "Valid grade parameter is required",
+                });
+                return;
+            }
+
+            const gradeNumber = Number(grade);
+            const mainTypes = this.simplifiedService.getMainTypes();
+
+            const availableTypes = mainTypes.map((mainType) => ({
+                mainType,
+                subTypes: this.simplifiedService.getAvailableSubTypes(
+                    mainType,
+                    gradeNumber
+                ),
+                description: this.getMainTypeDescription(mainType),
+            }));
+
+            res.status(200).json({
+                success: true,
+                grade: gradeNumber,
+                availableTypes,
+                apiVersion: "simplified-v1",
+                timestamp: new Date().toISOString(),
+            });
+        } catch (error) {
+            console.error("Error getting available types:", error);
+            res.status(500).json({
+                success: false,
+                error: "Failed to get available types",
+                details:
+                    error instanceof Error ? error.message : "Unknown error",
+            });
+        }
+    };
+
+    /**
+     * Get description for main question types
+     */
+    private getMainTypeDescription(mainType: MainQuestionType): string {
+        const descriptions = {
+            [MainQuestionType.ADDITION]:
+                "Adding numbers together to find the sum",
+            [MainQuestionType.SUBTRACTION]:
+                "Taking away one number from another to find the difference",
+            [MainQuestionType.MULTIPLICATION]:
+                "Repeated addition or finding the product of numbers",
+            [MainQuestionType.DIVISION]:
+                "Splitting a number into equal parts or finding how many times one number fits into another",
+            [MainQuestionType.PATTERN_RECOGNITION]:
+                "Identifying and continuing patterns in numbers, shapes, or sequences",
+        };
+
+        return descriptions[mainType] || "Mathematical problem solving";
+    }
 }
