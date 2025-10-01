@@ -1,0 +1,60 @@
+{
+    "metadata": {
+        "datasetId": "grade8-comprehensive-2025",
+        "datasetName": "Grade 8 Comprehensive Mathematics Questions",
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra, Measurement and Geometry, Statistics and Probability",
+        "curriculumSubtopic": "Number patterns, linear equations, scientific notation, Pythagoras theorem, trigonometry, bivariate data",
+        "totalQuestions": 0,
+        "questionTypes": [
+            "NUMBER_PATTERNS",
+            "LINEAR_EQUATIONS",
+            "SCIENTIFIC_NOTATION",
+            "PYTHAGORAS_THEOREM",
+            "BASIC_TRIGONOMETRY",
+            "BIVARIATE_DATA",
+            "ALGEBRAIC_MANIPULATION",
+            "COORDINATE_GEOMETRY",
+            "STATISTICAL_INFERENCE",
+            "PROBABILITY_COMPOUND"
+        ],
+        "difficultyDistribution": {
+            "easy": 0,
+            "medium": 0,
+            "hard": 0
+        },
+        "verified": true,
+        "curriculumAligned": true,
+        "createdAt": "2025-10-01T00:00:00.000Z",
+        "updatedAt": "2025-10-01T00:00:00.000Z",
+        "version": "1.0"
+    },
+    "questions": [
+        {
+            "id": "g8-PYTHAGORAS_THEOREM-hard-1",
+            "question": "Find the length of the hypotenuse of a right triangle with legs of 3 cm and 4 cm.",
+            "answer": "5 cm",
+            "explanation": "Using Pythagoras theorem: c² = a² + b². So c² = 3² + 4² = 9 + 16 = 25. Therefore c = √25 = 5 cm.",
+            "type": "PYTHAGORAS_THEOREM",
+            "difficulty": "hard",
+            "grade": 8,
+            "subject": "Mathematics",
+            "curriculumTopic": "Measurement and Geometry",
+            "curriculumSubtopic": "Pythagoras theorem",
+            "keywords": [
+                "pythagoras",
+                "right triangle",
+                "hypotenuse",
+                "square root",
+                "grade 8",
+                "mathematics"
+            ],
+            "createdAt": "2025-10-01T00:00:00.000Z",
+            "version": "1.0",
+            "verified": true,
+            "documentType": "question",
+            "contentForEmbedding": "Find the length of the hypotenuse of a right triangle with legs of 3 cm and 4 cm. Using Pythagoras theorem: c² = a² + b². So c² = 3² + 4² = 9 + 16 = 25. Therefore c = √25 = 5 cm."
+        }
+    ]
+}

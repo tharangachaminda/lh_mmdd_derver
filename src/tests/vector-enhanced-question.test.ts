@@ -73,7 +73,7 @@ describe("VectorEnhancedQuestionService - TDD Red Phase", () => {
         const mockEmbeddingService = {
             generateEmbedding: jest
                 .fn()
-                .mockImplementation(async () => Array(1536).fill(0.1)),
+                .mockImplementation(async () => Array(768).fill(0.1)),
             testConnection: jest
                 .fn()
                 .mockImplementation(async () => ({ success: true })),
@@ -196,7 +196,7 @@ describe("VectorEnhancedQuestionService - TDD Red Phase", () => {
 
             expect(analysis.embedding).toBeDefined();
             expect(Array.isArray(analysis.embedding)).toBe(true);
-            expect(analysis.embedding.length).toBe(1536); // nomic-embed-text dimension
+            expect(analysis.embedding.length).toBe(768); // nomic-embed-text dimension
 
             expect(analysis.similarQuestions).toBeDefined();
             expect(Array.isArray(analysis.similarQuestions)).toBe(true);

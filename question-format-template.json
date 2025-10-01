@@ -1,0 +1,47 @@
+{
+    "metadata": {
+        "datasetId": "grade{X}-comprehensive-2025",
+        "datasetName": "Grade {X} Comprehensive Mathematics Questions",
+        "grade": 0,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra, Measurement and Geometry, Statistics and Probability",
+        "curriculumSubtopic": "Grade-specific curriculum subtopics",
+        "totalQuestions": 0,
+        "questionTypes": [],
+        "difficultyDistribution": {
+            "easy": 0,
+            "medium": 0,
+            "hard": 0
+        },
+        "verified": true,
+        "curriculumAligned": true,
+        "createdAt": "2025-10-01T00:00:00.000Z",
+        "updatedAt": "2025-10-01T00:00:00.000Z",
+        "version": "1.0"
+    },
+    "questions": [
+        {
+            "id": "g{X}-{questionType}-{difficulty}-{number}",
+            "question": "The actual question text goes here",
+            "answer": "The correct answer (string or number)",
+            "explanation": "Step-by-step explanation of how to solve the question",
+            "type": "QUESTION_TYPE_CONSTANT",
+            "difficulty": "easy|medium|hard",
+            "grade": 0,
+            "subject": "Mathematics",
+            "curriculumTopic": "Number and Algebra, Measurement and Geometry",
+            "curriculumSubtopic": "Specific subtopic for this grade",
+            "keywords": [
+                "keyword1",
+                "keyword2",
+                "grade specific",
+                "mathematics"
+            ],
+            "createdAt": "2025-10-01T00:00:00.000Z",
+            "version": "1.0",
+            "verified": true,
+            "documentType": "question",
+            "contentForEmbedding": "question text + explanation for vector search"
+        }
+    ]
+}

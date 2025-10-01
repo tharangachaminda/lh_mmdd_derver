@@ -1,0 +1,59 @@
+{
+    "metadata": {
+        "datasetId": "grade6-comprehensive-2025",
+        "datasetName": "Grade 6 Comprehensive Mathematics Questions",
+        "grade": 6,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra, Measurement and Geometry, Statistics and Probability",
+        "curriculumSubtopic": "Integers, order of operations, ratios/rates, percentages, area/volume formulas, transformations, probability",
+        "totalQuestions": 0,
+        "questionTypes": [
+            "INTEGER_OPERATIONS",
+            "ORDER_OF_OPERATIONS",
+            "RATIO_PROBLEMS",
+            "PERCENTAGE_CALCULATION",
+            "AREA_CALCULATION",
+            "VOLUME_CALCULATION",
+            "TRANSFORMATIONS",
+            "PROBABILITY_BASIC",
+            "ALGEBRAIC_THINKING",
+            "COORDINATE_GEOMETRY"
+        ],
+        "difficultyDistribution": {
+            "easy": 0,
+            "medium": 0,
+            "hard": 0
+        },
+        "verified": true,
+        "curriculumAligned": true,
+        "createdAt": "2025-10-01T00:00:00.000Z",
+        "updatedAt": "2025-10-01T00:00:00.000Z",
+        "version": "1.0"
+    },
+    "questions": [
+        {
+            "id": "g6-PERCENTAGE_CALCULATION-medium-1",
+            "question": "What is 25% of 80?",
+            "answer": "20",
+            "explanation": "To find 25% of 80, multiply 80 by 0.25: 80 × 0.25 = 20. Alternatively, 25% = 1/4, so 80 ÷ 4 = 20.",
+            "type": "PERCENTAGE_CALCULATION",
+            "difficulty": "medium",
+            "grade": 6,
+            "subject": "Mathematics",
+            "curriculumTopic": "Number and Algebra",
+            "curriculumSubtopic": "Percentages",
+            "keywords": [
+                "percentage",
+                "percent",
+                "fraction",
+                "grade 6",
+                "mathematics"
+            ],
+            "createdAt": "2025-10-01T00:00:00.000Z",
+            "version": "1.0",
+            "verified": true,
+            "documentType": "question",
+            "contentForEmbedding": "What is 25% of 80? To find 25% of 80, multiply 80 by 0.25: 80 × 0.25 = 20. Alternatively, 25% = 1/4, so 80 ÷ 4 = 20."
+        }
+    ]
+}
