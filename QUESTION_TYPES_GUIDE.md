@@ -1,6 +1,6 @@
 # Question Types Reference Guide
 
-This document provides the standard question types for each grade level based on the New Zealand Mathematics Curriculum.
+This document provides the standard question types for each grade level based on the New Zealand Mathematics Curriculum. Grade 8 question types have been comprehensively updated to align with the official NZ Ministry of Education Year 8 curriculum requirements (https://www.education.govt.nz/parents-and-caregivers/schools-year-0-13/parent-portal/guide-for-the-new-zealand-curriculum-years-0-to-8/year-8-new-zealand-curriculum/maths-and-statistics-in-year-8).
 
 ## Available Question Types
 
@@ -74,16 +74,33 @@ This document provides the standard question types for each grade level based on
 
 ### Grade 8 Question Types
 
--   `NUMBER_PATTERNS` - Identifying and extending patterns
--   `LINEAR_EQUATIONS` - Solving linear equations
--   `SCIENTIFIC_NOTATION` - Scientific notation operations
--   `PYTHAGORAS_THEOREM` - Pythagorean theorem applications
--   `BASIC_TRIGONOMETRY` - Introduction to trigonometry
--   `BIVARIATE_DATA` - Analyzing bivariate data
--   `ALGEBRAIC_MANIPULATION` - Algebraic expression manipulation
--   `COORDINATE_GEOMETRY` - Advanced coordinate geometry
--   `STATISTICAL_INFERENCE` - Making statistical inferences
--   `PROBABILITY_COMPOUND` - Compound probability
+**Number and Algebra:**
+
+-   `PRIME_COMPOSITE_NUMBERS` - Prime numbers, composite numbers, cube numbers, prime factors, powers of 10
+-   `NEGATIVE_NUMBERS` - Operations with negative numbers, number line work
+-   `FRACTION_DECIMAL_PERCENTAGE` - Converting between fractions, decimals, percentages; operations with different denominators
+-   `FINANCIAL_LITERACY` - Budgets, savings, interest calculations, percentage discounts, financial planning
+-   `NUMBER_PATTERNS` - Identifying and extending arithmetic/geometric patterns, sequence rules
+-   `LINEAR_EQUATIONS` - Solving equations with variables, substitution
+-   `ALGEBRAIC_MANIPULATION` - Algebraic expression manipulation, expanding, substituting
+
+**Measurement and Geometry:**
+
+-   `UNIT_CONVERSIONS` - Converting time (including milliseconds) and volume units
+-   `PERIMETER_AREA_VOLUME` - Investigating perimeter, area, volume of various shapes, missing lengths
+-   `SPEED_CALCULATIONS` - Speed, distance, and time relationships
+-   `TIME_SCHEDULES` - Reading schedules, charts, solving journey problems
+-   `POLYGON_PROPERTIES` - Describing triangles, quadrilaterals, polygons by sides, angles, diagonals
+-   `3D_SHAPE_NETS` - Drawing nets that fold into 3D shapes, cross-sections
+-   `MAP_COORDINATE_SYSTEMS` - Map scales, coordinate systems, compass directions, grid references
+
+**Statistics and Probability:**
+
+-   `DATA_INVESTIGATION` - Community-focused data investigations, asking questions answerable with data
+-   `DATA_COLLECTION` - Surveys, research, observations with fairness and ethics considerations
+-   `DATA_VISUALIZATION` - Organizing data visually, describing trends, multivariate data sets
+-   `PROBABILITY_EXPERIMENTS` - Planning and conducting probability experiments using digital tools
+-   `PROBABILITY_DISTRIBUTIONS` - Understanding probability distributions, experimental vs theoretical probability
 
 ## Difficulty Levels
 
@@ -113,6 +130,54 @@ Each question must include:
 -   Ensure mathematical accuracy
 -   Provide detailed explanations showing the solution process
 -   Align with New Zealand Curriculum learning objectives
+-   Incorporate relevant mathematical vocabulary for each grade level
+
+## Real-World Context Guidelines for Grade 8
+
+Based on NZ Curriculum recommendations, Grade 8 questions should incorporate these real-world contexts:
+
+**Numbers:** Budget management, savings accounts, interest calculations, phone plans, percentage discounts, shopping scenarios
+
+**Algebra:** Secret codes, baking recipes with scaling, sudoku puzzles, pattern recognition in daily life
+
+**Measurement:** Time management for activities, craft/building projects, sports timing with milliseconds, journey planning
+
+**Geometry:** Making boxes/containers, identifying shapes in environment, map reading and navigation
+
+**Statistics:** Community investigations (school transport, local issues), YouTube video analytics, supermarket comparison studies
+
+**Probability:** Sports tournament chances, strategic games, chance-based scenarios with predictions
+
+## NZ Curriculum Vocabulary by Grade
+
+### Grade 8 Mathematical Vocabulary
+
+Students will be learning these specific terms as outlined in the NZ Curriculum:
+
+**Numbers:**
+
+-   benchmark fraction, budget, composite number, cube number
+-   financial plan, percentage increase/decrease, powers of 10, prime number
+
+**Algebra:**
+
+-   expand, linear relationship, rate of change, substitute
+
+**Measurement:**
+
+-   millisecond, square unit
+
+**Geometry:**
+
+-   cross-section, diagonal, exterior angle, grid reference, invariant property
+
+**Statistics:**
+
+-   distribution, long-term trend, multivariate data set, time series
+
+**Probability:**
+
+-   distribution, misconception, model, random
 
 ## Example Usage
 
