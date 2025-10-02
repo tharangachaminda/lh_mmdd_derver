@@ -40,7 +40,7 @@ async function generateReport() {
         
         // Get aggregations
         const response = await client.search({
-            index: 'enhanced-math-questions',
+            index: 'enhanced_questions',
             body: {
                 size: 0,
                 aggs: {
@@ -65,7 +65,7 @@ async function generateReport() {
         
         log(`\n📊 OVERVIEW`, 'SUCCESS');
         log(`Total Questions Stored: ${totalQuestions}`, 'DATA');
-        log(`Index: enhanced-math-questions`, 'DATA');
+        log(`Index: enhanced_questions`, 'DATA');
         log(`Vector Dimensions: 1536 (with embeddings)`, 'DATA');
         
         log(`\n🎯 DIFFICULTY DISTRIBUTION`, 'SUCCESS');
@@ -90,7 +90,7 @@ async function generateReport() {
         
         for (const difficulty of ['easy', 'medium', 'hard']) {
             const sampleResponse = await client.search({
-                index: 'enhanced-math-questions',
+                index: 'enhanced_questions',
                 body: {
                     query: { term: { difficulty } },
                     size: 2,
