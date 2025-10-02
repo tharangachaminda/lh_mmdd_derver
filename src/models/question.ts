@@ -85,6 +85,7 @@ export enum QuestionType {
     // Aggregated / Integrated Mastery Sets (Grade 7+ multi-domain)
     FRACTION_DECIMAL_MASTERY = "fraction_decimal_mastery",
     ALGEBRAIC_FOUNDATIONS = "algebraic_foundations",
+    MULTI_UNIT_CONVERSIONS = "multi_unit_conversions",
 }
 
 export enum DifficultyLevel {
