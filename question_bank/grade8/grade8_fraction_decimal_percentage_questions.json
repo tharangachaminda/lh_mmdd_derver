@@ -31,14 +31,16 @@
                 "fraction conversion",
                 "decimal conversion",
                 "benchmark fraction",
-                "1/2",
+                "one half",
+                "numerator denominator",
+                "division method",
                 "grade 8"
             ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
-            "contentForEmbedding": "Convert 1/2 to decimal. Fraction decimal conversion: 0.5."
+            "contentForEmbedding": "Convert fraction one half 1/2 to decimal form. Fraction to decimal conversion Grade 8 mathematics. Basic benchmark fraction equals 0.5 decimal. Division method: numerator divided by denominator."
         },
         {
             "id": "g8-FRACTION_DECIMAL_PERCENTAGE-easy-002",
@@ -55,14 +57,17 @@
                 "fraction conversion",
                 "percentage conversion",
                 "benchmark fraction",
-                "shopping",
+                "one quarter",
+                "multiply by 100",
+                "shopping cooking",
+                "two-step method",
                 "grade 8"
             ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
-            "contentForEmbedding": "Convert 1/4 to percentage. Fraction percentage conversion: 25%."
+            "contentForEmbedding": "Convert fraction one quarter 1/4 to percentage form. Fraction to percentage conversion Grade 8. Two-step method: fraction to decimal first 0.25, then multiply by 100 equals 25%. Shopping cooking benchmark fraction."
         },
         {
             "id": "g8-FRACTION_DECIMAL_PERCENTAGE-easy-003",
@@ -269,7 +274,7 @@
             "curriculumSubtopic": "Converting between fractions, decimals, and percentages with real-world applications",
             "keywords": [
                 "fraction conversion",
-                "decimal conversion", 
+                "decimal conversion",
                 "percentage conversion",
                 "cooking",
                 "grade 8"
