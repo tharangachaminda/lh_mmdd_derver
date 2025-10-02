@@ -27,7 +27,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["prime number", "composite number", "factors", "number", "grade 8"],
+            "keywords": [
+                "prime number",
+                "composite number",
+                "factors",
+                "number",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -35,7 +41,7 @@
             "contentForEmbedding": "Is 17 prime or composite number? Prime number identification: prime."
         },
         {
-            "id": "g8-PRIME_COMPOSITE_NUMBERS-easy-002", 
+            "id": "g8-PRIME_COMPOSITE_NUMBERS-easy-002",
             "question": "Is 15 a prime number or composite number?",
             "answer": "Composite number",
             "explanation": "A composite number is a number greater than 1 that has more than two factors. Step 1: List the factors of 15 by finding all numbers that divide evenly into 15. Step 2: 15 ÷ 1 = 15, so 1 is a factor. Step 3: 15 ÷ 3 = 5, so 3 and 5 are factors. Step 4: 15 ÷ 5 = 3, confirming 5 and 3 are factors. Step 5: 15 ÷ 15 = 1, so 15 is a factor. Step 6: The factors of 15 are 1, 3, 5, and 15. Since 15 has more than two factors, it is a composite number.",
@@ -45,7 +51,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-                        "keywords": ["prime number", "composite number", "factors", "number", "grade 8"],
+            "keywords": [
+                "prime number",
+                "composite number",
+                "factors",
+                "number",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -63,7 +75,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["cube number", "powers", "exponents", "number", "grade 8"],
+            "keywords": [
+                "cube number",
+                "powers",
+                "exponents",
+                "number",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -81,7 +99,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["prime number", "even prime", "factors", "number", "grade 8"],
+            "keywords": [
+                "prime number",
+                "even prime",
+                "factors",
+                "number",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -99,7 +123,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["powers of 10", "exponents", "place value", "number", "grade 8"],
+            "keywords": [
+                "powers of 10",
+                "exponents",
+                "place value",
+                "number",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -117,7 +147,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["composite number", "perfect square", "factors", "number", "grade 8"],
+            "keywords": [
+                "composite number",
+                "perfect square",
+                "factors",
+                "number",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -135,7 +171,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["cube number", "perfect cube", "powers", "number", "grade 8"],
+            "keywords": [
+                "cube number",
+                "perfect cube",
+                "powers",
+                "number",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -153,7 +195,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["prime number", "factors", "divisibility", "number", "grade 8"],
+            "keywords": [
+                "prime number",
+                "factors",
+                "divisibility",
+                "number",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -171,7 +219,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["prime factorization", "prime factors", "composite number", "factor", "grade 8"],
+            "keywords": [
+                "prime factorization",
+                "prime factors",
+                "composite number",
+                "factor",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -189,7 +243,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["perfect cube", "cube number", "powers", "grade 8", "number theory"],
+            "keywords": [
+                "perfect cube",
+                "cube number",
+                "powers",
+                "grade 8",
+                "number theory"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -207,7 +267,14 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["powers of 10", "exponents", "place value", "pattern", "number", "grade 8"],
+            "keywords": [
+                "powers of 10",
+                "exponents",
+                "place value",
+                "pattern",
+                "number",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -225,7 +292,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["prime factorization", "prime factors", "exponents", "grade 8", "number theory"],
+            "keywords": [
+                "prime factorization",
+                "prime factors",
+                "exponents",
+                "grade 8",
+                "number theory"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -243,7 +316,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["prime number", "sequence", "factors", "grade 8", "number theory"],
+            "keywords": [
+                "prime number",
+                "sequence",
+                "factors",
+                "grade 8",
+                "number theory"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -261,7 +340,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["perfect cube", "cube number", "powers", "grade 8", "number theory"],
+            "keywords": [
+                "perfect cube",
+                "cube number",
+                "powers",
+                "grade 8",
+                "number theory"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -279,7 +364,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["prime number", "range", "factors", "grade 8", "number theory"],
+            "keywords": [
+                "prime number",
+                "range",
+                "factors",
+                "grade 8",
+                "number theory"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -297,7 +388,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["prime factorization", "prime factors", "systematic method", "grade 8", "number theory"],
+            "keywords": [
+                "prime factorization",
+                "prime factors",
+                "systematic method",
+                "grade 8",
+                "number theory"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -315,7 +412,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["prime factorization", "compare", "common factors", "analyze", "grade 8"],
+            "keywords": [
+                "prime factorization",
+                "compare",
+                "common factors",
+                "analyze",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -333,7 +436,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["perfect cube", "prime factorization", "investigate", "pattern", "grade 8"],
+            "keywords": [
+                "perfect cube",
+                "prime factorization",
+                "investigate",
+                "pattern",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -351,7 +460,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["prime factorization", "composite number", "calculate", "multiple representations", "grade 8"],
+            "keywords": [
+                "prime factorization",
+                "composite number",
+                "calculate",
+                "multiple representations",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
@@ -369,7 +484,13 @@
             "subject": "Mathematics",
             "curriculumTopic": "Number and Algebra",
             "curriculumSubtopic": "Prime numbers, composite numbers, cube numbers, and powers of 10",
-            "keywords": ["powers of 10", "perfect cube", "multiple representations", "explain", "grade 8"],
+            "keywords": [
+                "powers of 10",
+                "perfect cube",
+                "multiple representations",
+                "explain",
+                "grade 8"
+            ],
             "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
