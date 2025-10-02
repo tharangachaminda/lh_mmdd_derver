@@ -671,8 +671,8 @@
         {
             "id": "g7-ADVANCED_NUMBER_OPERATIONS-hard-004",
             "question": "Solve the equation: 2ˣ × 3ʸ = 72, where x and y are positive integers.",
-            "answer": "x = 3, y = 1 (since 72 = 2³ × 3¹)",
-            "explanation": "First find the prime factorization of 72: 72 = 8 × 9 = 2³ × 3². Wait, that's wrong. 72 = 2³ × 3² = 8 × 9. But 8 × 9 = 72. Actually: 72 ÷ 2 = 36, 36 ÷ 2 = 18, 18 ÷ 2 = 9, 9 ÷ 3 = 3, 3 ÷ 3 = 1. So 72 = 2³ × 3². Therefore x = 3, y = 2.",
+            "answer": "x = 3, y = 2 (since 72 = 2³ × 3²)",
+            "explanation": "First find the prime factorization of 72: 72 ÷ 2 = 36, 36 ÷ 2 = 18, 18 ÷ 2 = 9, 9 ÷ 3 = 3, 3 ÷ 3 = 1. So 72 = 2³ × 3². Therefore x = 3, y = 2.",
             "type": "ADVANCED_NUMBER_OPERATIONS",
             "difficulty": "hard",
             "grade": 7,
@@ -719,8 +719,8 @@
         {
             "id": "g7-ADVANCED_NUMBER_OPERATIONS-hard-006",
             "question": "Calculate (-2)⁴ + (-3)³ × 2² - √((-4)² + 3²).",
-            "answer": "-21",
-            "explanation": "(-2)⁴ = 16, (-3)³ = -27, 2² = 4, so (-3)³ × 2² = -27 × 4 = -108. √((-4)² + 3²) = √(16 + 9) = √25 = 5. Therefore: 16 + (-108) - 5 = 16 - 108 - 5 = -97. Wait, let me recalculate: 16 - 108 - 5 = -97. But this seems too large. Let me check: (-3)³ × 2² = -27 × 4 = -108. So 16 - 108 - 5 = -97. Actually, the calculation is correct.",
+            "answer": "-97",
+            "explanation": "(-2)⁴ = 16, (-3)³ = -27, 2² = 4, so (-3)³ × 2² = -27 × 4 = -108. √((-4)² + 3²) = √(16 + 9) = √25 = 5. Therefore: 16 + (-108) - 5 = 16 - 108 - 5 = -97.",
             "type": "ADVANCED_NUMBER_OPERATIONS",
             "difficulty": "hard",
             "grade": 7,
