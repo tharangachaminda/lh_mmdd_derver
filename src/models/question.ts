@@ -87,6 +87,7 @@ export enum QuestionType {
     ALGEBRAIC_FOUNDATIONS = "algebraic_foundations",
     MULTI_UNIT_CONVERSIONS = "multi_unit_conversions",
     GEOMETRY_SPATIAL_REASONING = "geometry_spatial_reasoning",
+    DATA_ANALYSIS_PROBABILITY = "data_analysis_probability",
 }
 
 export enum DifficultyLevel {
