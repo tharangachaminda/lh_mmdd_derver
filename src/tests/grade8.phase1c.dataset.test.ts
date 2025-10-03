@@ -2,7 +2,7 @@
  * Grade 8 Phase 1C Dataset Tests: Fraction, Decimal, Percentage
  *
  * TDD RED Phase: This test MUST fail initially to enforce proper TDD methodology.
- * 
+ *
  * Tests for NZ Curriculum-aligned Grade 8 mathematics questions focusing on:
  * - Converting between fractions, decimals, and percentages
  * - Operations with different denominators
@@ -150,7 +150,9 @@ describe("Grade 8 Phase 1C: Fraction, Decimal, Percentage Dataset", () => {
                     (q.question.toLowerCase().includes("convert") &&
                         q.question.toLowerCase().includes("fraction") &&
                         q.question.toLowerCase().includes("decimal")) ||
-                    q.keywords.some((k) => k.toLowerCase().includes("fraction conversion"))
+                    q.keywords.some((k) =>
+                        k.toLowerCase().includes("fraction conversion")
+                    )
             );
             expect(conversionQuestions.length).toBeGreaterThanOrEqual(5);
         });
@@ -160,19 +162,34 @@ describe("Grade 8 Phase 1C: Fraction, Decimal, Percentage Dataset", () => {
                 (q) =>
                     (q.question.toLowerCase().includes("decimal") &&
                         q.question.toLowerCase().includes("percentage")) ||
-                    (q.question.includes("%") || q.answer.includes("%"))
+                    q.question.includes("%") ||
+                    q.answer.includes("%")
             );
             expect(percentageQuestions.length).toBeGreaterThanOrEqual(5);
         });
 
         test("should include real-world application questions", () => {
             const realWorldContexts = [
-                "shopping", "gst", "discount", "sale", "price", 
-                "cooking", "recipe", "sport", "school", "money"
+                "shopping",
+                "gst",
+                "discount",
+                "sale",
+                "price",
+                "cooking",
+                "recipe",
+                "sport",
+                "school",
+                "money",
             ];
             const applicationQuestions = dataset.questions.filter((q) => {
-                const content = (q.question + " " + q.explanation).toLowerCase();
-                return realWorldContexts.some(context => content.includes(context));
+                const content = (
+                    q.question +
+                    " " +
+                    q.explanation
+                ).toLowerCase();
+                return realWorldContexts.some((context) =>
+                    content.includes(context)
+                );
             });
             expect(applicationQuestions.length).toBeGreaterThanOrEqual(8);
         });
@@ -180,12 +197,12 @@ describe("Grade 8 Phase 1C: Fraction, Decimal, Percentage Dataset", () => {
         test("should use NZ curriculum vocabulary for fractions/decimals/percentages", () => {
             const vocabularyTerms = [
                 "benchmark fraction",
-                "equivalent fraction", 
+                "equivalent fraction",
                 "decimal place",
                 "percentage increase",
                 "percentage decrease",
                 "common denominator",
-                "mixed number"
+                "mixed number",
             ];
             let vocabularyFound = 0;
 
@@ -208,10 +225,21 @@ describe("Grade 8 Phase 1C: Fraction, Decimal, Percentage Dataset", () => {
         });
 
         test("should include NZ-specific contexts (GST, shopping, Kiwi scenarios)", () => {
-            const nzContexts = ["gst", "15%", "new zealand", "kiwi", "dollar", "cents"];
+            const nzContexts = [
+                "gst",
+                "15%",
+                "new zealand",
+                "kiwi",
+                "dollar",
+                "cents",
+            ];
             const nzQuestions = dataset.questions.filter((q) => {
-                const content = (q.question + " " + q.explanation).toLowerCase();
-                return nzContexts.some(context => content.includes(context));
+                const content = (
+                    q.question +
+                    " " +
+                    q.explanation
+                ).toLowerCase();
+                return nzContexts.some((context) => content.includes(context));
             });
             expect(nzQuestions.length).toBeGreaterThanOrEqual(3);
         });
@@ -233,10 +261,10 @@ describe("Grade 8 Phase 1C: Fraction, Decimal, Percentage Dataset", () => {
                     question.keywords.some((k) =>
                         [
                             "fraction",
-                            "decimal", 
+                            "decimal",
                             "percentage",
                             "conversion",
-                            "equivalent"
+                            "equivalent",
                         ].some((term) => k.toLowerCase().includes(term))
                     )
                 ).toBe(true);
@@ -259,41 +287,50 @@ describe("Grade 8 Phase 1C: Fraction, Decimal, Percentage Dataset", () => {
 
     describe("Difficulty Progression Validation", () => {
         test("should have appropriate easy question complexity", () => {
-            const easyQuestions = dataset.questions.filter(q => q.difficulty === "easy");
-            
+            const easyQuestions = dataset.questions.filter(
+                (q) => q.difficulty === "easy"
+            );
+
             // Easy questions should focus on basic conversions
-            const basicConversions = easyQuestions.filter((q) =>
-                q.question.toLowerCase().includes("convert") &&
-                (q.question.includes("1/2") || 
-                 q.question.includes("1/4") || 
-                 q.question.includes("0.5") ||
-                 q.question.includes("50%"))
+            const basicConversions = easyQuestions.filter(
+                (q) =>
+                    q.question.toLowerCase().includes("convert") &&
+                    (q.question.includes("1/2") ||
+                        q.question.includes("1/4") ||
+                        q.question.includes("0.5") ||
+                        q.question.includes("50%"))
             );
             expect(basicConversions.length).toBeGreaterThanOrEqual(3);
         });
 
         test("should have appropriate medium question complexity", () => {
-            const mediumQuestions = dataset.questions.filter(q => q.difficulty === "medium");
-            
+            const mediumQuestions = dataset.questions.filter(
+                (q) => q.difficulty === "medium"
+            );
+
             // Medium questions should involve multi-step conversions or operations
-            const multiStep = mediumQuestions.filter((q) =>
-                q.explanation.toLowerCase().includes("step 2") ||
-                q.question.toLowerCase().includes("then") ||
-                q.question.toLowerCase().includes("and")
+            const multiStep = mediumQuestions.filter(
+                (q) =>
+                    q.explanation.toLowerCase().includes("step 2") ||
+                    q.question.toLowerCase().includes("then") ||
+                    q.question.toLowerCase().includes("and")
             );
             expect(multiStep.length).toBeGreaterThanOrEqual(4);
         });
 
         test("should have appropriate hard question complexity", () => {
-            const hardQuestions = dataset.questions.filter(q => q.difficulty === "hard");
-            
+            const hardQuestions = dataset.questions.filter(
+                (q) => q.difficulty === "hard"
+            );
+
             // Hard questions should involve complex scenarios or financial literacy
-            const complexScenarios = hardQuestions.filter((q) =>
-                q.explanation.toLowerCase().includes("multiple") ||
-                q.explanation.toLowerCase().includes("analyze") ||
-                q.question.toLowerCase().includes("discount") ||
-                q.question.toLowerCase().includes("gst") ||
-                q.question.toLowerCase().includes("increase")
+            const complexScenarios = hardQuestions.filter(
+                (q) =>
+                    q.explanation.toLowerCase().includes("multiple") ||
+                    q.explanation.toLowerCase().includes("analyze") ||
+                    q.question.toLowerCase().includes("discount") ||
+                    q.question.toLowerCase().includes("gst") ||
+                    q.question.toLowerCase().includes("increase")
             );
             expect(complexScenarios.length).toBeGreaterThanOrEqual(3);
         });
@@ -302,10 +339,10 @@ describe("Grade 8 Phase 1C: Fraction, Decimal, Percentage Dataset", () => {
             // Test that questions address core Grade 8 fraction/decimal/percentage concepts
             const curriculumAreas = [
                 "fraction",
-                "decimal", 
+                "decimal",
                 "percentage",
                 "conversion",
-                "equivalent"
+                "equivalent",
             ];
 
             curriculumAreas.forEach((area) => {
