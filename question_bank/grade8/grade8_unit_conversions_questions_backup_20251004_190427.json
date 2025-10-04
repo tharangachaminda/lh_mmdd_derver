@@ -2,10 +2,10 @@
     "metadata": {
         "datasetId": "grade8-unit-conversions-2025",
         "datasetName": "Grade 8 Unit Conversions Mathematics Questions",
-        "topic": "UNIT_CONVERSIONS",
         "grade": 8,
         "subject": "Mathematics",
-        "phase": "2A",
+        "curriculumTopic": "Measurement and Applications",
+        "curriculumSubtopic": "Converting time (including milliseconds) and volume units with real-world applications",
         "totalQuestions": 20,
         "questionTypes": ["UNIT_CONVERSIONS"],
         "difficultyDistribution": {
@@ -13,81 +13,18 @@
             "medium": 8,
             "hard": 4
         },
-        "curriculumAlignment": "NZ Year 8 Mathematics Curriculum - Measurement and Geometry",
-        "curriculumTopic": "Measurement and Applications",
-        "curriculumSubtopic": "Converting time (including milliseconds) and volume units with real-world applications",
-        "version": "1.0",
-        "createdDate": "2025-01-15",
         "verified": true,
         "curriculumAligned": true,
-        "conversionTypes": [
-            "time_conversions",
-            "volume_conversions",
-            "milliseconds_conversions",
-            "metric_imperial_conversions",
-            "real_world_applications",
-            "cooking_measurements",
-            "scientific_measurements"
-        ],
-        "production_metadata": {
-            "phase": "PHASE_2A",
-            "topic": "UNIT_CONVERSIONS",
-            "mmdd_tdd_status": {
-                "red_phase": "\u2705 Complete (24 validation tests)",
-                "green_phase": "\u2705 Complete (20 questions implemented)",
-                "refactor_phase": "\u2705 Complete (JSON formatting and metadata enhancement)",
-                "ingestion_phase": "\u2705 Complete (20 questions deployed to production)"
-            },
-            "test_coverage": {
-                "total_tests": 24,
-                "passing_tests": 24,
-                "test_success_rate": "100%",
-                "last_test_run": "2025-10-04"
-            },
-            "ingestion_readiness": {
-                "json_formatting": "\u2705 Professional formatting applied",
-                "metadata_enhancement": "\u2705 Production-ready metadata",
-                "test_validation": "\u2705 24/24 tests passing",
-                "vector_optimization": "\u2705 Content embedding fields ready",
-                "deployment_ready": "\u2705 Deployed to production (20 questions)",
-                "ingestion_date": "2025-10-04",
-                "success_rate": "100.0%"
-            },
-            "educational_alignment": {
-                "nz_curriculum_level": "Level 4",
-                "learning_progression": "Measurement and Geometry - Unit Conversion Fluency",
-                "mathematical_practices": [
-                    "Unit conversion strategies and techniques",
-                    "Proportional reasoning with measurement units",
-                    "Real-world measurement applications",
-                    "Metric and imperial system understanding",
-                    "Scientific measurement precision"
-                ],
-                "cognitive_complexity": {
-                    "easy": "Basic single-step unit conversions with standard units",
-                    "medium": "Multi-step conversions and real-world measurement problems",
-                    "hard": "Complex conversion scenarios with multiple units and practical applications"
-                }
-            },
-            "version_control": {
-                "dataset_version": "1.0",
-                "refactor_version": "1.0.1",
-                "format_date": "2025-10-04",
-                "backup_created": true,
-                "change_log": [
-                    "Applied professional JSON formatting",
-                    "Enhanced production metadata for Phase 2A",
-                    "Maintained test compatibility (24/24 tests)"
-                ]
-            }
-        }
+        "createdAt": "2025-10-04T00:00:00.000Z",
+        "updatedAt": "2025-10-04T00:00:00.000Z",
+        "version": "1.0"
     },
     "questions": [
         {
             "id": "g8-UNIT_CONVERSIONS-easy-001",
             "question": "Convert 3000 milliseconds to seconds.",
             "answer": "3 seconds",
-            "explanation": "To convert milliseconds to seconds, divide by 1000. 3000 \u00f7 1000 = 3 seconds.",
+            "explanation": "To convert milliseconds to seconds, divide by 1000. 3000 ÷ 1000 = 3 seconds.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "easy",
             "grade": 8,
@@ -103,6 +40,7 @@
                 "metres",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -112,7 +50,7 @@
             "id": "g8-UNIT_CONVERSIONS-easy-002",
             "question": "How many minutes are in 2.5 hours?",
             "answer": "150 minutes",
-            "explanation": "To convert hours to minutes, multiply by 60. 2.5 \u00d7 60 = 150 minutes. This is useful for timing activities and filling bottles or containers.",
+            "explanation": "To convert hours to minutes, multiply by 60. 2.5 × 60 = 150 minutes. This is useful for timing activities and filling bottles or containers.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "easy",
             "grade": 8,
@@ -128,6 +66,7 @@
                 "metres",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -137,7 +76,7 @@
             "id": "g8-UNIT_CONVERSIONS-easy-003",
             "question": "Convert 90 seconds to minutes.",
             "answer": "1.5 minutes",
-            "explanation": "To convert seconds to minutes, divide by 60. 90 \u00f7 60 = 1.5 minutes.",
+            "explanation": "To convert seconds to minutes, divide by 60. 90 ÷ 60 = 1.5 minutes.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "easy",
             "grade": 8,
@@ -153,6 +92,7 @@
                 "metres",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -162,7 +102,7 @@
             "id": "g8-UNIT_CONVERSIONS-easy-004",
             "question": "Convert 4.5 litres to millilitres.",
             "answer": "4500 mL",
-            "explanation": "To convert litres to millilitres, multiply by 1000. 4.5 \u00d7 1000 = 4500 mL.",
+            "explanation": "To convert litres to millilitres, multiply by 1000. 4.5 × 1000 = 4500 mL.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "easy",
             "grade": 8,
@@ -177,6 +117,7 @@
                 "metric units",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -186,7 +127,7 @@
             "id": "g8-UNIT_CONVERSIONS-easy-005",
             "question": "How many millilitres are in 2.3 litres? (Common for measuring in metres and millilitres)",
             "answer": "2300 mL",
-            "explanation": "To convert litres to millilitres, multiply by 1000. 2.3 \u00d7 1000 = 2300 mL.",
+            "explanation": "To convert litres to millilitres, multiply by 1000. 2.3 × 1000 = 2300 mL.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "easy",
             "grade": 8,
@@ -201,6 +142,7 @@
                 "metric units",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -210,7 +152,7 @@
             "id": "g8-UNIT_CONVERSIONS-easy-006",
             "question": "Convert 0.5 cubic metres to litres. (Standard measurement in metres)",
             "answer": "500 L",
-            "explanation": "To convert cubic metres to litres, multiply by 1000. 0.5 \u00d7 1000 = 500 litres.",
+            "explanation": "To convert cubic metres to litres, multiply by 1000. 0.5 × 1000 = 500 litres.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "easy",
             "grade": 8,
@@ -226,6 +168,7 @@
                 "kilograms",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -233,9 +176,9 @@
         },
         {
             "id": "g8-UNIT_CONVERSIONS-easy-007",
-            "question": "How many litres are in 2.5 m\u00b3?",
+            "question": "How many litres are in 2.5 m³?",
             "answer": "2500 L",
-            "explanation": "To convert cubic metres (m\u00b3) to litres, multiply by 1000. 2.5 \u00d7 1000 = 2500 litres.",
+            "explanation": "To convert cubic metres (m³) to litres, multiply by 1000. 2.5 × 1000 = 2500 litres.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "easy",
             "grade": 8,
@@ -244,23 +187,24 @@
             "curriculumSubtopic": "Volume conversions cubic metres to litres metric units",
             "keywords": [
                 "cubic metres",
-                "m\u00b3",
+                "m³",
                 "litres",
                 "volume conversion",
                 "metric units",
                 "grams",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
-            "contentForEmbedding": "Convert 2.5 m\u00b3 to litres. Volume conversion: 2500 L."
+            "contentForEmbedding": "Convert 2.5 m³ to litres. Volume conversion: 2500 L."
         },
         {
             "id": "g8-UNIT_CONVERSIONS-easy-008",
             "question": "Convert 1.5 gallons to litres. (1 gallon = 3.785 litres)",
             "answer": "5.68 L",
-            "explanation": "To convert gallons to litres, multiply by 3.785. 1.5 \u00d7 3.785 = 5.6775 \u2248 5.68 litres.",
+            "explanation": "To convert gallons to litres, multiply by 3.785. 1.5 × 3.785 = 5.6775 ≈ 5.68 litres.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "easy",
             "grade": 8,
@@ -276,6 +220,7 @@
                 "volume conversion",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -285,7 +230,7 @@
             "id": "g8-UNIT_CONVERSIONS-medium-001",
             "question": "A movie is 2 hours and 45 minutes long. How many seconds is this? (Often displayed in metric units like litres for drinks)",
             "answer": "9900 seconds",
-            "explanation": "Convert to minutes first: 2 hours = 120 minutes. Total = 120 + 45 = 165 minutes. Convert to seconds: 165 \u00d7 60 = 9900 seconds.",
+            "explanation": "Convert to minutes first: 2 hours = 120 minutes. Total = 120 + 45 = 165 minutes. Convert to seconds: 165 × 60 = 9900 seconds.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "medium",
             "grade": 8,
@@ -303,6 +248,7 @@
                 "application",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -312,7 +258,7 @@
             "id": "g8-UNIT_CONVERSIONS-medium-002",
             "question": "A race timer shows 1 minute and 23.5 seconds. Convert this to milliseconds. (Athletes often measure weight in kilograms)",
             "answer": "83500 milliseconds",
-            "explanation": "Convert to seconds first: 1 minute = 60 seconds. Total = 60 + 23.5 = 83.5 seconds. Convert to milliseconds: 83.5 \u00d7 1000 = 83500 milliseconds.",
+            "explanation": "Convert to seconds first: 1 minute = 60 seconds. Total = 60 + 23.5 = 83.5 seconds. Convert to milliseconds: 83.5 × 1000 = 83500 milliseconds.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "medium",
             "grade": 8,
@@ -331,6 +277,7 @@
                 "application",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -340,7 +287,7 @@
             "id": "g8-UNIT_CONVERSIONS-medium-003",
             "question": "A stopwatch shows 2.75 minutes. How many seconds is this? (Some stopwatches also display imperial units like feet)",
             "answer": "165 seconds",
-            "explanation": "To convert minutes to seconds, multiply by 60 since there are 60 seconds in each minute. 2.75 \u00d7 60 = 165 seconds.",
+            "explanation": "To convert minutes to seconds, multiply by 60 since there are 60 seconds in each minute. 2.75 × 60 = 165 seconds.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "medium",
             "grade": 8,
@@ -357,6 +304,7 @@
                 "application",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -366,7 +314,7 @@
             "id": "g8-UNIT_CONVERSIONS-medium-004",
             "question": "A cooking timer is set for 45 minutes. How many seconds is this?",
             "answer": "2700 seconds",
-            "explanation": "To convert minutes to seconds, multiply by 60 since there are 60 seconds in each minute. 45 \u00d7 60 = 2700 seconds.",
+            "explanation": "To convert minutes to seconds, multiply by 60 since there are 60 seconds in each minute. 45 × 60 = 2700 seconds.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "medium",
             "grade": 8,
@@ -385,6 +333,7 @@
                 "application",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -394,7 +343,7 @@
             "id": "g8-UNIT_CONVERSIONS-medium-005",
             "question": "A recipe calls for 250 mL of milk. How many litres is this?",
             "answer": "0.25 L",
-            "explanation": "To convert millilitres to litres, divide by 1000 since there are 1000 millilitres in one litre. 250 \u00f7 1000 = 0.25 litres.",
+            "explanation": "To convert millilitres to litres, divide by 1000 since there are 1000 millilitres in one litre. 250 ÷ 1000 = 0.25 litres.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "medium",
             "grade": 8,
@@ -413,6 +362,7 @@
                 "application",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -422,7 +372,7 @@
             "id": "g8-UNIT_CONVERSIONS-medium-006",
             "question": "A fuel tank holds 65 litres. How many millilitres is this?",
             "answer": "65000 mL",
-            "explanation": "To convert litres to millilitres, multiply by 1000 since there are 1000 millilitres in each litre. 65 \u00d7 1000 = 65000 mL.",
+            "explanation": "To convert litres to millilitres, multiply by 1000 since there are 1000 millilitres in each litre. 65 × 1000 = 65000 mL.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "medium",
             "grade": 8,
@@ -441,6 +391,7 @@
                 "application",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -450,7 +401,7 @@
             "id": "g8-UNIT_CONVERSIONS-medium-007",
             "question": "A water bottle contains 750 mL. Express this as a fraction of a litre.",
             "answer": "0.75 L or 3/4 L",
-            "explanation": "To convert millilitres to litres, divide by 1000 since there are 1000 millilitres in one litre. 750 \u00f7 1000 = 0.75 L, which equals 3/4 of a litre.",
+            "explanation": "To convert millilitres to litres, divide by 1000 since there are 1000 millilitres in one litre. 750 ÷ 1000 = 0.75 L, which equals 3/4 of a litre.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "medium",
             "grade": 8,
@@ -469,6 +420,7 @@
                 "application",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -476,9 +428,9 @@
         },
         {
             "id": "g8-UNIT_CONVERSIONS-medium-008",
-            "question": "A swimming pool has a capacity of 1.5 m\u00b3. How many litres does it hold?",
+            "question": "A swimming pool has a capacity of 1.5 m³. How many litres does it hold?",
             "answer": "1500 L",
-            "explanation": "To convert cubic metres to litres, multiply by 1000 since one cubic metre equals 1000 litres. This tank conversion: 1.5 \u00d7 1000 = 1500 litres.",
+            "explanation": "To convert cubic metres to litres, multiply by 1000 since one cubic metre equals 1000 litres. This tank conversion: 1.5 × 1000 = 1500 litres.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "medium",
             "grade": 8,
@@ -496,16 +448,17 @@
                 "application",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
-            "contentForEmbedding": "Swimming pool 1.5 m\u00b3 capacity, convert to litres. Pool volume: 1500 L."
+            "contentForEmbedding": "Swimming pool 1.5 m³ capacity, convert to litres. Pool volume: 1500 L."
         },
         {
             "id": "g8-UNIT_CONVERSIONS-hard-001",
             "question": "A marathon runner completes the race in 2 hours, 45 minutes, and 30 seconds. Convert this total time to milliseconds.",
             "answer": "9930000 milliseconds",
-            "explanation": "Step 1: Convert each unit to seconds. 2 hours = 2 \u00d7 3600 = 7200 seconds, 45 minutes = 45 \u00d7 60 = 2700 seconds, 30 seconds = 30 seconds. Step 2: Add together: 7200 + 2700 + 30 = 9930 seconds. Step 3: Convert to milliseconds: 9930 \u00d7 1000 = 9,930,000 milliseconds.",
+            "explanation": "Step 1: Convert each unit to seconds. 2 hours = 2 × 3600 = 7200 seconds, 45 minutes = 45 × 60 = 2700 seconds, 30 seconds = 30 seconds. Step 2: Add together: 7200 + 2700 + 30 = 9930 seconds. Step 3: Convert to milliseconds: 9930 × 1000 = 9,930,000 milliseconds.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "hard",
             "grade": 8,
@@ -526,6 +479,7 @@
                 "application",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -535,7 +489,7 @@
             "id": "g8-UNIT_CONVERSIONS-hard-002",
             "question": "A school track meet timer records a race time of 12.5 seconds. If the timer has millisecond precision, express this time in hours, minutes, seconds, and milliseconds format.",
             "answer": "0 hours, 0 minutes, 12 seconds, 500 milliseconds",
-            "explanation": "Split the decimal: 12.5 seconds = 12 seconds + 0.5 seconds. Convert the decimal part to milliseconds: 0.5 seconds \u00d7 1000 = 500 milliseconds. Since 12.5 seconds is less than 1 minute (60 seconds), both hours and minutes are 0. Sports bottle timers often use this format.",
+            "explanation": "Split the decimal: 12.5 seconds = 12 seconds + 0.5 seconds. Convert the decimal part to milliseconds: 0.5 seconds × 1000 = 500 milliseconds. Since 12.5 seconds is less than 1 minute (60 seconds), both hours and minutes are 0. Sports bottle timers often use this format.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "hard",
             "grade": 8,
@@ -556,6 +510,7 @@
                 "application",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -565,7 +520,7 @@
             "id": "g8-UNIT_CONVERSIONS-hard-003",
             "question": "A game timer counts down from 3 minutes and 45 seconds. If the timer updates every 50 milliseconds, how many timer updates occur during the countdown?",
             "answer": "4500 updates",
-            "explanation": "Step 1: Convert total countdown time to milliseconds. 3 minutes = 3 \u00d7 60 = 180 seconds, plus 45 seconds = 225 seconds total. Step 2: Convert to milliseconds: 225 \u00d7 1000 = 225,000 milliseconds. Step 3: Calculate number of updates: 225,000 \u00f7 50 = 4500 timer updates. Game containers often display this information.",
+            "explanation": "Step 1: Convert total countdown time to milliseconds. 3 minutes = 3 × 60 = 180 seconds, plus 45 seconds = 225 seconds total. Step 2: Convert to milliseconds: 225 × 1000 = 225,000 milliseconds. Step 3: Calculate number of updates: 225,000 ÷ 50 = 4500 timer updates. Game containers often display this information.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "hard",
             "grade": 8,
@@ -586,6 +541,7 @@
                 "application",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -595,7 +551,7 @@
             "id": "g8-UNIT_CONVERSIONS-hard-004",
             "question": "A container holds 2.5 gallons of liquid. If 1 gallon = 3.785 litres and 1 litre = 1000 mL, how many millilitres does the container hold?",
             "answer": "9462.5 mL",
-            "explanation": "This requires a two-step conversion from imperial to metric units. Step 1: Convert gallons to litres: 2.5 gallons \u00d7 3.785 litres/gallon = 9.4625 litres. Step 2: Convert litres to millilitres: 9.4625 litres \u00d7 1000 mL/litre = 9462.5 mL.",
+            "explanation": "This requires a two-step conversion from imperial to metric units. Step 1: Convert gallons to litres: 2.5 gallons × 3.785 litres/gallon = 9.4625 litres. Step 2: Convert litres to millilitres: 9.4625 litres × 1000 mL/litre = 9462.5 mL.",
             "type": "UNIT_CONVERSIONS",
             "difficulty": "hard",
             "grade": 8,
@@ -615,6 +571,7 @@
                 "application",
                 "grade 8"
             ],
+            "createdAt": "2025-10-04T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",

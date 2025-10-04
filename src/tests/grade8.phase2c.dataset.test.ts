@@ -45,15 +45,15 @@ describe("Grade 8 Phase 2C Dataset - Speed Calculations", () => {
         expect(dataset).toHaveProperty("metadata");
         expect(dataset.metadata).toHaveProperty(
             "datasetId",
-            "grade8-speed-calculations-2025"
+            "grade8-speed-time-distance-2025"
         );
         expect(dataset.metadata).toHaveProperty(
             "datasetName",
-            "Grade 8 Speed Calculations Questions"
+            "Grade 8 Speed, Time, and Distance Questions"
         );
         expect(dataset.metadata).toHaveProperty("grade", 8);
         expect(dataset.metadata).toHaveProperty("subject", "Mathematics");
-        expect(dataset.metadata).toHaveProperty("topic", "SPEED_CALCULATIONS");
+        expect(dataset.metadata).toHaveProperty("topic", "SPEED_TIME_DISTANCE");
     });
 
     test("should have exactly 30 questions total", () => {
@@ -78,12 +78,12 @@ describe("Grade 8 Phase 2C Dataset - Speed Calculations", () => {
             expect(question).toHaveProperty("answer");
             expect(question).toHaveProperty("explanation");
             expect(question).toHaveProperty("difficulty");
-            expect(question).toHaveProperty("type", "SPEED_CALCULATIONS");
+            expect(question).toHaveProperty("type", "SPEED_TIME_DISTANCE");
             expect(question).toHaveProperty("grade", 8);
             expect(question).toHaveProperty("subject", "Mathematics");
             expect(question).toHaveProperty(
                 "curriculumTopic",
-                "Measurement and Applications"
+                "Measurement and Geometry"
             );
         });
     });
@@ -295,16 +295,14 @@ describe("Grade 8 Phase 2C Dataset - Speed Calculations", () => {
 
     test("should have proper New Zealand curriculum alignment", () => {
         questions.forEach((question) => {
-            expect(question.curriculumTopic).toBe(
-                "Measurement and Applications"
-            );
+            expect(question.curriculumTopic).toBe("Measurement and Geometry");
             expect(question.curriculumSubtopic).toMatch(
                 /speed|distance|time|measurement|practical applications/i
             );
 
             // All questions should have proper grade level
             expect(question.grade).toBe(8);
-            expect(question.type).toBe("SPEED_CALCULATIONS");
+            expect(question.type).toBe("SPEED_TIME_DISTANCE");
         });
     });
 });

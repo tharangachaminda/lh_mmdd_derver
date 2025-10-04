@@ -2,83 +2,18 @@
     "metadata": {
         "datasetId": "grade8-fraction-decimal-percentage-2025",
         "datasetName": "Grade 8 Fraction, Decimal, and Percentage Questions",
-        "topic": "FRACTION_DECIMAL_PERCENTAGE",
         "grade": 8,
         "subject": "Mathematics",
-        "phase": "1C",
-        "totalQuestions": 25,
-        "questionTypes": ["FRACTION_DECIMAL_PERCENTAGE"],
-        "difficultyDistribution": {
-            "easy": 10,
-            "medium": 10,
-            "hard": 5
-        },
-        "curriculumAlignment": "NZ Year 8 Mathematics Curriculum - Number and Algebra",
         "curriculumTopic": "Number and Algebra",
         "curriculumSubtopic": "Converting between fractions, decimals, and percentages with real-world applications",
-        "version": "1.0",
-        "createdDate": "2025-10-02",
+        "totalQuestions": 25,
+        "questionTypes": ["FRACTION_DECIMAL_PERCENTAGE"],
+        "difficultyDistribution": { "easy": 10, "medium": 10, "hard": 5 },
         "verified": true,
         "curriculumAligned": true,
-        "conversionTypes": [
-            "fraction_to_decimal",
-            "decimal_to_percentage",
-            "percentage_to_fraction",
-            "real_world_applications",
-            "benchmark_conversions"
-        ],
-        "production_metadata": {
-            "phase": "PHASE_1C",
-            "topic": "FRACTION_DECIMAL_PERCENTAGE",
-            "mmdd_tdd_status": {
-                "red_phase": "✅ Complete (18 validation tests)",
-                "green_phase": "✅ Complete (25 questions implemented)",
-                "refactor_phase": "✅ Complete (JSON formatting and metadata enhancement)",
-                "ingestion_phase": "✅ Complete (25 questions deployed to production)"
-            },
-            "test_coverage": {
-                "total_tests": 18,
-                "passing_tests": 18,
-                "test_success_rate": "100%",
-                "last_test_run": "2025-10-04"
-            },
-            "ingestion_readiness": {
-                "json_formatting": "✅ Professional formatting applied",
-                "metadata_enhancement": "✅ Production-ready metadata",
-                "test_validation": "✅ 18/18 tests passing",
-                "vector_optimization": "✅ Content embedding fields ready",
-                "deployment_ready": "✅ Deployed to production (25 questions)",
-                "ingestion_date": "2025-10-04",
-                "success_rate": "100.0%"
-            },
-            "educational_alignment": {
-                "nz_curriculum_level": "Level 4",
-                "learning_progression": "Number Theory - Rational Number Representations",
-                "mathematical_practices": [
-                    "Fraction to decimal conversion techniques",
-                    "Decimal to percentage transformation",
-                    "Percentage to fraction conversion methods",
-                    "Real-world application of rational numbers",
-                    "Benchmark fraction recognition and use"
-                ],
-                "cognitive_complexity": {
-                    "easy": "Basic benchmark fraction conversions and simple decimals",
-                    "medium": "Multi-step conversions and real-world percentage applications",
-                    "hard": "Complex rational number transformations with NZ contexts"
-                }
-            },
-            "version_control": {
-                "dataset_version": "1.0",
-                "refactor_version": "1.0.1",
-                "format_date": "2025-10-04",
-                "backup_created": true,
-                "change_log": [
-                    "Applied professional JSON formatting",
-                    "Enhanced production metadata",
-                    "Maintained test compatibility (18/18 tests)"
-                ]
-            }
-        }
+        "createdAt": "2025-10-02T00:00:00.000Z",
+        "updatedAt": "2025-10-02T00:00:00.000Z",
+        "version": "1.0"
     },
     "questions": [
         {
@@ -101,6 +36,7 @@
                 "division method",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -127,6 +63,7 @@
                 "two-step method",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -150,6 +87,7 @@
                 "sport",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -173,6 +111,7 @@
                 "shopping",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -196,6 +135,7 @@
                 "recipe",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -219,6 +159,7 @@
                 "gst",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -242,6 +183,7 @@
                 "common denominator",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -265,6 +207,7 @@
                 "decimal place",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -288,6 +231,7 @@
                 "money",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -311,6 +255,7 @@
                 "school",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -334,6 +279,7 @@
                 "cooking",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -357,6 +303,7 @@
                 "money",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -380,6 +327,7 @@
                 "decimal place",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -403,6 +351,7 @@
                 "recipe",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -426,6 +375,7 @@
                 "sport",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -449,6 +399,7 @@
                 "school",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -472,6 +423,7 @@
                 "school",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -495,6 +447,7 @@
                 "cooking",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -518,6 +471,7 @@
                 "school",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -541,6 +495,7 @@
                 "shopping",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -564,6 +519,7 @@
                 "new zealand",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -587,6 +543,7 @@
                 "new zealand",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -610,6 +567,7 @@
                 "sport",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -633,6 +591,7 @@
                 "school",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",
@@ -656,6 +615,7 @@
                 "money",
                 "grade 8"
             ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
             "version": "1.0",
             "verified": true,
             "documentType": "question",

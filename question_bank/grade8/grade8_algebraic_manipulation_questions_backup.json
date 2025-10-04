@@ -25,57 +25,7 @@
             "variable_substitution",
             "formula_applications",
             "multi_step_simplification"
-        ],
-        "production_metadata": {
-            "phase": "PHASE_1G",
-            "topic": "ALGEBRAIC_MANIPULATION",
-            "mmdd_tdd_status": {
-                "red_phase": "✅ Complete (24 validation tests)",
-                "green_phase": "✅ Complete (35 questions implemented)",
-                "refactor_phase": "🔄 In Progress (JSON formatting complete)",
-                "ingestion_phase": "⏳ Pending (ready for deployment)"
-            },
-            "test_coverage": {
-                "total_tests": 24,
-                "passing_tests": 24,
-                "test_success_rate": "100%",
-                "last_test_run": "2025-10-04"
-            },
-            "ingestion_readiness": {
-                "json_formatting": "✅ Professional formatting applied",
-                "metadata_enhancement": "✅ Production-ready metadata",
-                "test_validation": "✅ 24/24 tests passing",
-                "vector_optimization": "✅ Content embedding fields ready",
-                "deployment_ready": true
-            },
-            "educational_alignment": {
-                "nz_curriculum_level": "Level 4",
-                "learning_progression": "Algebra - Expression Manipulation",
-                "mathematical_practices": [
-                    "Algebraic reasoning and manipulation",
-                    "Distributive property applications",
-                    "Like terms identification and collection",
-                    "Variable substitution and evaluation",
-                    "Multi-step algebraic simplification"
-                ],
-                "cognitive_complexity": {
-                    "easy": "Basic expression expansion and like terms",
-                    "medium": "Multi-step manipulation and substitution",
-                    "hard": "Complex algebraic reasoning with real-world applications"
-                }
-            },
-            "version_control": {
-                "dataset_version": "1.0",
-                "refactor_version": "1.0.1",
-                "format_date": "2025-10-04",
-                "backup_created": true,
-                "change_log": [
-                    "Applied professional JSON formatting",
-                    "Enhanced production metadata",
-                    "Maintained test compatibility (24/24 tests)"
-                ]
-            }
-        }
+        ]
     },
     "questions": [
         {
@@ -88,7 +38,7 @@
             "curriculumTopic": "Number and Algebra - Algebraic Expressions",
             "question": "expand: 2(x + 3)",
             "answer": "2x + 6",
-            "explanation": "To expand 2(x + 3), multiply 2 by each term inside the brackets. Step 1: 2 \u00d7 x = 2x. Step 2: 2 \u00d7 3 = 6. Step 3: Combine to get 2x + 6.",
+            "explanation": "To expand 2(x + 3), multiply 2 by each term inside the brackets. Step 1: 2 × x = 2x. Step 2: 2 × 3 = 6. Step 3: Combine to get 2x + 6.",
             "learningObjective": "Students will expand simple algebraic expressions using the distributive property",
             "keywords": [
                 "algebra",
@@ -157,7 +107,7 @@
             "curriculumTopic": "Number and Algebra - Algebraic Expressions",
             "question": "expand: 3(y - 2)",
             "answer": "3y - 6",
-            "explanation": "To expand 3(y - 2), multiply 3 by each term inside the brackets. Step 1: 3 \u00d7 y = 3y. Step 2: 3 \u00d7 (-2) = -6. Step 3: Combine to get 3y - 6.",
+            "explanation": "To expand 3(y - 2), multiply 3 by each term inside the brackets. Step 1: 3 × y = 3y. Step 2: 3 × (-2) = -6. Step 3: Combine to get 3y - 6.",
             "learningObjective": "Students will expand algebraic expressions involving subtraction",
             "keywords": [
                 "algebra",
@@ -277,7 +227,7 @@
             "curriculumTopic": "Number and Algebra - Algebraic Expressions",
             "question": "expand: 4(2 + b)",
             "answer": "8 + 4b",
-            "explanation": "To expand 4(2 + b), multiply 4 by each term inside the brackets. Step 1: 4 \u00d7 2 = 8. Step 2: 4 \u00d7 b = 4b. Step 3: Combine to get 8 + 4b.",
+            "explanation": "To expand 4(2 + b), multiply 4 by each term inside the brackets. Step 1: 4 × 2 = 8. Step 2: 4 × b = 4b. Step 3: Combine to get 8 + 4b.",
             "learningObjective": "Students will expand expressions with constants first",
             "keywords": [
                 "algebra",
@@ -349,7 +299,7 @@
             "curriculumTopic": "Number and Algebra - Algebraic Expressions",
             "question": "If a car travels at speed s km/h for 3 hours, find the distance using d = st when s = 60",
             "answer": "180",
-            "explanation": "Using the formula d = st with s = 60 and t = 3. Step 1: d = 60 \u00d7 3. Step 2: d = 180. The distance is 180 km.",
+            "explanation": "Using the formula d = st with s = 60 and t = 3. Step 1: d = 60 × 3. Step 2: d = 180. The distance is 180 km.",
             "learningObjective": "Students will evaluate distance formulas in real-world contexts",
             "keywords": [
                 "algebra",
@@ -374,7 +324,7 @@
             "curriculumTopic": "Number and Algebra - Algebraic Expressions",
             "question": "expand: -2(x + 1)",
             "answer": "-2x - 2",
-            "explanation": "To expand -2(x + 1), multiply -2 by each term inside the brackets. Step 1: -2 \u00d7 x = -2x. Step 2: -2 \u00d7 1 = -2. Step 3: Combine to get -2x - 2.",
+            "explanation": "To expand -2(x + 1), multiply -2 by each term inside the brackets. Step 1: -2 × x = -2x. Step 2: -2 × 1 = -2. Step 3: Combine to get -2x - 2.",
             "learningObjective": "Students will expand expressions with negative coefficients",
             "keywords": [
                 "algebra",
@@ -494,7 +444,7 @@
             "curriculumTopic": "Number and Algebra - Algebraic Expressions",
             "question": "A rectangle has area A = lw. Find A when l = 2x + 1 and w = 3, given x = 4",
             "answer": "27",
-            "explanation": "First find l: l = 2x + 1 = 2(4) + 1 = 9. Then find area: A = lw = 9 \u00d7 3 = 27.",
+            "explanation": "First find l: l = 2x + 1 = 2(4) + 1 = 9. Then find area: A = lw = 9 × 3 = 27.",
             "learningObjective": "Students will evaluate formulas with algebraic expressions",
             "keywords": [
                 "algebra",
@@ -613,9 +563,9 @@
             "questionType": "ALGEBRAIC_MANIPULATION",
             "difficulty": "medium",
             "curriculumTopic": "Number and Algebra - Algebraic Expressions",
-            "question": "If x = -2, find the value of x\u00b2 + 3x - 1",
+            "question": "If x = -2, find the value of x² + 3x - 1",
             "answer": "-3",
-            "explanation": "Substitute x = -2 into x\u00b2 + 3x - 1. Step 1: (-2)\u00b2 + 3(-2) - 1. Step 2: 4 + (-6) - 1. Step 3: 4 - 6 - 1. Step 4: -3.",
+            "explanation": "Substitute x = -2 into x² + 3x - 1. Step 1: (-2)² + 3(-2) - 1. Step 2: 4 + (-6) - 1. Step 3: 4 - 6 - 1. Step 4: -3.",
             "learningObjective": "Students will substitute negative values into quadratic expressions",
             "keywords": [
                 "algebra",
@@ -625,7 +575,7 @@
                 "evaluate",
                 "expression"
             ],
-            "contentForEmbedding": "simplify and substitute x = -2 into quadratic expression x\u00b2 + 3x - 1 with negative values",
+            "contentForEmbedding": "simplify and substitute x = -2 into quadratic expression x² + 3x - 1 with negative values",
             "algebraicType": "substitution",
             "realWorldContext": false,
             "type": "ALGEBRAIC_MANIPULATION",
@@ -663,7 +613,7 @@
             "curriculumTopic": "Number and Algebra - Algebraic Expressions",
             "question": "Find the volume of a box with V = lwh when l = 2, w = x + 1, h = 3, and x = 4",
             "answer": "30",
-            "explanation": "First find w: w = x + 1 = 4 + 1 = 5. Then find volume: V = lwh = 2 \u00d7 5 \u00d7 3 = 30.",
+            "explanation": "First find w: w = x + 1 = 4 + 1 = 5. Then find volume: V = lwh = 2 × 5 × 3 = 30.",
             "learningObjective": "Students will evaluate volume formulas with algebraic expressions",
             "keywords": [
                 "algebra",
@@ -734,9 +684,9 @@
             "questionType": "ALGEBRAIC_MANIPULATION",
             "difficulty": "medium",
             "curriculumTopic": "Number and Algebra - Algebraic Expressions",
-            "question": "simplify: 5x\u00b2 + 2x - 3x\u00b2 + 4x - 1",
-            "answer": "2x\u00b2 + 6x - 1",
-            "explanation": "Collect like terms by degree. x\u00b2 terms: 5x\u00b2 - 3x\u00b2 = 2x\u00b2. x terms: 2x + 4x = 6x. Constants: -1. Therefore, 5x\u00b2 + 2x - 3x\u00b2 + 4x - 1 = 2x\u00b2 + 6x - 1.",
+            "question": "simplify: 5x² + 2x - 3x² + 4x - 1",
+            "answer": "2x² + 6x - 1",
+            "explanation": "Collect like terms by degree. x² terms: 5x² - 3x² = 2x². x terms: 2x + 4x = 6x. Constants: -1. Therefore, 5x² + 2x - 3x² + 4x - 1 = 2x² + 6x - 1.",
             "learningObjective": "Students will collect like terms in expressions with different powers",
             "keywords": [
                 "algebra",
@@ -746,7 +696,7 @@
                 "collect",
                 "algebraic expression"
             ],
-            "contentForEmbedding": "simplify 5x\u00b2 + 2x - 3x\u00b2 + 4x - 1 by collecting like terms with different powers",
+            "contentForEmbedding": "simplify 5x² + 2x - 3x² + 4x - 1 by collecting like terms with different powers",
             "algebraicType": "simplification",
             "realWorldContext": false,
             "type": "ALGEBRAIC_MANIPULATION",
@@ -782,9 +732,9 @@
             "questionType": "ALGEBRAIC_MANIPULATION",
             "difficulty": "hard",
             "curriculumTopic": "Number and Algebra - Algebraic Expressions",
-            "question": "If x = -1 and y = 3, find the value of 2x\u00b2 - 3xy + y\u00b2",
+            "question": "If x = -1 and y = 3, find the value of 2x² - 3xy + y²",
             "answer": "20",
-            "explanation": "Substitute x = -1 and y = 3 into 2x\u00b2 - 3xy + y\u00b2. Step 1: 2(-1)\u00b2 - 3(-1)(3) + (3)\u00b2. Step 2: 2(1) - 3(-3) + 9. Step 3: 2 + 9 + 9. Step 4: 20.",
+            "explanation": "Substitute x = -1 and y = 3 into 2x² - 3xy + y². Step 1: 2(-1)² - 3(-1)(3) + (3)². Step 2: 2(1) - 3(-3) + 9. Step 3: 2 + 9 + 9. Step 4: 20.",
             "learningObjective": "Students will substitute values into complex expressions with multiple terms",
             "keywords": [
                 "algebra",
@@ -794,7 +744,7 @@
                 "negative values",
                 "expression"
             ],
-            "contentForEmbedding": "simplify and substitute x = -1 and y = 3 into complex expression 2x\u00b2 - 3xy + y\u00b2",
+            "contentForEmbedding": "simplify and substitute x = -1 and y = 3 into complex expression 2x² - 3xy + y²",
             "algebraicType": "substitution",
             "realWorldContext": false,
             "type": "ALGEBRAIC_MANIPULATION",
@@ -833,9 +783,9 @@
             "questionType": "ALGEBRAIC_MANIPULATION",
             "difficulty": "hard",
             "curriculumTopic": "Number and Algebra - Algebraic Expressions",
-            "question": "simplify: 3a\u00b2 + 2ab - a\u00b2 + 4ab - 5b\u00b2 + 2b\u00b2",
-            "answer": "2a\u00b2 + 6ab - 3b\u00b2",
-            "explanation": "Collect like terms by variables and powers. a\u00b2 terms: 3a\u00b2 - a\u00b2 = 2a\u00b2. ab terms: 2ab + 4ab = 6ab. b\u00b2 terms: -5b\u00b2 + 2b\u00b2 = -3b\u00b2. Therefore, 3a\u00b2 + 2ab - a\u00b2 + 4ab - 5b\u00b2 + 2b\u00b2 = 2a\u00b2 + 6ab - 3b\u00b2.",
+            "question": "simplify: 3a² + 2ab - a² + 4ab - 5b² + 2b²",
+            "answer": "2a² + 6ab - 3b²",
+            "explanation": "Collect like terms by variables and powers. a² terms: 3a² - a² = 2a². ab terms: 2ab + 4ab = 6ab. b² terms: -5b² + 2b² = -3b². Therefore, 3a² + 2ab - a² + 4ab - 5b² + 2b² = 2a² + 6ab - 3b².",
             "learningObjective": "Students will collect like terms in expressions with multiple variables and powers",
             "keywords": [
                 "algebra",
@@ -845,7 +795,7 @@
                 "quadratic terms",
                 "algebraic expression"
             ],
-            "contentForEmbedding": "simplify 3a\u00b2 + 2ab - a\u00b2 + 4ab - 5b\u00b2 + 2b\u00b2 by collecting like terms with multiple variables and powers",
+            "contentForEmbedding": "simplify 3a² + 2ab - a² + 4ab - 5b² + 2b² by collecting like terms with multiple variables and powers",
             "algebraicType": "simplification",
             "realWorldContext": false,
             "type": "ALGEBRAIC_MANIPULATION",
@@ -857,9 +807,9 @@
             "questionType": "ALGEBRAIC_MANIPULATION",
             "difficulty": "hard",
             "curriculumTopic": "Number and Algebra - Algebraic Expressions",
-            "question": "A projectile's height is h = -5t\u00b2 + 20t + 10. Find the height after 3 seconds",
+            "question": "A projectile's height is h = -5t² + 20t + 10. Find the height after 3 seconds",
             "answer": "25",
-            "explanation": "Substitute t = 3 into h = -5t\u00b2 + 20t + 10. Step 1: h = -5(3)\u00b2 + 20(3) + 10. Step 2: h = -5(9) + 60 + 10. Step 3: h = -45 + 60 + 10. Step 4: h = 25.",
+            "explanation": "Substitute t = 3 into h = -5t² + 20t + 10. Step 1: h = -5(3)² + 20(3) + 10. Step 2: h = -5(9) + 60 + 10. Step 3: h = -45 + 60 + 10. Step 4: h = 25.",
             "learningObjective": "Students will evaluate quadratic formulas in physics contexts",
             "keywords": [
                 "algebra",
@@ -870,7 +820,7 @@
                 "substitution",
                 "real world"
             ],
-            "contentForEmbedding": "simplify quadratic height formula h = -5t\u00b2 + 20t + 10 for projectile motion physics",
+            "contentForEmbedding": "simplify quadratic height formula h = -5t² + 20t + 10 for projectile motion physics",
             "algebraicType": "formula_application",
             "realWorldContext": true,
             "type": "ALGEBRAIC_MANIPULATION",

@@ -2,10 +2,10 @@
     "metadata": {
         "datasetId": "grade8-number-patterns-2025",
         "datasetName": "Grade 8 Number Patterns Questions",
-        "topic": "NUMBER_PATTERNS",
         "grade": 8,
         "subject": "Mathematics",
-        "phase": "1E",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Identifying and extending arithmetic/geometric patterns, sequence rules, algebraic thinking",
         "totalQuestions": 25,
         "questionTypes": ["NUMBER_PATTERNS"],
         "difficultyDistribution": {
@@ -13,13 +13,6 @@
             "medium": 10,
             "hard": 5
         },
-        "curriculumAlignment": "NZ Year 8 Mathematics Curriculum - Number and Algebra",
-        "curriculumTopic": "Number and Algebra",
-        "curriculumSubtopic": "Identifying and extending arithmetic/geometric patterns, sequence rules, algebraic thinking",
-        "version": "1.0",
-        "createdDate": "2025-01-15",
-        "verified": true,
-        "curriculumAligned": true,
         "patternTypes": [
             "arithmetic_sequences",
             "geometric_sequences",
@@ -30,58 +23,13 @@
             "real_world_applications",
             "algebraic_expressions"
         ],
-        "production_metadata": {
-            "phase": "PHASE_1E",
-            "topic": "NUMBER_PATTERNS",
-            "mmdd_tdd_status": {
-                "red_phase": "\u2705 Complete (24 validation tests)",
-                "green_phase": "\u2705 Complete (25 questions implemented)",
-                "refactor_phase": "\u2705 Complete (JSON formatting and metadata enhancement)",
-                "ingestion_phase": "\u2705 Complete (25 questions deployed to production)"
-            },
-            "test_coverage": {
-                "total_tests": 24,
-                "passing_tests": 24,
-                "test_success_rate": "100%",
-                "last_test_run": "2025-10-04"
-            },
-            "ingestion_readiness": {
-                "json_formatting": "\u2705 Professional formatting applied",
-                "metadata_enhancement": "\u2705 Production-ready metadata",
-                "test_validation": "\u2705 24/24 tests passing",
-                "vector_optimization": "\u2705 Content embedding fields ready",
-                "deployment_ready": "\u2705 Deployed to production (25 questions)",
-                "ingestion_date": "2025-10-04",
-                "success_rate": "100.0%"
-            },
-            "educational_alignment": {
-                "nz_curriculum_level": "Level 4",
-                "learning_progression": "Number Theory - Pattern Recognition and Algebraic Thinking",
-                "mathematical_practices": [
-                    "Pattern identification and extension",
-                    "Sequence analysis and rule determination",
-                    "Arithmetic and geometric sequence fluency",
-                    "Algebraic thinking through pattern recognition",
-                    "Mathematical reasoning and generalization"
-                ],
-                "cognitive_complexity": {
-                    "easy": "Basic sequence identification and simple pattern extension",
-                    "medium": "Multi-step pattern analysis and rule application",
-                    "hard": "Complex pattern reasoning and algebraic pattern relationships"
-                }
-            },
-            "version_control": {
-                "dataset_version": "1.0",
-                "refactor_version": "1.0.1",
-                "format_date": "2025-10-04",
-                "backup_created": true,
-                "change_log": [
-                    "Applied professional JSON formatting",
-                    "Enhanced production metadata for Phase 1E",
-                    "Maintained test compatibility (24/24 tests)"
-                ]
-            }
-        }
+        "verified": true,
+        "curriculumAligned": true,
+        "qualityEnhanced": true,
+        "semanticOptimized": true,
+        "createdAt": "2025-10-02T00:00:00.000Z",
+        "updatedAt": "2025-10-03T00:00:00.000Z",
+        "version": "1.1"
     },
     "questions": [
         {
@@ -123,7 +71,7 @@
             "learningObjective": "Students will identify constant ratios in geometric sequences and apply multiplication patterns to find missing terms",
             "question": "Find the missing number in this pattern: 3, 6, 12, ?, 48",
             "answer": "24",
-            "explanation": "Step 1: Look for the relationship between consecutive numbers. Step 2: 3\u00d72=6, 6\u00d72=12. Step 3: This is a geometric sequence where each term is multiplied by 2. Step 4: Continue: 12\u00d72=24, 24\u00d72=48. The missing number is 24.",
+            "explanation": "Step 1: Look for the relationship between consecutive numbers. Step 2: 3×2=6, 6×2=12. Step 3: This is a geometric sequence where each term is multiplied by 2. Step 4: Continue: 12×2=24, 24×2=48. The missing number is 24.",
             "keywords": [
                 "geometric sequence",
                 "pattern recognition",
@@ -135,7 +83,7 @@
                 "sequence completion",
                 "grade 8 mathematics"
             ],
-            "contentForEmbedding": "Grade 8 geometric sequence missing term problem. Sequence 3, 6, 12, 24, 48 shows constant ratio \u00d72 pattern. Students identify exponential growth patterns and find missing values using multiplication rules. Doubling sequence application.",
+            "contentForEmbedding": "Grade 8 geometric sequence missing term problem. Sequence 3, 6, 12, 24, 48 shows constant ratio ×2 pattern. Students identify exponential growth patterns and find missing values using multiplication rules. Doubling sequence application.",
             "contextualisation": "Geometric pattern identification",
             "verified": true,
             "documentType": "question"
@@ -151,7 +99,7 @@
             "learningObjective": "Identify square number patterns",
             "question": "Complete this sequence of square numbers: 1, 4, 9, 16, ?",
             "answer": "25",
-            "explanation": "Step 1: Recognize these as perfect squares. Step 2: 1\u00b2=1, 2\u00b2=4, 3\u00b2=9, 4\u00b2=16. Step 3: The pattern shows consecutive integers being squared. Step 4: The next number is 5\u00b2=25. Square number patterns help with algebraic thinking.",
+            "explanation": "Step 1: Recognize these as perfect squares. Step 2: 1²=1, 2²=4, 3²=9, 4²=16. Step 3: The pattern shows consecutive integers being squared. Step 4: The next number is 5²=25. Square number patterns help with algebraic thinking.",
             "keywords": [
                 "square numbers",
                 "perfect squares",
@@ -251,7 +199,7 @@
             "learningObjective": "Identify simple geometric patterns",
             "question": "Complete the pattern: 2, 6, 18, 54, ?",
             "answer": "162",
-            "explanation": "Step 1: Look for the relationship between terms. Step 2: 2\u00d73=6, 6\u00d73=18, 18\u00d73=54. Step 3: This is a geometric sequence where each term is multiplied by 3. Step 4: Continue: 54\u00d73=162. The next number is 162.",
+            "explanation": "Step 1: Look for the relationship between terms. Step 2: 2×3=6, 6×3=18, 18×3=54. Step 3: This is a geometric sequence where each term is multiplied by 3. Step 4: Continue: 54×3=162. The next number is 162.",
             "keywords": [
                 "geometric sequence",
                 "multiply by 3",
@@ -379,7 +327,7 @@
             "learningObjective": "Analyze patterns with mixed operations",
             "question": "Find the rule for this sequence: 2, 5, 11, 23, 47, ?",
             "answer": "95",
-            "explanation": "Step 1: Look for a pattern in how each term relates to the previous. Step 2: 2\u00d72+1=5, 5\u00d72+1=11, 11\u00d72+1=23, 23\u00d72+1=47. Step 3: The rule is 'multiply by 2 and add 1'. Step 4: Apply to next term: 47\u00d72+1=94+1=95. The next number is 95.",
+            "explanation": "Step 1: Look for a pattern in how each term relates to the previous. Step 2: 2×2+1=5, 5×2+1=11, 11×2+1=23, 23×2+1=47. Step 3: The rule is 'multiply by 2 and add 1'. Step 4: Apply to next term: 47×2+1=94+1=95. The next number is 95.",
             "keywords": [
                 "mixed operations",
                 "multiply and add",
@@ -454,7 +402,7 @@
             "learningObjective": "Analyze geometric sequences with fractional ratios",
             "question": "What is the next term in this sequence: 64, 32, 16, 8, ?",
             "answer": "4",
-            "explanation": "Step 1: Find the relationship between consecutive terms. Step 2: 64\u00f72=32, 32\u00f72=16, 16\u00f72=8. Step 3: This is a geometric sequence where each term is divided by 2 (or multiplied by 1/2). Step 4: Continue: 8\u00f72=4. The next term is 4.",
+            "explanation": "Step 1: Find the relationship between consecutive terms. Step 2: 64÷2=32, 32÷2=16, 16÷2=8. Step 3: This is a geometric sequence where each term is divided by 2 (or multiplied by 1/2). Step 4: Continue: 8÷2=4. The next term is 4.",
             "keywords": [
                 "geometric sequence",
                 "divide by 2",
@@ -479,7 +427,7 @@
             "learningObjective": "Identify patterns in population growth scenarios",
             "question": "A bacterial culture doubles every hour. Starting with 5 bacteria, how many will there be after 4 hours?",
             "answer": "80",
-            "explanation": "Step 1: Start with 5 bacteria. Step 2: Hour 1: 5\u00d72=10, Hour 2: 10\u00d72=20, Hour 3: 20\u00d72=40, Hour 4: 40\u00d72=80. Step 3: This follows a geometric sequence with ratio 2. Step 4: After 4 hours, there will be 80 bacteria. This represents exponential growth in nature.",
+            "explanation": "Step 1: Start with 5 bacteria. Step 2: Hour 1: 5×2=10, Hour 2: 10×2=20, Hour 3: 20×2=40, Hour 4: 40×2=80. Step 3: This follows a geometric sequence with ratio 2. Step 4: After 4 hours, there will be 80 bacteria. This represents exponential growth in nature.",
             "keywords": [
                 "population growth",
                 "exponential growth",
@@ -529,7 +477,7 @@
             "learningObjective": "Analyze patterns with square relationships",
             "question": "Find the pattern and next term: 0, 3, 8, 15, 24, ?",
             "answer": "35",
-            "explanation": "Step 1: Look at differences: 3-0=3, 8-3=5, 15-8=7, 24-15=9. Step 2: The differences form the pattern 3, 5, 7, 9 (consecutive odd numbers). Step 3: The next difference should be 11. Step 4: 24+11=35. This pattern relates to n\u00b2-1 where n starts from 1.",
+            "explanation": "Step 1: Look at differences: 3-0=3, 8-3=5, 15-8=7, 24-15=9. Step 2: The differences form the pattern 3, 5, 7, 9 (consecutive odd numbers). Step 3: The next difference should be 11. Step 4: 24+11=35. This pattern relates to n²-1 where n starts from 1.",
             "keywords": [
                 "square relationships",
                 "consecutive odd differences",
@@ -554,7 +502,7 @@
             "learningObjective": "Identify patterns in seating arrangements",
             "question": "A theater has 20 seats in row 1, 23 seats in row 2, 26 seats in row 3. How many seats are in row 8?",
             "answer": "41",
-            "explanation": "Step 1: Find the pattern. Row 1: 20, Row 2: 23, Row 3: 26. Step 2: The pattern increases by 3 seats per row: 23-20=3, 26-23=3. Step 3: This is arithmetic with first term 20 and common difference 3. Step 4: Row 8 = 20 + (8-1)\u00d73 = 20 + 21 = 41 seats.",
+            "explanation": "Step 1: Find the pattern. Row 1: 20, Row 2: 23, Row 3: 26. Step 2: The pattern increases by 3 seats per row: 23-20=3, 26-23=3. Step 3: This is arithmetic with first term 20 and common difference 3. Step 4: Row 8 = 20 + (8-1)×3 = 20 + 21 = 41 seats.",
             "keywords": [
                 "seating arrangement",
                 "arithmetic sequence",
@@ -604,7 +552,7 @@
             "learningObjective": "Students will derive algebraic expressions from arithmetic patterns, connecting numerical sequences to symbolic representation and understanding nth term formulas",
             "question": "Find the algebraic rule for this sequence: 5, 8, 11, 14, 17, ... Express as a formula for the nth term.",
             "answer": "3n + 2",
-            "explanation": "Step 1: Identify this as arithmetic with first term a\u2081=5 and common difference d=3. Step 2: For arithmetic sequences, the nth term = a\u2081 + (n-1)d. Step 3: Substitute: nth term = 5 + (n-1)\u00d73 = 5 + 3n - 3 = 3n + 2. Step 4: Check: n=1 gives 3(1)+2=5 \u2713, n=2 gives 3(2)+2=8 \u2713. The algebraic rule is 3n + 2.",
+            "explanation": "Step 1: Identify this as arithmetic with first term a₁=5 and common difference d=3. Step 2: For arithmetic sequences, the nth term = a₁ + (n-1)d. Step 3: Substitute: nth term = 5 + (n-1)×3 = 5 + 3n - 3 = 3n + 2. Step 4: Check: n=1 gives 3(1)+2=5 ✓, n=2 gives 3(2)+2=8 ✓. The algebraic rule is 3n + 2.",
             "keywords": [
                 "algebraic expression",
                 "nth term formula",
@@ -633,7 +581,7 @@
             "learningObjective": "Analyze complex recursive patterns",
             "question": "In this pattern, each term is found by multiplying the previous term by 2 and subtracting 1: 3, 5, 9, 17, ?. Find the next term and explain the rule.",
             "answer": "33",
-            "explanation": "Step 1: Understand the recursive rule. Each term = (previous term \u00d7 2) - 1. Step 2: Verify: 3\u00d72-1=5, 5\u00d72-1=9, 9\u00d72-1=17. Step 3: This creates exponential-like growth with a constant adjustment. Step 4: Apply rule: 17\u00d72-1=34-1=33. The next term is 33. This demonstrates how recursive formulas create complex growth patterns.",
+            "explanation": "Step 1: Understand the recursive rule. Each term = (previous term × 2) - 1. Step 2: Verify: 3×2-1=5, 5×2-1=9, 9×2-1=17. Step 3: This creates exponential-like growth with a constant adjustment. Step 4: Apply rule: 17×2-1=34-1=33. The next term is 33. This demonstrates how recursive formulas create complex growth patterns.",
             "keywords": [
                 "recursive pattern",
                 "complex rule",
@@ -658,7 +606,7 @@
             "learningObjective": "Work with patterns involving powers",
             "question": "Analyze this pattern: 1, 8, 27, 64, 125, ?. What type of pattern is this and what's the next term?",
             "answer": "216 (cube numbers)",
-            "explanation": "Step 1: Recognize these as perfect cubes. Step 2: 1\u00b3=1, 2\u00b3=8, 3\u00b3=27, 4\u00b3=64, 5\u00b3=125. Step 3: This is the sequence of consecutive integers cubed. Step 4: The next term is 6\u00b3=216. Cube number patterns connect to volume concepts and algebraic thinking about powers.",
+            "explanation": "Step 1: Recognize these as perfect cubes. Step 2: 1³=1, 2³=8, 3³=27, 4³=64, 5³=125. Step 3: This is the sequence of consecutive integers cubed. Step 4: The next term is 6³=216. Cube number patterns connect to volume concepts and algebraic thinking about powers.",
             "keywords": [
                 "cube numbers",
                 "perfect cubes",
@@ -667,7 +615,7 @@
                 "algebraic thinking",
                 "grade 8"
             ],
-            "contentForEmbedding": "Cube number pattern Grade 8. Perfect cubes sequence 1, 8, 27, 64, 125, 216 representing 1\u00b3, 2\u00b3, 3\u00b3, 4\u00b3, 5\u00b3, 6\u00b3.",
+            "contentForEmbedding": "Cube number pattern Grade 8. Perfect cubes sequence 1, 8, 27, 64, 125, 216 representing 1³, 2³, 3³, 4³, 5³, 6³.",
             "contextualisation": "Power and volume pattern",
             "verified": true,
             "documentType": "question"
@@ -683,7 +631,7 @@
             "learningObjective": "Solve complex pattern problems with multiple relationships",
             "question": "A company's profit follows this pattern: Week 1: $100, Week 2: $180, Week 3: $340, Week 4: $660. If this pattern continues, what will be the profit in Week 6?",
             "answer": "$2540",
-            "explanation": "Step 1: Find the relationship. Week 1: $100, Week 2: $180, Week 3: $340, Week 4: $660. Step 2: Look at ratios and differences. $180/$100=1.8, but $340/$180\u22601.8. Try another approach. Step 3: Pattern: 100\u00d72-20=180, 180\u00d72-20=340, 340\u00d72-20=660. Step 4: Rule: multiply by 2 and subtract 20. Week 5: 660\u00d72-20=$1300, Week 6: 1300\u00d72-20=$2540.",
+            "explanation": "Step 1: Find the relationship. Week 1: $100, Week 2: $180, Week 3: $340, Week 4: $660. Step 2: Look at ratios and differences. $180/$100=1.8, but $340/$180≠1.8. Try another approach. Step 3: Pattern: 100×2-20=180, 180×2-20=340, 340×2-20=660. Step 4: Rule: multiply by 2 and subtract 20. Week 5: 660×2-20=$1300, Week 6: 1300×2-20=$2540.",
             "keywords": [
                 "complex pattern",
                 "business growth",
@@ -708,7 +656,7 @@
             "learningObjective": "Apply pattern recognition to solve real-world optimization problems",
             "question": "A garden designer uses square tiles to create patterns. Layer 1 uses 8 tiles around the border, Layer 2 uses 16 tiles, Layer 3 uses 24 tiles. How many tiles are needed for Layer 10?",
             "answer": "80",
-            "explanation": "Step 1: Identify the pattern. Layer 1: 8 tiles, Layer 2: 16 tiles, Layer 3: 24 tiles. Step 2: Find the relationship: 16-8=8, 24-16=8. Each layer adds 8 more tiles. Step 3: This is arithmetic with first term 8 and common difference 8. Step 4: Layer n uses 8n tiles. Layer 10: 8\u00d710=80 tiles. This represents practical mathematical applications in design.",
+            "explanation": "Step 1: Identify the pattern. Layer 1: 8 tiles, Layer 2: 16 tiles, Layer 3: 24 tiles. Step 2: Find the relationship: 16-8=8, 24-16=8. Each layer adds 8 more tiles. Step 3: This is arithmetic with first term 8 and common difference 8. Step 4: Layer n uses 8n tiles. Layer 10: 8×10=80 tiles. This represents practical mathematical applications in design.",
             "keywords": [
                 "design patterns",
                 "tile arrangements",
