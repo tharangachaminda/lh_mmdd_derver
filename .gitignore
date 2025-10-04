@@ -42,6 +42,9 @@ coverage/
 *.tmp
 *.temp
 
+# TypeScript build info
+*.tsbuildinfo
+
 # OpenSearch persistent data
 opensearch-data/
 opensearch-logs/
