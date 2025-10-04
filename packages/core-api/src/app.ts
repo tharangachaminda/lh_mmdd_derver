@@ -85,7 +85,7 @@ export function createApp(): express.Application {
                 "Curriculum data management and alignment",
                 "Question similarity search",
                 "Personalized content recommendations",
-                "Bulk curriculum data ingestion"
+                "Bulk curriculum data ingestion",
             ],
             subjects: ["MATHEMATICS", "SCIENCE", "ENGLISH", "SOCIAL_STUDIES"],
             api_version: "v1",
@@ -109,7 +109,7 @@ export function createApp(): express.Application {
                     alignment: "/api/v1/curriculum/alignment",
                     bulk_ingest: "/api/v1/curriculum/admin/ingest",
                     health: "/api/v1/curriculum/admin/health",
-                    stats: "/api/v1/curriculum/admin/stats"
+                    stats: "/api/v1/curriculum/admin/stats",
                 },
                 legacy: {
                     mathematics: "/api/v1/mathematics/generate",
@@ -143,7 +143,7 @@ export function createApp(): express.Application {
                 "POST /api/v1/curriculum/alignment - Align questions to curriculum",
                 "POST /api/v1/curriculum/admin/ingest - Bulk ingest curriculum data",
                 "GET /api/v1/curriculum/admin/health - System health status",
-                "GET /api/v1/curriculum/admin/stats - Ingestion statistics"
+                "GET /api/v1/curriculum/admin/stats - Ingestion statistics",
             ],
             documentation: "/api/v1/docs",
         });

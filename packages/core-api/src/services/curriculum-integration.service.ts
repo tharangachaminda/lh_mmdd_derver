@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 import {
     OpenSearchService,
     VectorDatabaseService,
@@ -7,15 +7,15 @@ import {
     CurriculumDataService,
     initializeCurriculumData,
     QuestionDocument,
-    SearchFilters
-} from '@learning-hub/curriculum-data';
+    SearchFilters,
+} from "@learning-hub/curriculum-data";
 
 // Define additional types not exported from curriculum-data
 interface CurriculumAlignmentResult {
     objectiveId: string;
     alignmentScore: number;
     alignmentReason: string | string[];
-    confidence: 'low' | 'medium' | 'high';
+    confidence: "low" | "medium" | "high";
 }
 
 interface IngestionConfig {
@@ -42,7 +42,7 @@ interface IngestionResult {
 export class CurriculumIntegrationService {
     private initialized: boolean = false;
     private initializationPromise: Promise<void> | null = null;
-    
+
     // Core services from curriculum-data package
     private openSearchService: OpenSearchService;
     private vectorDatabaseService: VectorDatabaseService;
@@ -54,9 +54,13 @@ export class CurriculumIntegrationService {
         // Initialize services from curriculum-data package
         this.openSearchService = new OpenSearchService();
         this.embeddingService = new EmbeddingService({
-            provider: (process.env.EMBEDDING_PROVIDER as 'ollama' | 'openai' | 'huggingface') || 'ollama',
+            provider:
+                (process.env.EMBEDDING_PROVIDER as
+                    | "ollama"
+                    | "openai"
+                    | "huggingface") || "ollama",
             apiKey: process.env.OPENAI_API_KEY,
-            model: process.env.EMBEDDING_MODEL || 'nomic-embed-text'
+            model: process.env.EMBEDDING_MODEL || "nomic-embed-text",
         });
         this.vectorDatabaseService = new VectorDatabaseService(
             this.openSearchService,
@@ -75,7 +79,7 @@ export class CurriculumIntegrationService {
     /**
      * Initialize the curriculum integration service.
      * Sets up OpenSearch indices and prepares services for use.
-     * 
+     *
      * @returns Promise<void>
      * @throws Error if initialization fails
      */
@@ -96,22 +100,29 @@ export class CurriculumIntegrationService {
         try {
             // Initialize curriculum data infrastructure
             const initResult = await initializeCurriculumData();
-            
+
             if (!initResult.success) {
-                throw new Error(`Curriculum data initialization failed: ${initResult.message}`);
+                throw new Error(
+                    `Curriculum data initialization failed: ${initResult.message}`
+                );
             }
 
             this.initialized = true;
-            console.log('✅ Curriculum Integration Service initialized successfully');
+            console.log(
+                "✅ Curriculum Integration Service initialized successfully"
+            );
         } catch (error) {
-            console.error('❌ Failed to initialize Curriculum Integration Service:', error);
+            console.error(
+                "❌ Failed to initialize Curriculum Integration Service:",
+                error
+            );
             throw error;
         }
     }
 
     /**
      * Search for questions based on query, subject, grade, and other filters.
-     * 
+     *
      * @param request - Search request parameters
      * @returns Promise<SearchResult> Question search results
      */
@@ -133,12 +144,12 @@ export class CurriculumIntegrationService {
         await this.initialize();
 
         const startTime = Date.now();
-        
+
         // Build search filters
         const filters: SearchFilters = {
             subject: request.subject,
             grade: request.grade ? parseInt(request.grade) : undefined,
-            difficulty: request.difficulty
+            difficulty: request.difficulty,
         };
 
         // Use OpenSearch directly for question search
@@ -147,43 +158,54 @@ export class CurriculumIntegrationService {
             body: {
                 query: {
                     bool: {
-                        must: request.query ? [{
-                            multi_match: {
-                                query: request.query,
-                                fields: ['question', 'content', 'explanation']
-                            }
-                        }] : [{ match_all: {} }],
+                        must: request.query
+                            ? [
+                                  {
+                                      multi_match: {
+                                          query: request.query,
+                                          fields: [
+                                              "question",
+                                              "content",
+                                              "explanation",
+                                          ],
+                                      },
+                                  },
+                              ]
+                            : [{ match_all: {} }],
                         filter: Object.entries(filters)
                             .filter(([_, value]) => value !== undefined)
-                            .map(([key, value]) => ({ term: { [key]: value } }))
-                    }
+                            .map(([key, value]) => ({
+                                term: { [key]: value },
+                            })),
+                    },
                 },
                 from: request.offset || 0,
-                size: request.limit || 10
-            }
+                size: request.limit || 10,
+            },
         });
 
         const questions = searchResponse.body.hits.hits.map((hit: any) => ({
             id: hit._id,
-            ...hit._source
+            ...hit._source,
         }));
 
         const processingTime = Date.now() - startTime;
 
         return {
             questions,
-            total: typeof searchResponse.body.hits.total === 'object' 
-                ? searchResponse.body.hits.total.value 
-                : searchResponse.body.hits.total || 0,
+            total:
+                typeof searchResponse.body.hits.total === "object"
+                    ? searchResponse.body.hits.total.value
+                    : searchResponse.body.hits.total || 0,
             offset: request.offset || 0,
             limit: request.limit || 10,
-            processingTime
+            processingTime,
         };
     }
 
     /**
      * Find questions similar to a given question text using vector similarity.
-     * 
+     *
      * @param request - Similarity search request
      * @returns Promise<SimilarityResult> Similar questions with scores
      */
@@ -211,8 +233,8 @@ export class CurriculumIntegrationService {
                 threshold: request.minSimilarity || 0.7,
                 filters: {
                     subject: request.subject,
-                    grade: request.grade ? parseInt(request.grade) : undefined
-                }
+                    grade: request.grade ? parseInt(request.grade) : undefined,
+                },
             }
         );
 
@@ -222,13 +244,13 @@ export class CurriculumIntegrationService {
             originalQuestion: request.questionText,
             similarQuestions: results.map((r: any) => r.question),
             similarityScores: results.map((r: any) => r.similarityScore),
-            processingTime
+            processingTime,
         };
     }
 
     /**
      * Get personalized content recommendations based on answered questions.
-     * 
+     *
      * @param request - Recommendation request
      * @returns Promise<RecommendationResult> Recommended questions and explanations
      */
@@ -249,28 +271,33 @@ export class CurriculumIntegrationService {
         const startTime = Date.now();
 
         // Get content recommendations using vector database service
-        const results = await this.vectorDatabaseService.getContentRecommendations(
-            request.answeredQuestionIds,
-            {
-                maxResults: request.limit || 5,
-                subjectFocus: request.subject,
-                difficultyProgression: request.difficulty === 'progressive'
-            }
-        );
+        const results =
+            await this.vectorDatabaseService.getContentRecommendations(
+                request.answeredQuestionIds,
+                {
+                    maxResults: request.limit || 5,
+                    subjectFocus: request.subject,
+                    difficultyProgression: request.difficulty === "progressive",
+                }
+            );
 
         const processingTime = Date.now() - startTime;
 
         return {
             recommendations: results.map((r: any) => r.question),
-            explanations: results.map((r: any) => r.explanation || 'Similar content based on your learning history'),
+            explanations: results.map(
+                (r: any) =>
+                    r.explanation ||
+                    "Similar content based on your learning history"
+            ),
             confidence: results.map((r: any) => r.confidence || 0.5),
-            processingTime
+            processingTime,
         };
     }
 
     /**
      * Align question content with curriculum objectives.
-     * 
+     *
      * @param request - Alignment request
      * @returns Promise<AlignmentResult> Curriculum alignment analysis
      */
@@ -284,7 +311,7 @@ export class CurriculumIntegrationService {
             objectiveId: string;
             alignmentScore: number;
             alignmentReason: string;
-            confidence: 'low' | 'medium' | 'high';
+            confidence: "low" | "medium" | "high";
         }>;
         processingTime: number;
     }> {
@@ -293,32 +320,36 @@ export class CurriculumIntegrationService {
         const startTime = Date.now();
 
         // Get curriculum alignment using the correct method name
-        const alignments = await this.curriculumDataService.alignQuestionToCurriculum(
-            request.questionText,
-            {
-                subject: request.subject,
-                grade: request.grade ? parseInt(request.grade) : undefined
-            }
-        );
+        const alignments =
+            await this.curriculumDataService.alignQuestionToCurriculum(
+                request.questionText,
+                {
+                    subject: request.subject,
+                    grade: request.grade ? parseInt(request.grade) : undefined,
+                }
+            );
 
         const processingTime = Date.now() - startTime;
 
         return {
             alignments: alignments.map((alignment: any) => ({
                 objectiveId: alignment.objectiveId,
-                alignmentScore: alignment.alignmentScore || alignment.score || 0.5,
-                alignmentReason: Array.isArray(alignment.alignmentReason) 
-                    ? alignment.alignmentReason.join(', ') 
-                    : alignment.alignmentReason || alignment.reason || 'Similar content',
-                confidence: alignment.confidence || 'medium'
+                alignmentScore:
+                    alignment.alignmentScore || alignment.score || 0.5,
+                alignmentReason: Array.isArray(alignment.alignmentReason)
+                    ? alignment.alignmentReason.join(", ")
+                    : alignment.alignmentReason ||
+                      alignment.reason ||
+                      "Similar content",
+                confidence: alignment.confidence || "medium",
             })),
-            processingTime
+            processingTime,
         };
     }
 
     /**
      * Perform bulk ingestion of questions from various source files.
-     * 
+     *
      * @param request - Bulk ingestion request
      * @returns Promise<IngestionResult> Ingestion status and statistics
      */
@@ -343,12 +374,12 @@ export class CurriculumIntegrationService {
             const result = await this.bulkIngester.ingestExistingQuestions({
                 sourceDirectory: request.sourceDirectory || process.cwd(),
                 filePatterns: request.filePatterns || [
-                    'grade*-questions*.json',
-                    'curriculum-*.json',
-                    '*-questions-vector-ready.json'
+                    "grade*-questions*.json",
+                    "curriculum-*.json",
+                    "*-questions-vector-ready.json",
                 ],
                 batchSize: request.batchSize || 100,
-                validateOnly: request.validateOnly || false
+                validateOnly: request.validateOnly || false,
             } as IngestionConfig);
 
             const processingTime = Date.now() - startTime;
@@ -357,29 +388,31 @@ export class CurriculumIntegrationService {
                 success: result.failedQuestions === 0,
                 filesProcessed: result.totalFiles,
                 questionsIngested: result.processedQuestions,
-                errors: result.errors.map(e => `${e.file}: ${e.error}`),
-                processingTime
+                errors: result.errors.map((e) => `${e.file}: ${e.error}`),
+                processingTime,
             };
         } catch (error) {
             const processingTime = Date.now() - startTime;
-            
+
             return {
                 success: false,
                 filesProcessed: 0,
                 questionsIngested: 0,
-                errors: [error instanceof Error ? error.message : String(error)],
-                processingTime
+                errors: [
+                    error instanceof Error ? error.message : String(error),
+                ],
+                processingTime,
             };
         }
     }
 
     /**
      * Get health status of curriculum services.
-     * 
+     *
      * @returns Promise<HealthStatus> Service health information
      */
     async getHealthStatus(): Promise<{
-        status: 'healthy' | 'degraded' | 'unhealthy';
+        status: "healthy" | "degraded" | "unhealthy";
         services: {
             openSearch: boolean;
             embedding: boolean;
@@ -392,7 +425,7 @@ export class CurriculumIntegrationService {
         };
     }> {
         const health: {
-            status: 'healthy' | 'degraded' | 'unhealthy';
+            status: "healthy" | "degraded" | "unhealthy";
             services: {
                 openSearch: boolean;
                 embedding: boolean;
@@ -404,44 +437,56 @@ export class CurriculumIntegrationService {
                 indexHealth?: Record<string, any>;
             };
         } = {
-            status: 'healthy',
+            status: "healthy",
             services: {
                 openSearch: false,
                 embedding: false,
-                vectorDatabase: false
+                vectorDatabase: false,
             },
-            details: {}
+            details: {},
         };
 
         try {
             // Check OpenSearch health using cluster health API
-            const osHealth = await this.openSearchService.client.cluster.health();
-            health.services.openSearch = osHealth.body.status === 'green' || osHealth.body.status === 'yellow';
+            const osHealth =
+                await this.openSearchService.client.cluster.health();
+            health.services.openSearch =
+                osHealth.body.status === "green" ||
+                osHealth.body.status === "yellow";
             health.details.indexHealth = osHealth.body;
         } catch (error) {
-            console.warn('OpenSearch health check failed:', error instanceof Error ? error.message : String(error));
+            console.warn(
+                "OpenSearch health check failed:",
+                error instanceof Error ? error.message : String(error)
+            );
         }
 
         try {
             // Check embedding service
-            await this.embeddingService.generateEmbedding('test');
+            await this.embeddingService.generateEmbedding("test");
             health.services.embedding = true;
-            health.details.embeddingProvider = 'ollama'; // Default provider
+            health.details.embeddingProvider = "ollama"; // Default provider
         } catch (error) {
-            console.warn('Embedding service check failed:', error instanceof Error ? error.message : String(error));
+            console.warn(
+                "Embedding service check failed:",
+                error instanceof Error ? error.message : String(error)
+            );
         }
 
         // Vector database depends on both OpenSearch and embedding
-        health.services.vectorDatabase = health.services.openSearch && health.services.embedding;
+        health.services.vectorDatabase =
+            health.services.openSearch && health.services.embedding;
 
         // Determine overall status
-        const healthyServices = Object.values(health.services).filter(Boolean).length;
+        const healthyServices = Object.values(health.services).filter(
+            Boolean
+        ).length;
         if (healthyServices === 3) {
-            health.status = 'healthy';
+            health.status = "healthy";
         } else if (healthyServices >= 1) {
-            health.status = 'degraded';
+            health.status = "degraded";
         } else {
-            health.status = 'unhealthy';
+            health.status = "unhealthy";
         }
 
         return health;
@@ -449,7 +494,7 @@ export class CurriculumIntegrationService {
 
     /**
      * Get comprehensive statistics about the curriculum data.
-     * 
+     *
      * @returns Promise<CurriculumStats> Statistical information
      */
     async getStatistics(): Promise<{
@@ -478,45 +523,59 @@ export class CurriculumIntegrationService {
                 total: 0,
                 bySubject: {},
                 byGrade: {},
-                byDifficulty: {}
+                byDifficulty: {},
             },
             curriculum: {
                 totalObjectives: 0,
                 bySubject: {},
-                byGrade: {}
+                byGrade: {},
             },
             vectorDatabase: {
                 indexSize: 0,
                 dimensionality: 768,
-                lastUpdated: new Date().toISOString()
-            }
+                lastUpdated: new Date().toISOString(),
+            },
         };
 
         try {
             // Get question statistics
-            const questionStats = await this.openSearchService.client.indices.stats({
-                index: this.openSearchService.config.vectorIndex
-            });
-            
+            const questionStats =
+                await this.openSearchService.client.indices.stats({
+                    index: this.openSearchService.config.vectorIndex,
+                });
+
             if (questionStats.body?.indices) {
-                stats.questions.total = questionStats.body?.indices?.[this.openSearchService.config.vectorIndex]?.total?.docs?.count || 0;
+                stats.questions.total =
+                    questionStats.body?.indices?.[
+                        this.openSearchService.config.vectorIndex
+                    ]?.total?.docs?.count || 0;
                 stats.vectorDatabase.indexSize = stats.questions.total;
             }
         } catch (error) {
-            console.warn('Could not get question count:', error instanceof Error ? error.message : String(error));
+            console.warn(
+                "Could not get question count:",
+                error instanceof Error ? error.message : String(error)
+            );
         }
 
         try {
             // Get curriculum statistics
-            const curriculumStats = await this.openSearchService.client.indices.stats({
-                index: this.openSearchService.config.curriculumIndex
-            });
-            
+            const curriculumStats =
+                await this.openSearchService.client.indices.stats({
+                    index: this.openSearchService.config.curriculumIndex,
+                });
+
             if (curriculumStats.body?.indices) {
-                stats.curriculum.totalObjectives = curriculumStats.body?.indices?.[this.openSearchService.config.curriculumIndex]?.total?.docs?.count || 0;
+                stats.curriculum.totalObjectives =
+                    curriculumStats.body?.indices?.[
+                        this.openSearchService.config.curriculumIndex
+                    ]?.total?.docs?.count || 0;
             }
         } catch (error) {
-            console.warn('Could not get curriculum count:', error instanceof Error ? error.message : String(error));
+            console.warn(
+                "Could not get curriculum count:",
+                error instanceof Error ? error.message : String(error)
+            );
         }
 
         return stats;
@@ -524,7 +583,7 @@ export class CurriculumIntegrationService {
 
     /**
      * Check if the service is properly initialized.
-     * 
+     *
      * @returns boolean True if service is ready for use
      */
     isInitialized(): boolean {
@@ -533,7 +592,7 @@ export class CurriculumIntegrationService {
 
     /**
      * Get the underlying curriculum data services for advanced operations.
-     * 
+     *
      * @returns Object containing all curriculum data services
      */
     getServices() {
@@ -542,7 +601,7 @@ export class CurriculumIntegrationService {
             vectorDatabase: this.vectorDatabaseService,
             embedding: this.embeddingService,
             bulkIngester: this.bulkIngester,
-            curriculumData: this.curriculumDataService
+            curriculumData: this.curriculumDataService,
         };
     }
 }

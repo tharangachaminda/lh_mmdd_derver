@@ -562,6 +562,113 @@ For technical support and integration assistance:
                         },
                     },
                 },
+
+                // Curriculum Data Models
+                QuestionDocument: {
+                    type: "object",
+                    description:
+                        "Educational question document from curriculum database",
+                    properties: {
+                        id: {
+                            type: "string",
+                            description: "Unique question identifier",
+                        },
+                        question: {
+                            type: "string",
+                            description: "The question text",
+                        },
+                        content: {
+                            type: "string",
+                            description: "Additional question content",
+                        },
+                        subject: {
+                            type: "string",
+                            description: "Educational subject",
+                        },
+                        grade: {
+                            type: "integer",
+                            minimum: 1,
+                            maximum: 13,
+                            description: "Grade level",
+                        },
+                        topic: {
+                            type: "string",
+                            description: "Question topic",
+                        },
+                        subtopic: {
+                            type: "string",
+                            description: "Question subtopic",
+                        },
+                        difficulty: {
+                            type: "string",
+                            enum: ["easy", "medium", "hard"],
+                            description: "Difficulty level",
+                        },
+                        format: {
+                            type: "string",
+                            description: "Question format/type",
+                        },
+                        answers: {
+                            type: "array",
+                            items: {
+                                type: "string",
+                            },
+                            description: "Possible answers",
+                        },
+                        correctAnswer: {
+                            type: "string",
+                            description: "Correct answer",
+                        },
+                        explanation: {
+                            type: "string",
+                            description: "Answer explanation",
+                        },
+                        keywords: {
+                            type: "array",
+                            items: {
+                                type: "string",
+                            },
+                            description: "Question keywords for search",
+                        },
+                        embedding: {
+                            type: "array",
+                            items: {
+                                type: "number",
+                            },
+                            description:
+                                "Vector embedding for similarity search",
+                        },
+                        metadata: {
+                            type: "object",
+                            description: "Additional question metadata",
+                            properties: {
+                                createdAt: {
+                                    type: "string",
+                                    format: "date-time",
+                                },
+                                updatedAt: {
+                                    type: "string",
+                                    format: "date-time",
+                                },
+                                source: {
+                                    type: "string",
+                                    description: "Data source",
+                                },
+                                validated: {
+                                    type: "boolean",
+                                    description:
+                                        "Whether question has been validated",
+                                },
+                                qualityScore: {
+                                    type: "number",
+                                    minimum: 0,
+                                    maximum: 1,
+                                    description: "Quality assessment score",
+                                },
+                            },
+                        },
+                    },
+                },
             },
 
             responses: {
@@ -646,11 +753,7 @@ For technical support and integration assistance:
     },
 
     // API documentation sources
-    apis: [
-        "./packages/core-api/src/controllers/*.ts",
-        "./packages/core-api/src/routes/*.ts",
-        "./packages/core-api/src/types/*.ts",
-    ],
+    apis: ["./src/controllers/*.ts", "./src/routes/*.ts", "./src/types/*.ts"],
 };
 
 /**
