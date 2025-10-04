@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@learning-hub/shared/*": ["packages/shared/src/*"],
+      "@learning-hub/core-api/*": ["packages/core-api/src/*"],
+      "@learning-hub/content-engine/*": ["packages/content-engine/src/*"],
+      "@learning-hub/question-engine/*": ["packages/question-engine/src/*"],
+      "@learning-hub/curriculum-engine/*": ["packages/curriculum-engine/src/*"],
+      "@learning-hub/vector-db/*": ["packages/vector-db/src/*"]
+    }
+  },
+  "references": [
+    { "path": "./packages/shared" },
+    { "path": "./packages/core-api" },
+    { "path": "./packages/content-engine" },
+    { "path": "./packages/question-engine" },
+    { "path": "./packages/curriculum-engine" },
+    { "path": "./packages/vector-db" },
+    { "path": "./apps/api-gateway" },
+    { "path": "./apps/web-ui" }
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "opensearch-data",
+    "opensearch-logs",
+    "backups"
+  ]
+}
