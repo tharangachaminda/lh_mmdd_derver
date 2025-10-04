@@ -1,0 +1,266 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.login-wrapper {
+  width: 100%;
+  max-width: 450px;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+  color: white;
+
+  .logo {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+    filter: brightness(0) invert(1);
+  }
+
+  h1 {
+    margin: 0 0 8px 0;
+    font-size: 2rem;
+    font-weight: 300;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  p {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 300;
+  }
+}
+
+.login-card {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+
+  mat-card-header {
+    text-align: center;
+    padding: 24px 24px 16px 24px;
+
+    mat-card-title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    mat-card-subtitle {
+      font-size: 0.95rem;
+      opacity: 0.7;
+    }
+  }
+
+  mat-card-content {
+    padding: 0 24px 16px 24px;
+  }
+}
+
+.user-type-tabs {
+  margin-bottom: 24px;
+
+  .tab-content {
+    text-align: center;
+    padding: 16px;
+
+    .tab-icon {
+      margin-bottom: 8px;
+
+      mat-icon {
+        font-size: 2rem;
+        width: 2rem;
+        height: 2rem;
+        color: var(--mdc-theme-primary);
+      }
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      opacity: 0.7;
+      line-height: 1.4;
+    }
+  }
+}
+
+.login-form {
+  .full-width {
+    width: 100%;
+  }
+
+  mat-form-field {
+    margin-bottom: 16px;
+
+    &:last-of-type {
+      margin-bottom: 8px;
+    }
+  }
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  .forgot-password-link {
+    font-size: 0.9rem;
+    text-transform: none;
+  }
+}
+
+.login-button {
+  height: 48px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+
+  .loading-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    span {
+      font-size: 0.95rem;
+    }
+  }
+}
+
+.card-actions {
+  padding: 16px 24px 24px 24px;
+
+  .divider {
+    text-align: center;
+    margin-bottom: 16px;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #e0e0e0;
+    }
+
+    span {
+      background: white;
+      padding: 0 16px;
+      font-size: 0.9rem;
+      color: rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+  }
+
+  .register-button {
+    height: 44px;
+    font-weight: 500;
+
+    mat-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 32px;
+  color: white;
+
+  p {
+    margin: 0 0 16px 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+
+    a {
+      color: white;
+      font-size: 0.85rem;
+      text-transform: none;
+      opacity: 0.8;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive Design
+@media (max-width: 480px) {
+  .login-container {
+    padding: 16px;
+  }
+
+  .login-wrapper {
+    max-width: 100%;
+  }
+
+  .login-header {
+    h1 {
+      font-size: 1.75rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+  }
+
+  .login-card {
+    mat-card-header,
+    mat-card-content,
+    .card-actions {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+
+  .form-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+// Success and Error Snackbar Styles
+:host ::ng-deep .success-snackbar {
+  background-color: #4caf50;
+  color: white;
+}
+
+:host ::ng-deep .error-snackbar {
+  background-color: #f44336;
+  color: white;
+}
