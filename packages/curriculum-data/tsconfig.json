@@ -1,0 +1,36 @@
+{
+    "extends": "../../tsconfig.monorepo.json",
+    "compilerOptions": {
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "paths": {
+            "@learning-hub/shared": ["../shared/src"],
+            "@learning-hub/shared/*": ["../shared/src/*"]
+        }
+    },
+    "include": [
+        "src/**/*",
+        "scripts/**/*",
+        "data/**/*.json"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "**/*.test.ts",
+        "**/*.spec.ts"
+    ],
+    "references": [
+        {
+            "path": "../shared"
+        }
+    ]
+}

@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@learning-hub/shared": "file:../shared",
+        "@learning-hub/curriculum-data": "file:../curriculum-data",
         "express": "^4.18.0",
         "cors": "^2.8.5",
         "helmet": "^7.0.0",

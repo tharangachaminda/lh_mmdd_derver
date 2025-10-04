@@ -15,6 +15,7 @@ import compression from "compression";
 import morgan from "morgan";
 import { setupSwagger } from "./config/swagger.config.js";
 import contentRoutes from "./routes/content.routes.js";
+import curriculumRoutes from "./routes/curriculum.routes.js";
 
 /**
  * Create and configure Express application
@@ -59,12 +60,14 @@ export function createApp(): express.Application {
 
     // API routes with v1 versioning to match Swagger documentation
     app.use("/api/v1/content", contentRoutes);
+    app.use("/api/v1/curriculum", curriculumRoutes);
 
     // Legacy mathematics endpoint for backward compatibility
     app.use("/api/v1/mathematics", contentRoutes);
 
     // Alternative access for convenience
     app.use("/api/content", contentRoutes);
+    app.use("/api/curriculum", curriculumRoutes);
 
     // Root endpoint with API information
     app.get("/", (req, res) => {
@@ -72,13 +75,17 @@ export function createApp(): express.Application {
             name: "Learning Hub Educational Content API",
             version: "2.1.0",
             description:
-                "Subject-agnostic educational content generation and management platform",
+                "Subject-agnostic educational content generation and curriculum management platform",
             features: [
                 "Subject-agnostic content generation",
                 "Vector database enhancement with relevance scoring",
                 "Multi-agent workflows for quality assurance",
                 "Circuit breaker patterns for reliability",
                 "Comprehensive metadata tracking",
+                "Curriculum data management and alignment",
+                "Question similarity search",
+                "Personalized content recommendations",
+                "Bulk curriculum data ingestion"
             ],
             subjects: ["MATHEMATICS", "SCIENCE", "ENGLISH", "SOCIAL_STUDIES"],
             api_version: "v1",
@@ -94,6 +101,15 @@ export function createApp(): express.Application {
                     retrieve: "/api/v1/content/{id}",
                     search: "/api/v1/content/search",
                     curriculum: "/api/v1/content/curriculum/{subject}/{grade}",
+                },
+                curriculum: {
+                    search_questions: "/api/v1/curriculum/questions/search",
+                    similar_questions: "/api/v1/curriculum/questions/similar",
+                    recommendations: "/api/v1/curriculum/recommendations",
+                    alignment: "/api/v1/curriculum/alignment",
+                    bulk_ingest: "/api/v1/curriculum/admin/ingest",
+                    health: "/api/v1/curriculum/admin/health",
+                    stats: "/api/v1/curriculum/admin/stats"
                 },
                 legacy: {
                     mathematics: "/api/v1/mathematics/generate",
@@ -121,6 +137,13 @@ export function createApp(): express.Application {
                 "GET /api/v1/content/search - Search educational content",
                 "GET /api/v1/content/curriculum/:subject/:grade - Curriculum info",
                 "POST /api/v1/mathematics/generate - Legacy mathematics endpoint",
+                "GET /api/v1/curriculum/questions/search - Search questions with filters",
+                "POST /api/v1/curriculum/questions/similar - Find similar questions",
+                "POST /api/v1/curriculum/recommendations - Get content recommendations",
+                "POST /api/v1/curriculum/alignment - Align questions to curriculum",
+                "POST /api/v1/curriculum/admin/ingest - Bulk ingest curriculum data",
+                "GET /api/v1/curriculum/admin/health - System health status",
+                "GET /api/v1/curriculum/admin/stats - Ingestion statistics"
             ],
             documentation: "/api/v1/docs",
         });
@@ -151,5 +174,8 @@ export function createApp(): express.Application {
 
     return app;
 }
+
+// Export the app instance for testing
+export const app = createApp();
 
 // Note: Server startup moved to server.ts for better separation of concerns
