@@ -59,8 +59,8 @@ describe("Grade 8 Phase 2D Dataset - Ratios and Proportions", () => {
         );
     });
 
-    test("should have exactly 30 questions total", () => {
-        expect(questions).toHaveLength(30);
+    test("should have exactly 31 questions total", () => {
+        expect(questions).toHaveLength(31);
     });
 
     test("should have proper difficulty distribution", () => {
@@ -69,7 +69,7 @@ describe("Grade 8 Phase 2D Dataset - Ratios and Proportions", () => {
         const mediumCount = difficulties.filter((d) => d === "medium").length;
         const hardCount = difficulties.filter((d) => d === "hard").length;
 
-        expect(easyCount).toBe(12);
+        expect(easyCount).toBe(13);
         expect(mediumCount).toBe(12);
         expect(hardCount).toBe(6);
     });
