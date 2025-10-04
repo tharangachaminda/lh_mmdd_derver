@@ -7,12 +7,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
- * Phase 2B: Perimeter, Area, and Volume - Production Ingestion Script
+ * Phase 2A: Unit Conversions - Production Ingestion Script
  * 
  * MMDD-TDD Phase: INGESTION
- * Dataset: Grade 8 Perimeter, Area, and Volume Questions
- * Total Questions: 31 (13 easy, 12 medium, 6 hard)
- * Content Focus: Geometric measurements, formulas, real-world applications
+ * Dataset: Grade 8 Unit Conversions Questions
+ * Total Questions: 20 (8 easy, 8 medium, 4 hard)
+ * Content Focus: Time conversions, volume conversions, measurement applications
  */
 
 const client = new Client({
@@ -26,16 +26,16 @@ const client = new Client({
     }
 });
 
-async function ingestPhase2BGeometry() {
-    console.log('\n🎯 Phase 2B Perimeter, Area, and Volume - INGESTION PHASE');
+async function ingestPhase2AConversions() {
+    console.log('\n🎯 Phase 2A Unit Conversions - INGESTION PHASE');
     console.log('='.repeat(60));
-    console.log('📊 Dataset: Grade 8 Geometric Measurement Questions');
-    console.log('📐 Measurement Types: Perimeter, Area, Volume');
-    console.log('🎓 Educational Focus: NZ Level 4-5 Geometric Applications');
+    console.log('📊 Dataset: Grade 8 Unit Conversions Questions');
+    console.log('📏 Conversion Types: Time, Volume, Metric/Imperial');
+    console.log('🎓 Educational Focus: NZ Level 4 Measurement Applications');
     
     try {
         // Load the dataset
-        const datasetPath = path.join(__dirname, 'question_bank', 'grade8', 'grade8_perimeter_area_volume_questions.json');
+        const datasetPath = path.join(__dirname, 'question_bank', 'grade8', 'grade8_unit_conversions_questions.json');
         const dataset = JSON.parse(fs.readFileSync(datasetPath, 'utf8'));
         
         console.log(`\n📋 Dataset loaded: ${dataset.questions.length} questions`);
@@ -53,7 +53,7 @@ async function ingestPhase2BGeometry() {
             batches.push(dataset.questions.slice(i, i + batchSize));
         }
         
-        console.log(`\n🔄 Processing ${batches.length} batches of up to ${batchSize} questions each...`);
+        console.log(`\n🔄 Processing ${batches.length} batches of ${batchSize} questions each...`);
         
         for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
             const batch = batches[batchIndex];
@@ -61,29 +61,27 @@ async function ingestPhase2BGeometry() {
             
             const body = [];
             for (const question of batch) {
-                // Enhanced metadata for Phase 2B geometric measurements
+                // Enhanced metadata for Phase 2A conversions
                 const enhancedQuestion = {
                     ...question,
-                    // Geometry-specific metadata
-                    geometricCategory: getGeometricCategory(question),
-                    measurementType: getMeasurementType(question),
-                    shapeType: getShapeType(question),
-                    complexityLevel: assessComplexityLevel(question.difficulty),
+                    // Conversion-specific metadata
+                    conversionCategory: getConversionCategory(question),
+                    unitType: getUnitType(question),
+                    measurementApplication: assessMeasurementApplication(question.difficulty),
                     
                     // Production metadata
-                    phase: 'PHASE_2B',
-                    topicArea: 'PERIMETER_AREA_VOLUME',
+                    phase: 'PHASE_2A',
+                    topicArea: 'UNIT_CONVERSIONS',
                     curriculumStrand: 'Measurement and Applications',
                     
                     // Educational metadata
                     cognitiveLevel: getCognitiveLevel(question.difficulty),
-                    mathematicalPractices: getGeometryPractices(question),
+                    mathematicalPractices: getConversionPractices(question),
                     realWorldConnections: hasRealWorldContext(question),
-                    formulaUsage: hasFormulaApplication(question),
                     
                     // Vector search optimization
                     searchableText: `${question.question} ${question.explanation}`,
-                    geometryKeywords: extractGeometryKeywords(question),
+                    conversionKeywords: extractConversionKeywords(question),
                     
                     // Quality assurance
                     mmddTddValidated: true,
@@ -91,7 +89,7 @@ async function ingestPhase2BGeometry() {
                     ingestionDate: new Date().toISOString(),
                     
                     // Database metadata
-                    dataSource: 'MMDD-TDD Phase 2B Development',
+                    dataSource: 'MMDD-TDD Phase 2A Development',
                     qualityScore: calculateQualityScore(question)
                 };
                 
@@ -127,13 +125,13 @@ async function ingestPhase2BGeometry() {
         const successRate = ((successCount / dataset.questions.length) * 100).toFixed(1);
         
         console.log('\n' + '='.repeat(60));
-        console.log('📊 PHASE 2B INGESTION COMPLETE');
+        console.log('📊 PHASE 2A INGESTION COMPLETE');
         console.log('='.repeat(60));
         console.log(`✅ Successfully ingested: ${successCount}/${dataset.questions.length} questions`);
         console.log(`❌ Failed: ${errorCount} questions`);
         console.log(`📈 Success rate: ${successRate}%`);
         console.log(`⏱️  Duration: ${duration}s`);
-        console.log(`🎯 Phase 2B Geometric Measurements now live in production!`);
+        console.log(`🎯 Phase 2A Unit Conversions now live in production!`);
         
         // Verify ingestion
         await verifyIngestion(indexName, dataset.questions.length);
@@ -145,81 +143,56 @@ async function ingestPhase2BGeometry() {
 }
 
 /**
- * Determine geometric category for enhanced metadata
+ * Determine conversion category for enhanced metadata
  */
-function getGeometricCategory(question) {
-    const category = question.category?.toLowerCase() || '';
-    
-    if (category.includes('perimeter')) {
-        return 'perimeter_calculation';
-    }
-    if (category.includes('area')) {
-        return 'area_calculation';
-    }
-    if (category.includes('volume')) {
-        return 'volume_calculation';
-    }
-    
-    return 'mixed_geometry';
-}
-
-/**
- * Determine measurement type for educational categorization
- */
-function getMeasurementType(question) {
+function getConversionCategory(question) {
     const content = question.question.toLowerCase() + ' ' + question.explanation.toLowerCase();
     
-    if (content.includes('perimeter')) {
-        return 'linear_measurement';
+    if (content.includes('millisecond') || content.includes('second') || content.includes('minute') || content.includes('hour')) {
+        return 'time_conversion';
     }
-    if (content.includes('area')) {
-        return 'area_measurement';
+    if (content.includes('litre') || content.includes('liter') || content.includes('millilitre') || content.includes('milliliter') || content.includes('cubic')) {
+        return 'volume_conversion';
     }
-    if (content.includes('volume')) {
-        return 'volume_measurement';
+    if (content.includes('metre') || content.includes('meter') || content.includes('kilometre') || content.includes('kilometer') || content.includes('centimetre') || content.includes('centimeter')) {
+        return 'distance_conversion';
+    }
+    if (content.includes('gallon') || content.includes('pint') || content.includes('cup') || content.includes('ounce')) {
+        return 'imperial_conversion';
     }
     
-    return 'general_measurement';
+    return 'general_conversion';
 }
 
 /**
- * Determine shape type for geometric classification
+ * Determine unit type for educational categorization
  */
-function getShapeType(question) {
-    const subcategory = question.subcategory?.toLowerCase() || '';
-    const content = question.question.toLowerCase();
+function getUnitType(question) {
+    const category = getConversionCategory(question);
     
-    if (subcategory.includes('rectangle') || content.includes('rectangle')) {
-        return 'rectangle';
+    switch (category) {
+        case 'time_conversion':
+            return 'temporal';
+        case 'volume_conversion':
+            return 'capacity';
+        case 'distance_conversion':
+            return 'length';
+        case 'imperial_conversion':
+            return 'imperial_system';
+        default:
+            return 'mixed';
     }
-    if (subcategory.includes('triangle') || content.includes('triangle')) {
-        return 'triangle';
-    }
-    if (subcategory.includes('circle') || content.includes('circle')) {
-        return 'circle';
-    }
-    if (subcategory.includes('cube') || content.includes('cube')) {
-        return 'cube';
-    }
-    if (subcategory.includes('cylinder') || content.includes('cylinder')) {
-        return 'cylinder';
-    }
-    if (subcategory.includes('composite') || content.includes('composite')) {
-        return 'composite_shape';
-    }
-    
-    return 'general_shape';
 }
 
 /**
- * Assess complexity level based on difficulty and content
+ * Assess measurement application level based on difficulty
  */
-function assessComplexityLevel(difficulty) {
+function assessMeasurementApplication(difficulty) {
     switch (difficulty) {
         case 'easy':
-            return 'basic_formula_application';
+            return 'basic_conversion';
         case 'medium':
-            return 'multi_step_calculation';
+            return 'practical_application';
         case 'hard':
             return 'complex_problem_solving';
         default:
@@ -244,22 +217,19 @@ function getCognitiveLevel(difficulty) {
 }
 
 /**
- * Extract mathematical practices for geometric measurements
+ * Extract mathematical practices for unit conversions
  */
-function getGeometryPractices(question) {
-    const practices = ['Geometric Measurement'];
+function getConversionPractices(question) {
+    const practices = ['Unit Conversion'];
     
-    if (question.explanation.includes('formula') || question.includesFormula) {
-        practices.push('Formula Application');
+    if (question.explanation.includes('multiply') || question.explanation.includes('divide')) {
+        practices.push('Proportional Reasoning');
     }
-    if (question.context === 'real-world' || question.question.includes('garden') || question.question.includes('pool')) {
+    if (question.question.includes('cooking') || question.question.includes('recipe') || question.explanation.includes('practical')) {
         practices.push('Real-world Application');
     }
-    if (question.subcategory?.includes('missing') || question.question.includes('unknown')) {
-        practices.push('Problem Solving');
-    }
     if (question.difficulty === 'hard') {
-        practices.push('Mathematical Reasoning');
+        practices.push('Problem Solving');
     }
     
     return practices;
@@ -269,35 +239,23 @@ function getGeometryPractices(question) {
  * Check for real-world context in question
  */
 function hasRealWorldContext(question) {
-    const realWorldTerms = ['garden', 'pool', 'room', 'field', 'house', 'building', 'tank', 'container', 'playground', 'practical'];
+    const realWorldTerms = ['cooking', 'recipe', 'bottle', 'container', 'fuel', 'capacity', 'timing', 'activities', 'practical', 'everyday'];
     const content = question.question.toLowerCase() + ' ' + question.explanation.toLowerCase();
     
-    return realWorldTerms.some(term => content.includes(term)) || question.context === 'real-world';
+    return realWorldTerms.some(term => content.includes(term));
 }
 
 /**
- * Check for formula application in question
+ * Extract conversion-specific keywords for enhanced search
  */
-function hasFormulaApplication(question) {
-    return question.includesFormula === true || 
-           question.explanation.includes('=') || 
-           question.explanation.includes('formula') ||
-           question.explanation.includes('Perimeter =') ||
-           question.explanation.includes('Area =') ||
-           question.explanation.includes('Volume =');
-}
-
-/**
- * Extract geometry-specific keywords for enhanced search
- */
-function extractGeometryKeywords(question) {
-    const keywords = [...(question.keywords || [])];
+function extractConversionKeywords(question) {
+    const keywords = [...question.keywords];
     
-    // Add geometry-specific terms
-    const geometryTerms = ['shape', 'formula', 'calculate', 'measurement', 'geometry', 'dimension', 'length', 'width', 'height', 'radius'];
+    // Add conversion-specific terms
+    const conversionTerms = ['convert', 'conversion', 'units', 'measurement', 'multiply', 'divide', 'metric', 'imperial'];
     const content = question.question.toLowerCase();
     
-    geometryTerms.forEach(term => {
+    conversionTerms.forEach(term => {
         if (content.includes(term) && !keywords.includes(term)) {
             keywords.push(term);
         }
@@ -318,11 +276,11 @@ function calculateQualityScore(question) {
     if (question.contentForEmbedding) score += 20;
     
     // Educational value
-    if (question.includesFormula) score += 15;
+    if (question.explanation.includes('multiply') || question.explanation.includes('divide')) score += 15;
     if (question.answer) score += 10;
     
     // Quality indicators
-    if (question.explanation.length > 80) score += 5;
+    if (question.explanation.length > 50) score += 5;
     
     return Math.min(score, 100);
 }
@@ -338,14 +296,14 @@ async function verifyIngestion(indexName, expectedCount) {
             index: indexName,
             body: {
                 query: {
-                    term: { phase: 'PHASE_2B' }
+                    term: { phase: 'PHASE_2A' }
                 },
                 size: 0
             }
         });
         
         const actualCount = searchResponse.body.hits.total.value;
-        console.log(`📊 Phase 2B questions in database: ${actualCount}/${expectedCount}`);
+        console.log(`📊 Phase 2A questions in database: ${actualCount}/${expectedCount}`);
         
         if (actualCount === expectedCount) {
             console.log('✅ Verification successful: All questions are searchable');
@@ -359,4 +317,4 @@ async function verifyIngestion(indexName, expectedCount) {
 }
 
 // Execute ingestion
-ingestPhase2BGeometry();
+ingestPhase2AConversions();

@@ -7,12 +7,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
- * Phase 2B: Perimeter, Area, and Volume - Production Ingestion Script
+ * Phase 2C: Speed, Time, and Distance - Production Ingestion Script
  * 
  * MMDD-TDD Phase: INGESTION
- * Dataset: Grade 8 Perimeter, Area, and Volume Questions
- * Total Questions: 31 (13 easy, 12 medium, 6 hard)
- * Content Focus: Geometric measurements, formulas, real-world applications
+ * Dataset: Grade 8 Speed, Time, and Distance Questions
+ * Total Questions: 30 (13 easy, 12 medium, 5 hard)
+ * Content Focus: Motion calculations, D=S×T relationships, real-world transportation
  */
 
 const client = new Client({
@@ -26,17 +26,17 @@ const client = new Client({
     }
 });
 
-async function ingestPhase2BGeometry() {
-    console.log('\n🎯 Phase 2B Perimeter, Area, and Volume - INGESTION PHASE');
+async function ingestPhase2CSpeedTimeDistance() {
+    console.log('\n🎯 Phase 2C Speed, Time, and Distance - INGESTION PHASE');
     console.log('='.repeat(60));
-    console.log('📊 Dataset: Grade 8 Geometric Measurement Questions');
-    console.log('📐 Measurement Types: Perimeter, Area, Volume');
-    console.log('🎓 Educational Focus: NZ Level 4-5 Geometric Applications');
+    console.log('📊 Dataset: Grade 8 Speed, Time, and Distance Questions');
+    console.log('🚗 Motion Types: Speed, Distance, Time Calculations');
+    console.log('🎓 Educational Focus: NZ Level 4 Motion and Measurement');
     
     try {
         // Load the dataset
-        const datasetPath = path.join(__dirname, 'question_bank', 'grade8', 'grade8_perimeter_area_volume_questions.json');
-        const dataset = JSON.parse(fs.readFileSync(datasetPath, 'utf8'));
+        const filePath = path.join(__dirname, 'question_bank/grade8/grade8_speed_calculations_questions.json');
+        const dataset = JSON.parse(fs.readFileSync(filePath, 'utf8'));
         
         console.log(`\n📋 Dataset loaded: ${dataset.questions.length} questions`);
         console.log(`📊 Difficulty: ${dataset.metadata.difficultyDistribution.easy} easy, ${dataset.metadata.difficultyDistribution.medium} medium, ${dataset.metadata.difficultyDistribution.hard} hard`);
@@ -359,4 +359,4 @@ async function verifyIngestion(indexName, expectedCount) {
 }
 
 // Execute ingestion
-ingestPhase2BGeometry();
+ingestPhase2CSpeedTimeDistance();

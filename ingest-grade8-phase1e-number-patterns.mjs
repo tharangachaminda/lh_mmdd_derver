@@ -7,12 +7,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
- * Phase 2B: Perimeter, Area, and Volume - Production Ingestion Script
+ * Phase 1E: Number Patterns - Production Ingestion Script
  * 
  * MMDD-TDD Phase: INGESTION
- * Dataset: Grade 8 Perimeter, Area, and Volume Questions
- * Total Questions: 31 (13 easy, 12 medium, 6 hard)
- * Content Focus: Geometric measurements, formulas, real-world applications
+ * Dataset: Grade 8 Number Patterns Questions
+ * Total Questions: 25 (10 easy, 10 medium, 5 hard)
+ * Content Focus: Arithmetic sequences, geometric sequences, pattern recognition
  */
 
 const client = new Client({
@@ -26,16 +26,16 @@ const client = new Client({
     }
 });
 
-async function ingestPhase2BGeometry() {
-    console.log('\n🎯 Phase 2B Perimeter, Area, and Volume - INGESTION PHASE');
+async function ingestPhase1EPatterns() {
+    console.log('\n🎯 Phase 1E Number Patterns - INGESTION PHASE');
     console.log('='.repeat(60));
-    console.log('📊 Dataset: Grade 8 Geometric Measurement Questions');
-    console.log('📐 Measurement Types: Perimeter, Area, Volume');
-    console.log('🎓 Educational Focus: NZ Level 4-5 Geometric Applications');
+    console.log('📊 Dataset: Grade 8 Number Patterns Questions');
+    console.log('📈 Pattern Types: Arithmetic, Geometric, Special Numbers');
+    console.log('🎓 Educational Focus: NZ Level 4 Pattern Recognition');
     
     try {
         // Load the dataset
-        const datasetPath = path.join(__dirname, 'question_bank', 'grade8', 'grade8_perimeter_area_volume_questions.json');
+        const datasetPath = path.join(__dirname, 'question_bank', 'grade8', 'grade8_number_patterns_questions.json');
         const dataset = JSON.parse(fs.readFileSync(datasetPath, 'utf8'));
         
         console.log(`\n📋 Dataset loaded: ${dataset.questions.length} questions`);
@@ -53,7 +53,7 @@ async function ingestPhase2BGeometry() {
             batches.push(dataset.questions.slice(i, i + batchSize));
         }
         
-        console.log(`\n🔄 Processing ${batches.length} batches of up to ${batchSize} questions each...`);
+        console.log(`\n🔄 Processing ${batches.length} batches of ${batchSize} questions each...`);
         
         for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
             const batch = batches[batchIndex];
@@ -61,29 +61,27 @@ async function ingestPhase2BGeometry() {
             
             const body = [];
             for (const question of batch) {
-                // Enhanced metadata for Phase 2B geometric measurements
+                // Enhanced metadata for Phase 1E patterns
                 const enhancedQuestion = {
                     ...question,
-                    // Geometry-specific metadata
-                    geometricCategory: getGeometricCategory(question),
-                    measurementType: getMeasurementType(question),
-                    shapeType: getShapeType(question),
-                    complexityLevel: assessComplexityLevel(question.difficulty),
+                    // Pattern-specific metadata
+                    patternCategory: getPatternCategory(question),
+                    sequenceType: getSequenceType(question),
+                    algebraicThinking: assessAlgebraicThinking(question.difficulty),
                     
                     // Production metadata
-                    phase: 'PHASE_2B',
-                    topicArea: 'PERIMETER_AREA_VOLUME',
-                    curriculumStrand: 'Measurement and Applications',
+                    phase: 'PHASE_1E',
+                    topicArea: 'NUMBER_PATTERNS',
+                    curriculumStrand: 'Number and Algebra',
                     
                     // Educational metadata
                     cognitiveLevel: getCognitiveLevel(question.difficulty),
-                    mathematicalPractices: getGeometryPractices(question),
+                    mathematicalPractices: getPatternPractices(question),
                     realWorldConnections: hasRealWorldContext(question),
-                    formulaUsage: hasFormulaApplication(question),
                     
                     // Vector search optimization
                     searchableText: `${question.question} ${question.explanation}`,
-                    geometryKeywords: extractGeometryKeywords(question),
+                    patternKeywords: extractPatternKeywords(question),
                     
                     // Quality assurance
                     mmddTddValidated: true,
@@ -91,7 +89,7 @@ async function ingestPhase2BGeometry() {
                     ingestionDate: new Date().toISOString(),
                     
                     // Database metadata
-                    dataSource: 'MMDD-TDD Phase 2B Development',
+                    dataSource: 'MMDD-TDD Phase 1E Development',
                     qualityScore: calculateQualityScore(question)
                 };
                 
@@ -127,13 +125,13 @@ async function ingestPhase2BGeometry() {
         const successRate = ((successCount / dataset.questions.length) * 100).toFixed(1);
         
         console.log('\n' + '='.repeat(60));
-        console.log('📊 PHASE 2B INGESTION COMPLETE');
+        console.log('📊 PHASE 1E INGESTION COMPLETE');
         console.log('='.repeat(60));
         console.log(`✅ Successfully ingested: ${successCount}/${dataset.questions.length} questions`);
         console.log(`❌ Failed: ${errorCount} questions`);
         console.log(`📈 Success rate: ${successRate}%`);
         console.log(`⏱️  Duration: ${duration}s`);
-        console.log(`🎯 Phase 2B Geometric Measurements now live in production!`);
+        console.log(`🎯 Phase 1E Number Patterns now live in production!`);
         
         // Verify ingestion
         await verifyIngestion(indexName, dataset.questions.length);
@@ -145,85 +143,62 @@ async function ingestPhase2BGeometry() {
 }
 
 /**
- * Determine geometric category for enhanced metadata
+ * Determine pattern category for enhanced metadata
  */
-function getGeometricCategory(question) {
-    const category = question.category?.toLowerCase() || '';
-    
-    if (category.includes('perimeter')) {
-        return 'perimeter_calculation';
-    }
-    if (category.includes('area')) {
-        return 'area_calculation';
-    }
-    if (category.includes('volume')) {
-        return 'volume_calculation';
-    }
-    
-    return 'mixed_geometry';
-}
-
-/**
- * Determine measurement type for educational categorization
- */
-function getMeasurementType(question) {
+function getPatternCategory(question) {
     const content = question.question.toLowerCase() + ' ' + question.explanation.toLowerCase();
     
-    if (content.includes('perimeter')) {
-        return 'linear_measurement';
+    if (content.includes('arithmetic') || content.includes('constant difference') || content.includes('add') || content.includes('subtract')) {
+        return 'arithmetic_sequence';
     }
-    if (content.includes('area')) {
-        return 'area_measurement';
+    if (content.includes('geometric') || content.includes('multiply') || content.includes('ratio') || content.includes('times')) {
+        return 'geometric_sequence';
     }
-    if (content.includes('volume')) {
-        return 'volume_measurement';
+    if (content.includes('square') || content.includes('squared')) {
+        return 'square_numbers';
+    }
+    if (content.includes('triangular')) {
+        return 'triangular_numbers';
+    }
+    if (content.includes('cube')) {
+        return 'cube_numbers';
     }
     
-    return 'general_measurement';
+    return 'general_pattern';
 }
 
 /**
- * Determine shape type for geometric classification
+ * Determine sequence type for educational categorization
  */
-function getShapeType(question) {
-    const subcategory = question.subcategory?.toLowerCase() || '';
-    const content = question.question.toLowerCase();
+function getSequenceType(question) {
+    const category = getPatternCategory(question);
     
-    if (subcategory.includes('rectangle') || content.includes('rectangle')) {
-        return 'rectangle';
+    switch (category) {
+        case 'arithmetic_sequence':
+            return 'linear';
+        case 'geometric_sequence':
+            return 'exponential';
+        case 'square_numbers':
+        case 'cube_numbers':
+            return 'polynomial';
+        default:
+            return 'mixed';
     }
-    if (subcategory.includes('triangle') || content.includes('triangle')) {
-        return 'triangle';
-    }
-    if (subcategory.includes('circle') || content.includes('circle')) {
-        return 'circle';
-    }
-    if (subcategory.includes('cube') || content.includes('cube')) {
-        return 'cube';
-    }
-    if (subcategory.includes('cylinder') || content.includes('cylinder')) {
-        return 'cylinder';
-    }
-    if (subcategory.includes('composite') || content.includes('composite')) {
-        return 'composite_shape';
-    }
-    
-    return 'general_shape';
 }
 
 /**
- * Assess complexity level based on difficulty and content
+ * Assess algebraic thinking level based on difficulty
  */
-function assessComplexityLevel(difficulty) {
+function assessAlgebraicThinking(difficulty) {
     switch (difficulty) {
         case 'easy':
-            return 'basic_formula_application';
+            return 'pattern_recognition';
         case 'medium':
-            return 'multi_step_calculation';
+            return 'rule_application';
         case 'hard':
-            return 'complex_problem_solving';
+            return 'generalization';
         default:
-            return 'standard';
+            return 'basic';
     }
 }
 
@@ -244,22 +219,19 @@ function getCognitiveLevel(difficulty) {
 }
 
 /**
- * Extract mathematical practices for geometric measurements
+ * Extract mathematical practices for pattern recognition
  */
-function getGeometryPractices(question) {
-    const practices = ['Geometric Measurement'];
+function getPatternPractices(question) {
+    const practices = ['Pattern Recognition'];
     
-    if (question.explanation.includes('formula') || question.includesFormula) {
-        practices.push('Formula Application');
+    if (question.explanation.includes('Step')) {
+        practices.push('Mathematical Reasoning');
     }
-    if (question.context === 'real-world' || question.question.includes('garden') || question.question.includes('pool')) {
-        practices.push('Real-world Application');
-    }
-    if (question.subcategory?.includes('missing') || question.question.includes('unknown')) {
-        practices.push('Problem Solving');
+    if (question.question.includes('rule') || question.explanation.includes('rule')) {
+        practices.push('Mathematical Modeling');
     }
     if (question.difficulty === 'hard') {
-        practices.push('Mathematical Reasoning');
+        practices.push('Mathematical Argumentation');
     }
     
     return practices;
@@ -269,35 +241,23 @@ function getGeometryPractices(question) {
  * Check for real-world context in question
  */
 function hasRealWorldContext(question) {
-    const realWorldTerms = ['garden', 'pool', 'room', 'field', 'house', 'building', 'tank', 'container', 'playground', 'practical'];
+    const realWorldTerms = ['practical', 'real', 'everyday', 'application', 'situation', 'context'];
     const content = question.question.toLowerCase() + ' ' + question.explanation.toLowerCase();
     
-    return realWorldTerms.some(term => content.includes(term)) || question.context === 'real-world';
+    return realWorldTerms.some(term => content.includes(term));
 }
 
 /**
- * Check for formula application in question
+ * Extract pattern-specific keywords for enhanced search
  */
-function hasFormulaApplication(question) {
-    return question.includesFormula === true || 
-           question.explanation.includes('=') || 
-           question.explanation.includes('formula') ||
-           question.explanation.includes('Perimeter =') ||
-           question.explanation.includes('Area =') ||
-           question.explanation.includes('Volume =');
-}
-
-/**
- * Extract geometry-specific keywords for enhanced search
- */
-function extractGeometryKeywords(question) {
-    const keywords = [...(question.keywords || [])];
+function extractPatternKeywords(question) {
+    const keywords = [...question.keywords];
     
-    // Add geometry-specific terms
-    const geometryTerms = ['shape', 'formula', 'calculate', 'measurement', 'geometry', 'dimension', 'length', 'width', 'height', 'radius'];
+    // Add pattern-specific terms
+    const patternTerms = ['sequence', 'pattern', 'rule', 'term', 'next', 'arithmetic', 'geometric', 'difference', 'ratio'];
     const content = question.question.toLowerCase();
     
-    geometryTerms.forEach(term => {
+    patternTerms.forEach(term => {
         if (content.includes(term) && !keywords.includes(term)) {
             keywords.push(term);
         }
@@ -318,11 +278,11 @@ function calculateQualityScore(question) {
     if (question.contentForEmbedding) score += 20;
     
     // Educational value
-    if (question.includesFormula) score += 15;
-    if (question.answer) score += 10;
+    if (question.explanation.includes('Step')) score += 15;
+    if (question.learningObjective) score += 10;
     
     // Quality indicators
-    if (question.explanation.length > 80) score += 5;
+    if (question.explanation.length > 100) score += 5;
     
     return Math.min(score, 100);
 }
@@ -338,14 +298,14 @@ async function verifyIngestion(indexName, expectedCount) {
             index: indexName,
             body: {
                 query: {
-                    term: { phase: 'PHASE_2B' }
+                    term: { phase: 'PHASE_1E' }
                 },
                 size: 0
             }
         });
         
         const actualCount = searchResponse.body.hits.total.value;
-        console.log(`📊 Phase 2B questions in database: ${actualCount}/${expectedCount}`);
+        console.log(`📊 Phase 1E questions in database: ${actualCount}/${expectedCount}`);
         
         if (actualCount === expectedCount) {
             console.log('✅ Verification successful: All questions are searchable');
@@ -359,4 +319,4 @@ async function verifyIngestion(indexName, expectedCount) {
 }
 
 // Execute ingestion
-ingestPhase2BGeometry();
+ingestPhase1EPatterns();
