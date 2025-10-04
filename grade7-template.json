@@ -1,0 +1,59 @@
+{
+    "metadata": {
+        "datasetId": "grade7-comprehensive-2025",
+        "datasetName": "Grade 7 Comprehensive Mathematics Questions",
+        "grade": 7,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra, Measurement and Geometry, Statistics and Probability",
+        "curriculumSubtopic": "Fractions/decimals/percentages, basic algebra, rates/ratios, surface area/volume, geometry theorems, statistical investigations",
+        "totalQuestions": 0,
+        "questionTypes": [
+            "FRACTION_OPERATIONS",
+            "DECIMAL_OPERATIONS",
+            "PERCENTAGE_PROBLEMS",
+            "BASIC_ALGEBRA",
+            "RATES_AND_RATIOS",
+            "SURFACE_AREA",
+            "VOLUME_CALCULATION",
+            "GEOMETRY_THEOREMS",
+            "STATISTICAL_ANALYSIS",
+            "PROBABILITY_CALCULATION"
+        ],
+        "difficultyDistribution": {
+            "easy": 0,
+            "medium": 0,
+            "hard": 0
+        },
+        "verified": true,
+        "curriculumAligned": true,
+        "createdAt": "2025-10-01T00:00:00.000Z",
+        "updatedAt": "2025-10-01T00:00:00.000Z",
+        "version": "1.0"
+    },
+    "questions": [
+        {
+            "id": "g7-BASIC_ALGEBRA-medium-1",
+            "question": "Solve for x: 3x + 7 = 22",
+            "answer": "x = 5",
+            "explanation": "Subtract 7 from both sides: 3x = 22 - 7 = 15. Divide both sides by 3: x = 15 ÷ 3 = 5.",
+            "type": "BASIC_ALGEBRA",
+            "difficulty": "medium",
+            "grade": 7,
+            "subject": "Mathematics",
+            "curriculumTopic": "Number and Algebra",
+            "curriculumSubtopic": "Basic algebra",
+            "keywords": [
+                "algebra",
+                "equations",
+                "solve for x",
+                "grade 7",
+                "mathematics"
+            ],
+            "createdAt": "2025-10-01T00:00:00.000Z",
+            "version": "1.0",
+            "verified": true,
+            "documentType": "question",
+            "contentForEmbedding": "Solve for x: 3x + 7 = 22 Subtract 7 from both sides: 3x = 22 - 7 = 15. Divide both sides by 3: x = 15 ÷ 3 = 5."
+        }
+    ]
+}

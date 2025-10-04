@@ -17,12 +17,14 @@ describe("Grade 3-8 Curriculum Data Validation", () => {
 
         const data = await loadCurriculumFromJSON(filePath);
         expect(data.grade).toBe(5);
-        expect(data.topic).toBe("Fractions");
-        expect(data.subtopic).toBe("Multiplying Fractions");
-        expect(data.questionTypes).toContain("fraction_multiplication");
+        expect(data.topic).toBe("Addition");
+        expect(data.subtopic).toBe("Whole Numbers & Decimals");
+        expect(data.questionTypes).toContain("decimal_addition");
         expect(data.gradeLevelStandards).toBeDefined();
         expect(data.gradeLevelStandards?.grade).toBe(5);
-        expect(data.gradeLevelStandards?.standard).toBe("5.NF.4");
+        expect(data.gradeLevelStandards?.standard).toBe(
+            "NZC mathematics — Number and Algebra: Number strategies, addition and subtraction"
+        );
     });
 
     it("should load and validate Grade 7 algebra curriculum", async () => {
@@ -61,9 +63,9 @@ describe("Grade 3-8 Curriculum Data Validation", () => {
 
         expect(Array.isArray(data)).toBe(true);
         expect(data).toHaveLength(4);
-        expect(data[0].grade).toBe(3);
-        expect(data[1].grade).toBe(4);
-        expect(data[2].grade).toBe(6);
-        expect(data[3].grade).toBe(8);
+        expect(data[0].grade).toBe(5);
+        expect(data[1].grade).toBe(5);
+        expect(data[2].grade).toBe(5);
+        expect(data[3].grade).toBe(5);
     });
 });

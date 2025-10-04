@@ -1,0 +1,69 @@
+{
+    "metadata": {
+        "datasetId": "grade8-systematic-2025",
+        "datasetName": "Grade 8 Systematic Mathematics Questions",
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra, Measurement and Geometry, Statistics and Probability",
+        "curriculumSubtopic": "Comprehensive NZ Year 8 curriculum coverage with 19 systematic question types",
+        "totalQuestions": 500,
+        "questionTypes": [
+            "PRIME_COMPOSITE_NUMBERS",
+            "NEGATIVE_NUMBERS",
+            "FRACTION_DECIMAL_PERCENTAGE",
+            "FINANCIAL_LITERACY",
+            "NUMBER_PATTERNS",
+            "LINEAR_EQUATIONS",
+            "ALGEBRAIC_MANIPULATION",
+            "UNIT_CONVERSIONS",
+            "PERIMETER_AREA_VOLUME",
+            "SPEED_CALCULATIONS",
+            "TIME_SCHEDULES",
+            "POLYGON_PROPERTIES",
+            "3D_SHAPE_NETS",
+            "MAP_COORDINATE_SYSTEMS",
+            "DATA_INVESTIGATION",
+            "DATA_COLLECTION",
+            "DATA_VISUALIZATION",
+            "PROBABILITY_EXPERIMENTS",
+            "PROBABILITY_DISTRIBUTIONS"
+        ],
+        "difficultyDistribution": {
+            "easy": 200,
+            "medium": 200,
+            "hard": 100
+        },
+        "curriculum_alignment": "NZ_Curriculum_Level_4",
+        "verified": true,
+        "curriculumAligned": true,
+        "createdAt": "2025-10-02T00:00:00.000Z",
+        "updatedAt": "2025-10-02T00:00:00.000Z",
+        "version": "2.0"
+    },
+    "questions": [
+        {
+            "id": "g8-FRACTION_DECIMAL_PERCENTAGE-medium-001",
+            "question": "Convert 3/8 to a decimal and then to a percentage.",
+            "answer": "0.375 and 37.5%",
+            "explanation": "Step 1: Convert fraction to decimal by dividing: 3 ÷ 8 = 0.375. Step 2: Convert decimal to percentage by multiplying by 100: 0.375 × 100 = 37.5%. Therefore, 3/8 = 0.375 = 37.5%.",
+            "type": "FRACTION_DECIMAL_PERCENTAGE",
+            "difficulty": "medium",
+            "grade": 8,
+            "subject": "Mathematics",
+            "curriculumTopic": "Number and Algebra",
+            "curriculumSubtopic": "Converting between fractions, decimals, and percentages",
+            "keywords": [
+                "fraction conversion",
+                "decimal conversion",
+                "percentage conversion",
+                "3/8",
+                "grade 8"
+            ],
+            "createdAt": "2025-10-02T00:00:00.000Z",
+            "version": "2.0",
+            "verified": true,
+            "documentType": "question",
+            "contentForEmbedding": "Convert 3/8 to decimal and percentage. Fraction decimal percentage conversion: 0.375 and 37.5%."
+        }
+    ]
+}

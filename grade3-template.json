@@ -1,0 +1,86 @@
+{
+    "metadata": {
+        "datasetId": "grade3-comprehensive-2025",
+        "datasetName": "Grade 3 Comprehensive Mathematics Questions",
+        "grade": 3,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra, Measurement and Geometry",
+        "curriculumSubtopic": "Whole number operations, basic fractions, measurement, 2D shapes, data collection",
+        "totalQuestions": 0,
+        "questionTypes": [
+            "ADDITION",
+            "SUBTRACTION",
+            "MULTIPLICATION",
+            "WHOLE_NUMBER_DIVISION",
+            "FRACTION_BASICS",
+            "SHAPE_IDENTIFICATION",
+            "AREA_CALCULATION",
+            "PERIMETER_CALCULATION",
+            "TIME_CALCULATION",
+            "MONEY_CALCULATION",
+            "PATTERN_RECOGNITION"
+        ],
+        "difficultyDistribution": {
+            "easy": 0,
+            "medium": 0,
+            "hard": 0
+        },
+        "verified": true,
+        "curriculumAligned": true,
+        "createdAt": "2025-10-01T00:00:00.000Z",
+        "updatedAt": "2025-10-01T00:00:00.000Z",
+        "version": "1.0"
+    },
+    "questions": [
+        {
+            "id": "g3-ADDITION-easy-1",
+            "question": "What is 23 + 15?",
+            "answer": "38",
+            "explanation": "Add the units: 3 + 5 = 8. Add the tens: 2 + 1 = 3. So 23 + 15 = 38.",
+            "type": "ADDITION",
+            "difficulty": "easy",
+            "grade": 3,
+            "subject": "Mathematics",
+            "curriculumTopic": "Number and Algebra",
+            "curriculumSubtopic": "Whole number operations",
+            "keywords": [
+                "addition",
+                "sum",
+                "plus",
+                "grade 3",
+                "mathematics",
+                "whole numbers"
+            ],
+            "createdAt": "2025-10-01T00:00:00.000Z",
+            "version": "1.0",
+            "verified": true,
+            "documentType": "question",
+            "contentForEmbedding": "What is 23 + 15? Add the units: 3 + 5 = 8. Add the tens: 2 + 1 = 3. So 23 + 15 = 38."
+        },
+        {
+            "id": "g3-FRACTION_BASICS-medium-1",
+            "question": "Sarah ate 1/4 of a pizza. What fraction of the pizza is left?",
+            "answer": "3/4",
+            "explanation": "If Sarah ate 1/4 of the pizza, then 3/4 of the pizza is left because 4/4 - 1/4 = 3/4.",
+            "type": "FRACTION_BASICS",
+            "difficulty": "medium",
+            "grade": 3,
+            "subject": "Mathematics",
+            "curriculumTopic": "Number and Algebra",
+            "curriculumSubtopic": "Basic fractions",
+            "keywords": [
+                "fractions",
+                "quarter",
+                "parts",
+                "grade 3",
+                "mathematics",
+                "word problem"
+            ],
+            "createdAt": "2025-10-01T00:00:00.000Z",
+            "version": "1.0",
+            "verified": true,
+            "documentType": "question",
+            "contentForEmbedding": "Sarah ate 1/4 of a pizza. What fraction of the pizza is left? If Sarah ate 1/4 of the pizza, then 3/4 of the pizza is left because 4/4 - 1/4 = 3/4."
+        }
+    ]
+}

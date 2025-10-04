@@ -81,6 +81,13 @@ export enum QuestionType {
     PATTERN = "pattern",
     SEQUENCE = "sequence",
     FUNCTION_TABLE = "function_table",
+
+    // Aggregated / Integrated Mastery Sets (Grade 7+ multi-domain)
+    FRACTION_DECIMAL_MASTERY = "fraction_decimal_mastery",
+    ALGEBRAIC_FOUNDATIONS = "algebraic_foundations",
+    MULTI_UNIT_CONVERSIONS = "multi_unit_conversions",
+    GEOMETRY_SPATIAL_REASONING = "geometry_spatial_reasoning",
+    DATA_ANALYSIS_PROBABILITY = "data_analysis_probability",
 }
 
 export enum DifficultyLevel {

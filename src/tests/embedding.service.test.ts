@@ -29,7 +29,7 @@ describe("EmbeddingService - TDD Red Phase", () => {
 
             expect(embedding).toBeDefined();
             expect(Array.isArray(embedding)).toBe(true);
-            expect(embedding.length).toBe(1536); // OpenAI embedding dimension
+            expect(embedding.length).toBe(768); // nomic-embed-text dimension
             expect(embedding.every((num) => typeof num === "number")).toBe(
                 true
             );
@@ -41,7 +41,7 @@ describe("EmbeddingService - TDD Red Phase", () => {
 
             expect(embedding).toBeDefined();
             expect(Array.isArray(embedding)).toBe(true);
-            expect(embedding.length).toBe(1536);
+            expect(embedding.length).toBe(768);
         });
     });
 
@@ -63,7 +63,7 @@ describe("EmbeddingService - TDD Red Phase", () => {
             expect(embeddings.length).toBe(3);
             embeddings.forEach((embedding) => {
                 expect(Array.isArray(embedding)).toBe(true);
-                expect(embedding.length).toBe(1536);
+                expect(embedding.length).toBe(768);
                 expect(embedding.every((num) => typeof num === "number")).toBe(
                     true
                 );
@@ -84,7 +84,7 @@ describe("EmbeddingService - TDD Red Phase", () => {
 
             expect(embeddings.length).toBe(3);
             embeddings.forEach((embedding) => {
-                expect(embedding.length).toBe(1536);
+                expect(embedding.length).toBe(768);
             });
         });
     });

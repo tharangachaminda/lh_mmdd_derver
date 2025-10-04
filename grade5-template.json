@@ -1,0 +1,61 @@
+{
+    "metadata": {
+        "datasetId": "grade5-comprehensive-2025",
+        "datasetName": "Grade 5 Comprehensive Mathematics Questions",
+        "grade": 5,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra, Measurement and Geometry, Statistics and Probability",
+        "curriculumSubtopic": "Multiplication/division facts, fractions/decimals, ratios, perimeter/area/volume, angles, coordinate systems, data analysis",
+        "totalQuestions": 0,
+        "questionTypes": [
+            "MULTIPLICATION",
+            "DIVISION",
+            "FRACTION_ADDITION",
+            "FRACTION_SUBTRACTION",
+            "DECIMAL_ADDITION",
+            "DECIMAL_SUBTRACTION",
+            "RATIO_PROBLEMS",
+            "AREA_CALCULATION",
+            "VOLUME_CALCULATION",
+            "ANGLE_MEASUREMENT",
+            "COORDINATE_GEOMETRY",
+            "DATA_ANALYSIS"
+        ],
+        "difficultyDistribution": {
+            "easy": 0,
+            "medium": 0,
+            "hard": 0
+        },
+        "verified": true,
+        "curriculumAligned": true,
+        "createdAt": "2025-10-01T00:00:00.000Z",
+        "updatedAt": "2025-10-01T00:00:00.000Z",
+        "version": "1.0"
+    },
+    "questions": [
+        {
+            "id": "g5-DECIMAL_ADDITION-medium-1",
+            "question": "Calculate 3.75 + 2.86",
+            "answer": "6.61",
+            "explanation": "Align decimal places: 3.75 + 2.86. Add hundredths: 5 + 6 = 11 (write 1, carry 1). Add tenths: 7 + 8 + 1 = 16 (write 6, carry 1). Add units: 3 + 2 + 1 = 6. Result: 6.61",
+            "type": "DECIMAL_ADDITION",
+            "difficulty": "medium",
+            "grade": 5,
+            "subject": "Mathematics",
+            "curriculumTopic": "Number and Algebra",
+            "curriculumSubtopic": "Fractions and decimals",
+            "keywords": [
+                "decimal addition",
+                "place value",
+                "carrying",
+                "grade 5",
+                "mathematics"
+            ],
+            "createdAt": "2025-10-01T00:00:00.000Z",
+            "version": "1.0",
+            "verified": true,
+            "documentType": "question",
+            "contentForEmbedding": "Calculate 3.75 + 2.86 Align decimal places: 3.75 + 2.86. Add hundredths: 5 + 6 = 11 (write 1, carry 1). Add tenths: 7 + 8 + 1 = 16 (write 6, carry 1). Add units: 3 + 2 + 1 = 6. Result: 6.61"
+        }
+    ]
+}

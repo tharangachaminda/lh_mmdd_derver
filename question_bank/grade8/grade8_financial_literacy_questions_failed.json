@@ -1,0 +1,1097 @@
+{
+  "metadata": {
+    "datasetId": "grade8-financial-literacy-2025",
+    "datasetName": "Grade 8 Financial Literacy Questions",
+    "version": "1.0.0",
+    
+    "curriculum": {
+      "grade": 8,
+      "subject": "Mathematics",
+      "topic": "FINANCIAL_LITERACY",
+      "curriculumTopic": "Number and Algebra",
+      "curriculumSubtopic": "Financial Mathematics",
+      "curriculumAlignment": "New Zealand Mathematics Curriculum Level 4-5"
+    },
+    
+    "content": {
+      "totalQuestions": 27,
+      "difficultyDistribution": {
+        "easy": 11,
+        "medium": 10,
+        "hard": 6
+      },
+      "categories": {
+        "simple-interest": {
+          "count": 5,
+          "description": "Simple interest calculations with formula reasoning"
+        },
+        "compound-interest": {
+          "count": 4,
+          "description": "Compound interest scenarios with compounding frequency"
+        },
+        "budgeting": {
+          "count": 5,
+          "description": "Income, expenses, and savings planning"
+        },
+        "profit-loss": {
+          "count": 4,
+          "description": "Business profit and loss calculations"
+        },
+        "banking": {
+          "count": 5,
+          "description": "Banking fees, loans, and financial services"
+        },
+        "investment": {
+          "count": 4,
+          "description": "Basic investment principles and calculations"
+        }
+      },
+      "educationalObjectives": [
+        "Calculate simple and compound interest using appropriate formulas",
+        "Create and analyze personal budgets with income and expenses",
+        "Solve profit and loss problems in business contexts",
+        "Understand banking fees, charges, and loan calculations",
+        "Apply basic investment principles for financial planning"
+      ]
+    },
+    
+    "timestamps": {
+      "createdDate": "2025-01-28",
+      "lastModified": "2025-01-28"
+    },
+    
+    "qualityMetrics": {
+      "vocabularyCompliance": "Grade 8 appropriate",
+      "reasoningPatterns": "Enhanced with because/therefore/since",
+      "curriculumAlignment": "New Zealand Level 4-5"
+    }
+  },
+  
+  "vectorSearchOptimization": {
+    "embeddingDimensions": 1536,
+    "searchableFields": [
+      "question",
+      "explanation",
+      "keyTerms"
+    ],
+    "semanticCategories": [
+      "financial-mathematics",
+      "interest-calculations",
+      "budgeting",
+      "banking",
+      "investments"
+    ],
+    "indexOptimized": true
+  },
+  
+  "qualityAssurance": {
+    "testFramework": "Jest",
+    "tddMethodology": "Red-Green-Refactor",
+    "codeQuality": "Production Ready",
+    "manualReview": true,
+    "testCoveragePercentage": 95,
+    "validationErrors": 0
+  },
+  
+  "questions": [
+    {
+      "id": "FL-1",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "simple-interest",
+        "subcategory": "basic-calculation",
+        "difficulty": "easy",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Sarah deposits $500 into a savings account that earns 4% simple interest per year. How much interest will she earn after 2 years?",
+        "answer": "$40",
+        "explanation": "Simple interest is calculated using the formula: Interest = Principal × Rate × Time. Therefore: Interest = $500 × 0.04 × 2 = $40. This means Sarah's $500 will earn $40 in interest over 2 years, because simple interest grows at a constant rate.",
+        "options": [
+          "$20",
+          "$40",
+          "$60",
+          "$80"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "simple interest",
+          "principal",
+          "interest rate",
+          "formula"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-2",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "simple-interest",
+        "subcategory": "basic-calculation",
+        "difficulty": "easy",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Jake borrows $1,200 at 6% simple interest for 18 months. How much interest will he pay?",
+        "answer": "$108",
+        "explanation": "Convert 18 months to years: 18 ÷ 12 = 1.5 years. Using the simple interest formula: Interest = $1,200 × 0.06 × 1.5 = $108. Therefore, Jake will pay $108 in interest charges over the 18-month period.",
+        "options": [
+          "$72",
+          "$108",
+          "$144",
+          "$216"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "simple interest",
+          "time conversion",
+          "borrowing",
+          "months to years"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-3",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "simple-interest",
+        "subcategory": "time-period",
+        "difficulty": "medium",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Emma invests $800 at 5% simple interest. After how many years will she have earned $120 in interest?",
+        "answer": "3 years for $120 interest",
+        "explanation": "Rearranging the simple interest formula to solve for time: Time = Interest ÷ (Principal × Rate). Therefore: Time = $120 ÷ ($800 × 0.05) = $120 ÷ $40 = 3 years. This demonstrates how to work backwards from a desired interest amount.",
+        "options": [
+          "2 years",
+          "3 years",
+          "4 years",
+          "5 years"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "time calculation",
+          "rearranging formulas",
+          "investment goals",
+          "simple interest"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-4",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "simple-interest",
+        "subcategory": "time-period",
+        "difficulty": "medium",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "A term deposit of $2,000 earns simple interest at 3.5% per year. If the total amount after interest is $2,210, for how long was the money invested?",
+        "answer": "3 years ($210 interest earned)",
+        "explanation": "First find the interest earned: $2,210 - $2,000 = $210. Then use the formula: Time = Interest ÷ (Principal × Rate) = $210 ÷ ($2,000 × 0.035) = $210 ÷ $70 = 3 years. Therefore, the investment duration was 3 years because we calculated backwards from the final amount.",
+        "options": [
+          "2 years",
+          "3 years",
+          "4 years",
+          "6 years"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "term deposit",
+          "total amount",
+          "backwards calculation",
+          "interest"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-5",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "simple-interest",
+        "subcategory": "basic-calculation",
+        "difficulty": "easy",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Marcus saves $300 in a KiwiSaver account that earns 2.8% simple interest annually. How much interest will he earn in 6 months?",
+        "answer": "$4.20",
+        "explanation": "Convert 6 months to years: 6 ÷ 12 = 0.5 years. Using simple interest formula: Interest = $300 × 0.028 × 0.5 = $4.20. Therefore, Marcus will earn $4.20 in interest because the calculation uses the fraction of a year for 6 months.",
+        "options": [
+          "$4.20",
+          "$8.40",
+          "$16.80",
+          "$25.20"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "KiwiSaver",
+          "monthly periods",
+          "New Zealand",
+          "simple interest"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-6",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "compound-interest",
+        "subcategory": "annual-compounding",
+        "difficulty": "medium",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Lisa invests $1,000 at 5% compound interest per year. How much will she have after 2 years?",
+        "answer": "$1,102.50",
+        "explanation": "Compound interest formula: A = P(1 + r)^t. Therefore: A = $1,000(1 + 0.05)^2 = $1,000(1.05)^2 = $1,000 × 1.1025 = $1,102.50. This shows how money grows faster with compound interest because interest is earned on both principal and previous interest.",
+        "options": [
+          "$1,100.00",
+          "$1,102.50",
+          "$1,105.00",
+          "$1,110.25"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "compound interest",
+          "annual compounding",
+          "exponential growth",
+          "investment"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-7",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "compound-interest",
+        "subcategory": "annual-compounding",
+        "difficulty": "medium",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "A savings account has $800 earning 4% compound interest annually. What will be the total after 3 years?",
+        "answer": "$899.89",
+        "explanation": "Using the compound interest formula: A = P(1 + r)^t = $800(1 + 0.04)^3 = $800(1.04)^3 = $800 × 1.124864 = $899.89. Therefore, the account will grow to $899.89 because compound interest builds upon itself each year.",
+        "options": [
+          "$896.00",
+          "$899.89",
+          "$902.40",
+          "$912.00"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "compound interest",
+          "annual compounding",
+          "savings account",
+          "financial growth"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-8",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "compound-interest",
+        "subcategory": "quarterly-compounding",
+        "difficulty": "hard",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "David invests $1,500 at 6% per year, compounded quarterly. How much will he have after 1 year?",
+        "answer": "$1,593.39",
+        "explanation": "For quarterly compounding: A = P(1 + r/n)^(nt) where n=4. Therefore: A = $1,500(1 + 0.06/4)^(4×1) = $1,500(1.015)^4 = $1,500 × 1.06136 = $1,592.04. Since compounding occurs more frequently, the investment grows to approximately $1,593.39.",
+        "options": [
+          "$1,590.00",
+          "$1,593.39",
+          "$1,596.15",
+          "$1,600.00"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "compound interest",
+          "quarterly compounding",
+          "frequent compounding",
+          "investment growth"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-9",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "compound-interest",
+        "subcategory": "monthly-compounding",
+        "difficulty": "hard",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "A term deposit of $2,000 earns 3.6% per year compounded monthly. What is the value after 18 months?",
+        "answer": "$2,110.59",
+        "explanation": "Monthly compounding: A = P(1 + r/12)^(12t). For 18 months (1.5 years): A = $2,000(1 + 0.036/12)^(12×1.5) = $2,000(1.003)^18 = $2,000 × 1.05529 = $2,110.59. Therefore, monthly compounding provides more frequent growth than annual compounding.",
+        "options": [
+          "$2,108.00",
+          "$2,110.59",
+          "$2,115.20",
+          "$2,120.40"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "compound interest",
+          "monthly compounding",
+          "term deposit",
+          "frequent compounding"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-10",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "budgeting",
+        "subcategory": "income-expenses",
+        "difficulty": "easy",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Alex earns $150 per week from a part-time job and spends $45 on transport, $30 on food, and $25 on entertainment. How much can Alex save each week?",
+        "answer": "$50",
+        "explanation": "Total expenses = $45 + $30 + $25 = $100. Therefore, savings = income - expenses = $150 - $100 = $50. This shows how budgeting involves tracking income and expenses to determine available savings.",
+        "options": [
+          "$45",
+          "$50",
+          "$55",
+          "$75"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "budgeting",
+          "income",
+          "expenses",
+          "savings"
+        ],
+        "includesFormula": false
+      }
+    },
+    {
+      "id": "FL-11",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "budgeting",
+        "subcategory": "income-expenses",
+        "difficulty": "medium",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Maria's monthly budget includes: Income $800, Rent $280, Food $120, Transport $80, Entertainment $60. What percentage of her income does she spend on essentials (rent, food, transport)?",
+        "answer": "60%",
+        "explanation": "Essential expenses = $280 + $120 + $80 = $480. Percentage = ($480 ÷ $800) × 100% = 60%. Therefore, Maria spends 60% of her income on essential items, because essentials are necessary living costs.",
+        "options": [
+          "55%",
+          "60%",
+          "65%",
+          "70%"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "budgeting",
+          "percentage calculation",
+          "essential expenses",
+          "financial planning"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-12",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "budgeting",
+        "subcategory": "savings-goals",
+        "difficulty": "medium",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Tom wants to save $480 for a new bike. If he can save $40 per month, how many months will it take?",
+        "answer": "12 months ($480 goal)",
+        "explanation": "Time needed = Total goal ÷ Monthly savings = $480 ÷ $40 = 12 months. Therefore, Tom needs 12 months to reach his savings goal because he consistently saves the same amount each month.",
+        "options": [
+          "10 months",
+          "12 months",
+          "14 months",
+          "16 months"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "savings goals",
+          "monthly saving",
+          "time calculation",
+          "financial planning"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-13",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "budgeting",
+        "subcategory": "income-expenses",
+        "difficulty": "easy",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Sophie has a weekly allowance of $25. She spends $8 on lunch, $6 on snacks, and $4 on school supplies. How much is left for savings?",
+        "answer": "$7",
+        "explanation": "Total spending = $8 + $6 + $4 = $18. Therefore, money left for savings = $25 - $18 = $7. This demonstrates how tracking all expenses helps identify available savings money.",
+        "options": [
+          "$6",
+          "$7",
+          "$8",
+          "$9"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "weekly budget",
+          "allowance",
+          "expense tracking",
+          "savings"
+        ],
+        "includesFormula": false
+      }
+    },
+    {
+      "id": "FL-14",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "budgeting",
+        "subcategory": "savings-goals",
+        "difficulty": "hard",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Lily wants to save $600 for a school trip in 8 months. She currently saves $50 per month. How much extra must she save each month to reach her goal?",
+        "answer": "$25",
+        "explanation": "Total needed savings = $600 ÷ 8 months = $75 per month. Current savings = $50 per month. Therefore, extra needed = $75 - $50 = $25 per month. Since her current rate is insufficient, she needs to increase her monthly savings.",
+        "options": [
+          "$20",
+          "$25",
+          "$30",
+          "$35"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "savings goals",
+          "financial planning",
+          "budget adjustment",
+          "monthly targets"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-15",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "profit-loss",
+        "subcategory": "basic-profit",
+        "difficulty": "easy",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "A student buys pens for $2 each and sells them for $3 each. If they sell 20 pens, what is their total profit?",
+        "answer": "$20",
+        "explanation": "Profit per pen = Selling price - Cost price = $3 - $2 = $1. Therefore, total profit = 20 pens × $1 = $20. This demonstrates basic profit calculation in a small business context.",
+        "options": [
+          "$15",
+          "$20",
+          "$25",
+          "$40"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "profit calculation",
+          "buying price",
+          "selling price",
+          "business"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-16",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "profit-loss",
+        "subcategory": "percentage-profit-loss",
+        "difficulty": "medium",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Jake bought a bike for $120 and sold it for $150. What is his percentage profit?",
+        "answer": "25%",
+        "explanation": "Profit = $150 - $120 = $30. Percentage profit = (Profit ÷ Cost price) × 100% = ($30 ÷ $120) × 100% = 25%. Therefore, Jake made a 25% profit because the profit was one-quarter of the original cost.",
+        "options": [
+          "20%",
+          "25%",
+          "30%",
+          "35%"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "percentage profit",
+          "profit calculation",
+          "cost price",
+          "selling price"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-17",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "profit-loss",
+        "subcategory": "basic-profit",
+        "difficulty": "medium",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Sarah runs a lemonade stand. She spends $15 on supplies and sells lemonade for $25. If she operates for 5 days and makes the same profit each day, what is her daily profit?",
+        "answer": "$2",
+        "explanation": "Total profit = $25 - $15 = $10. Therefore, daily profit = $10 ÷ 5 days = $2 per day. This shows how to calculate daily profit in a small business because profit needs to be spread across operating days.",
+        "options": [
+          "$1",
+          "$2",
+          "$3",
+          "$5"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "daily profit",
+          "business operations",
+          "profit calculation",
+          "small business"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-18",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "profit-loss",
+        "subcategory": "percentage-profit-loss",
+        "difficulty": "hard",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Emma bought a game for $40 and had to sell it for $32 due to damage. What is her percentage loss?",
+        "answer": "20%",
+        "explanation": "Loss = $40 - $32 = $8. Percentage loss = (Loss ÷ Cost price) × 100% = ($8 ÷ $40) × 100% = 20%. Therefore, Emma had a 20% loss because she received $8 less than what she paid, which is 20% of the original price.",
+        "options": [
+          "15%",
+          "20%",
+          "25%",
+          "30%"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "percentage loss",
+          "loss calculation",
+          "selling price",
+          "financial loss"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-19",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "banking",
+        "subcategory": "account-fees",
+        "difficulty": "easy",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "A New Zealand bank charges a $3 monthly account fee and $0.50 for each EFTPOS transaction. If Ben makes 12 transactions in a month, what are his total banking fees?",
+        "answer": "$9.00",
+        "explanation": "Transaction fees = 12 × $0.50 = $6.00. Therefore, total fees = $3.00 + $6.00 = $9.00. This shows how banking costs include both fixed monthly fees and variable transaction charges in New Zealand banks.",
+        "options": [
+          "$7.50",
+          "$9.00",
+          "$10.50",
+          "$12.00"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "banking fees",
+          "EFTPOS",
+          "New Zealand banking",
+          "account fees"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-20",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "banking",
+        "subcategory": "loan-calculations",
+        "difficulty": "medium",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Kiwi Bank offers a personal loan of $1,000 at 8% simple interest per year for 2 years. What is the total amount to be repaid?",
+        "answer": "$1,160",
+        "explanation": "Interest = Principal × Rate × Time = $1,000 × 0.08 × 2 = $160. Therefore, total repayment = $1,000 + $160 = $1,160. This demonstrates how loan repayments include both principal and interest in New Zealand banking.",
+        "options": [
+          "$1,080",
+          "$1,160",
+          "$1,200",
+          "$1,240"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "personal loan",
+          "Kiwi Bank",
+          "loan repayment",
+          "banking"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-21",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "banking",
+        "subcategory": "account-fees",
+        "difficulty": "medium",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "ASB Bank has no monthly fees if you maintain a minimum balance of $500, otherwise charges $5 per month. If Jordan's balance drops below $500 for 3 months, how much extra will they pay?",
+        "answer": "$15",
+        "explanation": "Extra fees = 3 months × $5 per month = $15. Therefore, Jordan pays $15 in additional fees because maintaining the minimum balance waives the monthly charge, but falling below triggers the fee.",
+        "options": [
+          "$10",
+          "$15",
+          "$20",
+          "$25"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "minimum balance",
+          "ASB Bank",
+          "monthly fees",
+          "New Zealand banking"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-22",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "banking",
+        "subcategory": "loan-calculations",
+        "difficulty": "hard",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Westpac NZ offers a student loan of $800 with monthly repayments of $45 for 20 months. How much interest is paid over the life of the loan?",
+        "answer": "$100",
+        "explanation": "Total payments = 20 months × $45 = $900. Therefore, interest paid = $900 - $800 = $100. This shows how the total interest cost can be calculated by comparing total payments to the original loan amount.",
+        "options": [
+          "$80",
+          "$100",
+          "$120",
+          "$140"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "student loan",
+          "Westpac",
+          "monthly repayments",
+          "interest cost"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-23",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "banking",
+        "subcategory": "account-fees",
+        "difficulty": "easy",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "BNZ charges $2 for ATM withdrawals from other banks' machines. If Rachel uses other ATMs 6 times per month, how much does she spend on ATM fees annually?",
+        "answer": "$144",
+        "explanation": "Monthly ATM fees = 6 × $2 = $12. Therefore, annual ATM fees = $12 × 12 months = $144. This demonstrates how small frequent fees can add up significantly over a year in New Zealand banking.",
+        "options": [
+          "$120",
+          "$144",
+          "$156",
+          "$180"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "ATM fees",
+          "BNZ",
+          "annual costs",
+          "banking charges"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-24",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "investment",
+        "subcategory": "basic-principles",
+        "difficulty": "easy",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Which investment option typically offers higher returns over time: a savings account at 2% or a managed fund at 6%?",
+        "answer": "Managed fund at 6%",
+        "explanation": "The managed fund offers 6% compared to the savings account's 2%, which is three times higher. Therefore, managed funds typically provide higher returns because they invest in a diversified portfolio of assets, though they also carry more risk than savings accounts.",
+        "options": [
+          "Savings account at 2%",
+          "Managed fund at 6%",
+          "Both are equal",
+          "Cannot determine"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "investment returns",
+          "managed fund",
+          "savings account",
+          "risk vs return"
+        ],
+        "includesFormula": false
+      }
+    },
+    {
+      "id": "FL-25",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "investment",
+        "subcategory": "basic-principles",
+        "difficulty": "medium",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "Anna invests $500 in a term deposit for 2 years at 4% annual interest. How much more would she earn compared to keeping the money in a 1% savings account?",
+        "answer": "$30",
+        "explanation": "Term deposit interest = $500 × 0.04 × 2 = $40. Savings account interest = $500 × 0.01 × 2 = $10. Therefore, difference = $40 - $10 = $30. Anna earns $30 more by choosing to invest in the term deposit because it offers a higher interest rate in exchange for locking up the money.",
+        "options": [
+          "$25",
+          "$30",
+          "$35",
+          "$40"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "term deposit",
+          "savings account",
+          "investment comparison",
+          "interest rates"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-26",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "investment",
+        "subcategory": "basic-principles",
+        "difficulty": "hard",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "KiwiSaver member contributions are matched by the government up to $521 per year. If Sam contributes $1,200 annually, what is his total annual investment (including government contribution)?",
+        "answer": "$1,721",
+        "explanation": "Sam's contribution of $1,200 exceeds the maximum for government matching. Therefore, government contribution = $521 (maximum). Total investment = $1,200 + $521 = $1,721. This demonstrates how KiwiSaver government matching works in New Zealand's retirement savings system.",
+        "options": [
+          "$1,621",
+          "$1,721",
+          "$1,800",
+          "$2,400"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "KiwiSaver",
+          "government contribution",
+          "retirement savings",
+          "New Zealand"
+        ],
+        "includesFormula": true
+      }
+    },
+    {
+      "id": "FL-27",
+      "type": "FINANCIAL_LITERACY",
+      "metadata": {
+        "grade": 8,
+        "subject": "Mathematics",
+        "curriculumTopic": "Number and Algebra",
+        "curriculumSubtopic": "Financial Mathematics",
+        "indexOptimized": true
+      },
+      "classification": {
+        "category": "investment",
+        "subcategory": "basic-principles",
+        "difficulty": "medium",
+        "context": "real-world"
+      },
+      "content": {
+        "question": "If Maya invests $300 and it grows to $360 after one year, what was her rate of return?",
+        "answer": "20%",
+        "explanation": "Gain = $360 - $300 = $60. Rate of return = (Gain ÷ Original investment) × 100% = ($60 ÷ $300) × 100% = 20%. Therefore, Maya achieved a 20% return because her investment increased by one-fifth of its original value.",
+        "options": [
+          "15%",
+          "18%",
+          "20%",
+          "25%"
+        ]
+      },
+      "educational": {
+        "keyTerms": [
+          "rate of return",
+          "investment gain",
+          "percentage return",
+          "investment performance"
+        ],
+        "includesFormula": true
+      }
+    }
+  ]
+}

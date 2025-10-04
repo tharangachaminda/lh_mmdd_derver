@@ -1,0 +1,322 @@
+{
+    "metadata": {
+        "datasetId": "pattern-symbols-2025",
+        "datasetName": "Pattern Recognition Symbols",
+        "category": "Geometric Shapes",
+        "totalSymbols": 42,
+        "createdAt": "2025-10-01T00:00:00.000Z",
+        "version": "2.0"
+    },
+    "symbols": [
+        {
+            "symbol": "○",
+            "name": "empty circle",
+            "category": "circle",
+            "fraction": "0"
+        },
+        {
+            "symbol": "●",
+            "name": "full circle",
+            "category": "circle",
+            "fraction": "1"
+        },
+        {
+            "symbol": "◐",
+            "name": "half circle left",
+            "category": "circle",
+            "fraction": "1/2"
+        },
+        {
+            "symbol": "◑",
+            "name": "half circle right",
+            "category": "circle",
+            "fraction": "1/2"
+        },
+        {
+            "symbol": "◒",
+            "name": "half circle bottom",
+            "category": "circle",
+            "fraction": "1/2"
+        },
+        {
+            "symbol": "◓",
+            "name": "half circle top",
+            "category": "circle",
+            "fraction": "1/2"
+        },
+        {
+            "symbol": "◔",
+            "name": "quarter circle",
+            "category": "circle",
+            "fraction": "1/4"
+        },
+        {
+            "symbol": "◕",
+            "name": "three quarter circle alt",
+            "category": "circle",
+            "fraction": "3/4"
+        },
+        {
+            "symbol": "◖",
+            "name": "left half black circle",
+            "category": "circle",
+            "fraction": "1/2"
+        },
+        {
+            "symbol": "◗",
+            "name": "right half black circle",
+            "category": "circle",
+            "fraction": "1/2"
+        },
+
+        {
+            "symbol": "□",
+            "name": "empty square",
+            "category": "square",
+            "fraction": "0"
+        },
+        {
+            "symbol": "■",
+            "name": "full square",
+            "category": "square",
+            "fraction": "1"
+        },
+        {
+            "symbol": "◻",
+            "name": "white medium square",
+            "category": "square",
+            "fraction": "0"
+        },
+        {
+            "symbol": "◼",
+            "name": "black medium square",
+            "category": "square",
+            "fraction": "1"
+        },
+        {
+            "symbol": "◽",
+            "name": "white medium small square",
+            "category": "square",
+            "fraction": "0"
+        },
+        {
+            "symbol": "◾",
+            "name": "black medium small square",
+            "category": "square",
+            "fraction": "1"
+        },
+        {
+            "symbol": "◧",
+            "name": "square with left half black",
+            "category": "square",
+            "fraction": "1/2"
+        },
+        {
+            "symbol": "◨",
+            "name": "square with right half black",
+            "category": "square",
+            "fraction": "1/2"
+        },
+        {
+            "symbol": "◩",
+            "name": "square with upper left diagonal half black",
+            "category": "square",
+            "fraction": "1/2"
+        },
+        {
+            "symbol": "◪",
+            "name": "square with lower right diagonal half black",
+            "category": "square",
+            "fraction": "1/2"
+        },
+
+        {
+            "symbol": "△",
+            "name": "empty triangle up",
+            "category": "triangle",
+            "fraction": "0"
+        },
+        {
+            "symbol": "▲",
+            "name": "full triangle up",
+            "category": "triangle",
+            "fraction": "1"
+        },
+        {
+            "symbol": "▽",
+            "name": "empty triangle down",
+            "category": "triangle",
+            "fraction": "0"
+        },
+        {
+            "symbol": "▼",
+            "name": "full triangle down",
+            "category": "triangle",
+            "fraction": "1"
+        },
+        {
+            "symbol": "◁",
+            "name": "empty triangle left",
+            "category": "triangle",
+            "fraction": "0"
+        },
+        {
+            "symbol": "◀",
+            "name": "full triangle left",
+            "category": "triangle",
+            "fraction": "1"
+        },
+        {
+            "symbol": "▷",
+            "name": "empty triangle right",
+            "category": "triangle",
+            "fraction": "0"
+        },
+        {
+            "symbol": "▶",
+            "name": "full triangle right",
+            "category": "triangle",
+            "fraction": "1"
+        },
+        {
+            "symbol": "◢",
+            "name": "Black lower right triangle",
+            "category": "triangle",
+            "fraction": "1"
+        },
+        {
+            "symbol": "◣",
+            "name": "Black lower left triangle",
+            "category": "triangle",
+            "fraction": "1"
+        },
+        {
+            "symbol": "◤",
+            "name": "Black upper left triangle",
+            "category": "triangle",
+            "fraction": "1"
+        },
+        {
+            "symbol": "◥",
+            "name": "Black upper right triangle",
+            "category": "triangle",
+            "fraction": "1"
+        },
+        {
+            "symbol": "◭",
+            "name": "Up-pointing triangle with left half black",
+            "category": "triangle",
+            "fraction": "1/2"
+        },
+        {
+            "symbol": "◮",
+            "name": "Up-pointing triangle with right half black",
+            "category": "triangle",
+            "fraction": "1/2"
+        },
+        {
+            "symbol": "◇",
+            "name": "empty diamond",
+            "category": "diamond",
+            "fraction": "0"
+        },
+        {
+            "symbol": "◆",
+            "name": "full diamond",
+            "category": "diamond",
+            "fraction": "1"
+        },
+        {
+            "symbol": "◈",
+            "name": "diamond with dot",
+            "category": "diamond",
+            "fraction": "1/2"
+        },
+        {
+            "symbol": "◊",
+            "name": "lozenge",
+            "category": "diamond",
+            "fraction": "0"
+        },
+
+        {
+            "symbol": "☆",
+            "name": "empty star",
+            "category": "star",
+            "fraction": "0"
+        },
+        {
+            "symbol": "★",
+            "name": "full star",
+            "category": "star",
+            "fraction": "1"
+        },
+        {
+            "symbol": "✩",
+            "name": "stress outlined star",
+            "category": "star",
+            "fraction": "0"
+        },
+        {
+            "symbol": "✪",
+            "name": "circled star",
+            "category": "star",
+            "fraction": "1"
+        },
+        {
+            "symbol": "✭",
+            "name": "heavy star",
+            "category": "star",
+            "fraction": "1"
+        },
+        {
+            "symbol": "✮",
+            "name": "outlined star",
+            "category": "star",
+            "fraction": "0"
+        },
+        {
+            "symbol": "✯",
+            "name": "pinwheel star",
+            "category": "star",
+            "fraction": "1"
+        },
+
+        {
+            "symbol": "◯",
+            "name": "large circle",
+            "category": "misc",
+            "fraction": "0"
+        },
+        {
+            "symbol": "⬤",
+            "name": "black large circle",
+            "category": "misc",
+            "fraction": "1"
+        },
+        {
+            "symbol": "⯀",
+            "name": "monogram for yang",
+            "category": "misc",
+            "fraction": "N/A"
+        },
+        {
+            "symbol": "❖",
+            "name": "black diamond minus white x",
+            "category": "misc",
+            "fraction": "N/A"
+        },
+        {
+            "symbol": "⬟",
+            "name": "black pentagon",
+            "category": "misc",
+            "fraction": "1"
+        },
+        {
+            "symbol": "⬢",
+            "name": "black hexagon",
+            "category": "misc",
+            "fraction": "1"
+        }
+    ]
+}

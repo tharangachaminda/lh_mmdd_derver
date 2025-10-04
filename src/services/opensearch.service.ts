@@ -77,7 +77,7 @@ export interface EnhancedQuestion {
 class OpenSearchService {
     private readonly client: Client | MinimalClient;
     private readonly indexName =
-        process.env.VECTOR_INDEX_NAME || "enhanced_questions";
+        process.env.VECTOR_INDEX_NAME || "basic_questions";
     private readonly enhancedIndexName =
         process.env.VECTOR_INDEX_NAME || "enhanced_questions";
 
@@ -283,7 +283,7 @@ class OpenSearchService {
                             // Vector embedding
                             embedding: {
                                 type: "knn_vector",
-                                dimension: 1536,
+                                dimension: 768,
                                 method: {
                                     name: "hnsw",
                                     space_type: "cosinesimil",
