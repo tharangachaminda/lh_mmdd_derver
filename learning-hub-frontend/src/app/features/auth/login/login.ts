@@ -136,7 +136,7 @@ export class LoginComponent implements OnInit {
   }
 
   goToStudentRegistration(): void {
-    this.router.navigate(['/auth/register/student']);
+    this.router.navigate(['/auth/register']);
   }
 
   goToForgotPassword(): void {

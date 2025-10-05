@@ -1,0 +1,276 @@
+<div class="register-container">
+  <div class="register-wrapper">
+    <!-- Header Section -->
+    <div class="register-header">
+      <img src="/assets/logo.svg" alt="Learning Hub" class="logo" />
+      <h1>Join Learning Hub</h1>
+      <p>Create your student account and start your AI-powered learning journey</p>
+    </div>
+
+    <!-- Registration Card -->
+    <mat-card class="register-card">
+      <mat-card-header>
+        <mat-card-title>Student Registration</mat-card-title>
+        <mat-card-subtitle>Fill in your details to create your learning account</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
+          
+          <!-- Personal Information Section -->
+          <div class="form-section">
+            <h3>Personal Information</h3>
+            
+            <div class="form-row">
+              <!-- First Name -->
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>First Name</mat-label>
+                <input
+                  matInput
+                  formControlName="firstName"
+                  placeholder="Enter your first name"
+                  autocomplete="given-name"
+                />
+                <mat-icon matSuffix>person</mat-icon>
+                <mat-error *ngIf="firstName?.hasError('required')">
+                  First name is required
+                </mat-error>
+                <mat-error *ngIf="firstName?.hasError('minlength')">
+                  First name must be at least 2 characters
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Last Name -->
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Last Name</mat-label>
+                <input
+                  matInput
+                  formControlName="lastName"
+                  placeholder="Enter your last name"
+                  autocomplete="family-name"
+                />
+                <mat-icon matSuffix>person</mat-icon>
+                <mat-error *ngIf="lastName?.hasError('required')">
+                  Last name is required
+                </mat-error>
+                <mat-error *ngIf="lastName?.hasError('minlength')">
+                  Last name must be at least 2 characters
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Email -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Email Address</mat-label>
+              <input
+                matInput
+                type="email"
+                formControlName="email"
+                placeholder="Enter your email address"
+                autocomplete="email"
+              />
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-error *ngIf="email?.hasError('required')">
+                Email is required
+              </mat-error>
+              <mat-error *ngIf="email?.hasError('email')">
+                Please enter a valid email address
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Date of Birth -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Date of Birth</mat-label>
+              <input
+                matInput
+                type="date"
+                formControlName="dateOfBirth"
+                [max]="getTodayDate()"
+              />
+              <mat-icon matSuffix>cake</mat-icon>
+              <mat-error *ngIf="dateOfBirth?.hasError('required')">
+                Date of birth is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Academic Information Section -->
+          <div class="form-section">
+            <h3>Academic Information</h3>
+            
+            <div class="form-row">
+              <!-- Grade Level -->
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Grade Level</mat-label>
+                <mat-select formControlName="gradeLevel">
+                  <mat-option *ngFor="let grade of gradeOptions" [value]="grade.value">
+                    {{ grade.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matSuffix>school</mat-icon>
+                <mat-error *ngIf="gradeLevel?.hasError('required')">
+                  Please select your grade level
+                </mat-error>
+              </mat-form-field>
+
+              <!-- School -->
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>School Name</mat-label>
+                <input
+                  matInput
+                  formControlName="school"
+                  placeholder="Enter your school name"
+                />
+                <mat-icon matSuffix>domain</mat-icon>
+                <mat-error *ngIf="school?.hasError('required')">
+                  School name is required
+                </mat-error>
+                <mat-error *ngIf="school?.hasError('minlength')">
+                  School name must be at least 3 characters
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Security Section -->
+          <div class="form-section">
+            <h3>Account Security</h3>
+            
+            <!-- Password -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Password</mat-label>
+              <input
+                matInput
+                [type]="hidePassword ? 'password' : 'text'"
+                formControlName="password"
+                placeholder="Create a strong password"
+                autocomplete="new-password"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                (click)="togglePasswordVisibility()"
+              >
+                <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              <mat-error *ngIf="password?.hasError('required')">
+                Password is required
+              </mat-error>
+              <mat-error *ngIf="password?.hasError('minlength')">
+                Password must be at least 8 characters
+              </mat-error>
+              <mat-error *ngIf="password?.hasError('passwordStrength')">
+                Password must include uppercase, lowercase, number, and special character
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Confirm Password -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Confirm Password</mat-label>
+              <input
+                matInput
+                [type]="hideConfirmPassword ? 'password' : 'text'"
+                formControlName="confirmPassword"
+                placeholder="Confirm your password"
+                autocomplete="new-password"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                (click)="toggleConfirmPasswordVisibility()"
+              >
+                <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              <mat-error *ngIf="confirmPassword?.hasError('required')">
+                Please confirm your password
+              </mat-error>
+              <mat-error *ngIf="registrationForm.hasError('passwordMismatch') && confirmPassword?.touched">
+                Passwords do not match
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Password Strength Indicator -->
+            <div class="password-requirements" *ngIf="password?.value">
+              <p>Password Requirements:</p>
+              <ul>
+                <li [class.met]="password?.value?.length >= 8">At least 8 characters</li>
+                <li [class.met]="password?.value && hasUppercase(password?.value || '')">One uppercase letter</li>
+                <li [class.met]="password?.value && hasLowercase(password?.value || '')">One lowercase letter</li>
+                <li [class.met]="password?.value && hasNumber(password?.value || '')">One number</li>
+                <li [class.met]="password?.value && hasSpecialChar(password?.value || '')">One special character</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Terms and Conditions Section -->
+          <div class="form-section">
+            <h3>Terms & Privacy</h3>
+            
+            <div class="checkbox-group">
+              <mat-checkbox formControlName="agreeToTerms" class="full-width">
+                I agree to the <a href="#" target="_blank">Terms of Service</a>
+              </mat-checkbox>
+              <mat-error *ngIf="agreeToTerms?.hasError('required') && agreeToTerms?.touched">
+                You must agree to the Terms of Service
+              </mat-error>
+
+              <mat-checkbox formControlName="agreeToPrivacy" class="full-width">
+                I agree to the <a href="#" target="_blank">Privacy Policy</a>
+              </mat-checkbox>
+              <mat-error *ngIf="agreeToPrivacy?.hasError('required') && agreeToPrivacy?.touched">
+                You must agree to the Privacy Policy
+              </mat-error>
+
+              <mat-checkbox formControlName="emailUpdates" class="full-width">
+                I would like to receive learning tips and platform updates (optional)
+              </mat-checkbox>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            class="register-button full-width"
+            [disabled]="!registrationForm.valid || isLoading"
+          >
+            <span *ngIf="!isLoading">Create Account</span>
+            <div *ngIf="isLoading" class="loading-content">
+              <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+              <span>Creating Account...</span>
+            </div>
+          </button>
+        </form>
+      </mat-card-content>
+
+      <mat-card-actions class="card-actions">
+        <div class="divider">
+          <span>Already have an account?</span>
+        </div>
+        
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="goToLogin()"
+          class="login-button full-width"
+        >
+          <mat-icon>login</mat-icon>
+          Sign In Instead
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Footer -->
+    <div class="register-footer">
+      <p>&copy; 2025 Learning Hub. AI-Powered Education Platform.</p>
+      <div class="footer-links">
+        <a href="#" mat-button>Privacy Policy</a>
+        <a href="#" mat-button>Terms of Service</a>
+        <a href="#" mat-button>Support</a>
+      </div>
+    </div>
+  </div>
+</div>
