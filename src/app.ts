@@ -1,22 +1,45 @@
 import express, { Request, Response, NextFunction } from "express";
+import cors from "cors";
 import questionRoutes from "./routes/question.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 import { errorHandler } from "./utils/error.handler.js";
+import { DatabaseConfig } from "./config/database.config.js";
 
 const app = express();
 export { app };
+
+// Initialize database connection
+const database = DatabaseConfig.getInstance();
+await database.connect();
+
+// CORS configuration
+app.use(
+    cors({
+        origin: process.env.FRONTEND_URL || "http://localhost:4200",
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    })
+);
 
 // Middleware to parse JSON bodies
 app.use(express.json());
 
 // Health check endpoint
 app.get("/health", (_req: Request, res: Response) => {
+    const dbInfo = database.getConnectionInfo();
     res.status(200).json({
         status: "OK",
         timestamp: new Date().toISOString(),
+        database: {
+            connected: dbInfo.isConnected,
+            readyState: dbInfo.readyState,
+        },
     });
 });
 
 // API routes
+app.use("/api/auth", authRoutes);
 app.use("/api/questions", questionRoutes);
 
 // 404 handler for undefined routes

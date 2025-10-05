@@ -162,7 +162,7 @@ export class AuthService {
    * Handle successful authentication
    */
   private handleAuthSuccess(response: AuthResponse): void {
-    this.setAuthToken(response.token);
+    this.setAuthToken(response.accessToken);
     this.setRefreshToken(response.refreshToken);
     this.setStoredUser(response.user);
 

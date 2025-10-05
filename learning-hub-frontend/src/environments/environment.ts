@@ -1,10 +1,10 @@
 // Development environment configuration
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api/v1',
-  curriculumApiUrl: 'http://localhost:3000/api/v1/curriculum',
-  contentApiUrl: 'http://localhost:3000/api/v1/content',
-  swaggerUrl: 'http://localhost:3000/api/v1/docs',
+  apiUrl: 'http://localhost:3000/api',
+  curriculumApiUrl: 'http://localhost:3000/api/questions',
+  contentApiUrl: 'http://localhost:3000/api/questions',
+  swaggerUrl: 'http://localhost:3000/api/docs',
 
   // Feature flags
   features: {

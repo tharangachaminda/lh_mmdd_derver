@@ -7,8 +7,8 @@
  */
 
 export enum UserRole {
-  STUDENT = 'STUDENT',
-  ADMIN = 'ADMIN',
+  STUDENT = 'student',
+  ADMIN = 'admin',
 }
 
 /**
@@ -168,10 +168,11 @@ export interface LoginCredentials {
 }
 
 export interface AuthResponse {
-  token: string;
-  refreshToken: string;
+  success: boolean;
+  message: string;
   user: User;
-  expiresIn: number;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface StudentRegistration {
