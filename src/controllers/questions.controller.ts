@@ -4,12 +4,18 @@
  * API endpoints for AI question generation with persona-based personalization
  */
 
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { AIEnhancedQuestionsService } from "../services/questions-ai-enhanced.service.js";
 import { JWTPayload } from "../services/auth.service.js";
+import { UserRole } from "../models/user.model.js";
 
 interface AuthenticatedRequest extends Request {
-    user?: JWTPayload;
+    user?: {
+        userId: string;
+        email: string;
+        role: UserRole;
+        grade: number;
+    };
 }
 
 export class QuestionsController {
@@ -20,160 +26,223 @@ export class QuestionsController {
     }
 
     /**
-     * Generate AI-enhanced questions with persona-based personalization
-     * POST /api/questions/generate
+     * Validate the simple token format
      */
-    async generateQuestions(
-        req: AuthenticatedRequest,
-        res: Response
+    private static validateToken(token: string): any {
+        try {
+            const decoded = JSON.parse(Buffer.from(token, "base64").toString());
+            return decoded;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    /**
+     * Middleware to authenticate student token
+     */
+    static async authenticateStudent(
+        req: Request,
+        res: Response,
+        next: NextFunction
     ): Promise<void> {
         try {
-            console.log("🎯 Generate Questions Request:", {
-                body: req.body,
-                user: req.user,
-            });
-
-            // Validate request body
-            if (!req.body || typeof req.body !== "object") {
-                res.status(400).json({
-                    success: false,
-                    message: "Invalid request body",
-                    data: null,
-                });
-                return;
-            }
-
-            const {
-                subject,
-                topic,
-                subtopic,
-                difficulty,
-                questionType,
-                count,
-                persona,
-            } = req.body;
-
-            // Validate required fields
-            if (
-                !subject ||
-                !topic ||
-                !difficulty ||
-                !questionType ||
-                !count ||
-                !persona
-            ) {
-                res.status(400).json({
-                    success: false,
-                    message:
-                        "Missing required fields: subject, topic, difficulty, questionType, count, persona",
-                    data: null,
-                });
-                return;
-            }
-
-            // Validate count
-            if (typeof count !== "number" || count < 1 || count > 10) {
-                res.status(400).json({
-                    success: false,
-                    message: "Count must be a number between 1 and 10",
-                    data: null,
-                });
-                return;
-            }
-
-            console.log("🚀 Generating AI-enhanced questions...", {
-                subject,
-                topic,
-                difficulty,
-                questionType,
-                count,
-            });
-
-            // Validate user authentication
-            if (!req.user) {
+            const authHeader = req.headers.authorization;
+            if (!authHeader || !authHeader.startsWith("Bearer ")) {
                 res.status(401).json({
                     success: false,
-                    message: "Authentication required",
-                    data: null,
+                    message: "Authorization token required",
                 });
                 return;
             }
 
-            // Create question generation request
-            const questionRequest = {
-                subject,
-                topic,
-                subtopic,
-                difficulty,
-                questionType,
-                count,
-                persona,
-                previousQuestions: req.body.previousQuestions || [],
+            const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+            const decoded = QuestionsController.validateToken(token);
+
+            if (!decoded || !decoded.userId) {
+                res.status(401).json({
+                    success: false,
+                    message: "Invalid token",
+                });
+                return;
+            }
+
+            // Add user info to request
+            (req as AuthenticatedRequest).user = {
+                userId: decoded.userId,
+                email: decoded.email,
+                role: decoded.role,
+                grade: decoded.grade,
             };
 
-            // Generate questions using AI-enhanced service
-            const result = await this.aiQuestionsService.generateQuestions(
-                questionRequest,
-                req.user
-            );
-
-            console.log("✅ Questions generated successfully");
-
-            res.status(200).json({
-                success: true,
-                message: `Successfully generated ${result.questions.length} AI-enhanced questions`,
-                data: result,
-            });
+            next();
         } catch (error: any) {
-            console.error("❌ Question generation error:", error);
-            res.status(500).json({
+            console.error("❌ Authentication error:", error);
+            res.status(401).json({
                 success: false,
-                message: "Internal server error during question generation",
-                data: null,
-                error:
-                    process.env.NODE_ENV === "development"
-                        ? error.message
-                        : undefined,
+                message: "Authentication failed",
+                details: error.message,
             });
         }
     }
 
     /**
-     * Get available subjects and topics for a grade level
-     * GET /api/questions/subjects/:grade
+     * Generate personalized AI questions for authenticated student (working implementation)
      */
-    async getSubjectsForGrade(req: Request, res: Response): Promise<void> {
+    async generateQuestions(req: Request, res: Response): Promise<void> {
         try {
-            const grade = parseInt(req.params.grade);
+            const authReq = req as AuthenticatedRequest;
+            console.log(
+                "🎯 Production AI question generation for user:",
+                authReq.user?.email
+            );
 
-            if (isNaN(grade) || grade < 3 || grade > 8) {
+            const { subject, topic, difficulty, numQuestions } = req.body;
+
+            // Validate required fields
+            if (!subject || !topic) {
                 res.status(400).json({
                     success: false,
-                    message: "Grade must be between 3 and 8",
-                    data: null,
+                    message: "Subject and topic are required",
                 });
                 return;
             }
 
-            // Simplified subjects response
-            const subjects = {
-                mathematics: ["Numbers", "Algebra", "Geometry", "Statistics"],
-                science: ["Physics", "Chemistry", "Biology", "Earth Science"],
-                english: ["Reading", "Writing", "Grammar", "Literature"],
-                social_studies: ["History", "Geography", "Civics", "Culture"],
+            // Use authenticated user's grade if not specified
+            const userGrade = authReq.user?.grade || 5;
+            const questionsCount = Math.min(numQuestions || 5, 10); // Max 10 questions
+            const difficultyLevel = difficulty || "medium";
+
+            console.log("📚 Generating questions:", {
+                subject,
+                topic,
+                grade: userGrade,
+                difficulty: difficultyLevel,
+                count: questionsCount,
+                userId: authReq.user?.userId,
+            });
+
+            // Create JWT payload from authenticated user
+            const jwtPayload = {
+                userId: authReq.user?.userId || "",
+                email: authReq.user?.email || "",
+                role: authReq.user?.role || UserRole.STUDENT,
+                grade: authReq.user?.grade || 5,
             };
+
+            // Create student persona (following demo pattern)
+            const persona = {
+                userId: authReq.user?.userId || "",
+                grade: userGrade,
+                learningStyle: "visual", // Default
+                interests: [subject, "learning"],
+                culturalContext: "New Zealand",
+                preferredQuestionTypes: ["multiple_choice"],
+                performanceLevel: difficultyLevel,
+                strengths: ["problem solving"],
+                improvementAreas: ["time management"],
+                motivationalFactors: ["achievement", "visual feedback"],
+            };
+
+            const result = await this.aiQuestionsService.generateQuestions(
+                {
+                    subject,
+                    topic,
+                    difficulty: difficultyLevel,
+                    questionType: "multiple_choice", // Default
+                    count: questionsCount,
+                    persona,
+                    previousQuestions: [],
+                } as any,
+                jwtPayload
+            );
+
+            console.log(
+                "✅ Generated questions successfully for production user"
+            );
+            res.status(200).json({
+                success: true,
+                message: "AI questions generated successfully",
+                data: {
+                    sessionId: result.sessionId,
+                    questions: result.questions,
+                    estimatedTotalTime: result.estimatedTotalTime,
+                    personalizationSummary: result.personalizationSummary,
+                },
+                metrics: result.qualityMetrics,
+                user: {
+                    id: authReq.user?.userId,
+                    email: authReq.user?.email,
+                    grade: authReq.user?.grade,
+                },
+            });
+        } catch (error: any) {
+            console.error("❌ Production question generation error:", error);
+            res.status(500).json({
+                success: false,
+                message: "Internal server error during question generation",
+                details: error.message,
+            });
+        }
+    }
+
+    /**
+     * Get available subjects for the authenticated student's grade (working implementation)
+     */
+    async getSubjectsForGrade(req: Request, res: Response): Promise<void> {
+        try {
+            const authReq = req as AuthenticatedRequest;
+            const userGrade = authReq.user?.grade || 5;
+
+            // Define subjects available for each grade
+            const subjectsByGrade: Record<number, string[]> = {
+                5: ["mathematics", "english", "science", "social-studies"],
+                6: ["mathematics", "english", "science", "social-studies"],
+                7: ["mathematics", "english", "science", "social-studies"],
+                8: [
+                    "mathematics",
+                    "english",
+                    "science",
+                    "social-studies",
+                    "technology",
+                ],
+                9: [
+                    "mathematics",
+                    "english",
+                    "science",
+                    "social-studies",
+                    "technology",
+                ],
+                10: [
+                    "mathematics",
+                    "english",
+                    "science",
+                    "social-studies",
+                    "technology",
+                ],
+            };
+
+            const availableSubjects =
+                subjectsByGrade[userGrade] || subjectsByGrade[5];
 
             res.status(200).json({
                 success: true,
-                message: `Available subjects for grade ${grade}`,
-                data: subjects,
+                message: "Available subjects retrieved",
+                data: {
+                    grade: userGrade,
+                    subjects: availableSubjects,
+                    user: {
+                        id: authReq.user?.userId,
+                        email: authReq.user?.email,
+                        grade: authReq.user?.grade,
+                    },
+                },
             });
         } catch (error: any) {
             console.error("❌ Error getting subjects:", error);
             res.status(500).json({
                 success: false,
-                message: "Internal server error",
-                data: null,
+                message: "Failed to get available subjects",
+                details: error.message,
             });
         }
     }

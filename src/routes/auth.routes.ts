@@ -90,7 +90,7 @@ const router = Router();
  * @swagger
  * /api/auth/register/student:
  *   post:
- *     summary: Register a new student
+ *     summary: Register a new student (working version)
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -133,7 +133,7 @@ router.post(
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login user
+ *     summary: Login student (working version)
  *     tags: [Authentication]
  *     requestBody:
  *       required: true

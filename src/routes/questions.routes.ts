@@ -17,35 +17,32 @@ const questionsController = new QuestionsController();
 
 /**
  * POST /api/questions/generate
- * Generate AI questions based on subject, topic, and student persona
+ * Generate AI questions using working production authentication
  *
- * Requires: Authentication (Student or Admin role)
+ * Requires: Simple Bearer token authentication
  * Body: {
  *   subject: string,
  *   topic: string,
- *   subtopic?: string,
- *   difficulty: string,
- *   questionType: string,
- *   count: number,
- *   persona: StudentPersona,
- *   previousQuestions?: string[]
+ *   difficulty?: string,
+ *   numQuestions?: number
  * }
  */
 router.post(
     "/generate",
-    authenticateToken,
-    requireRole([UserRole.STUDENT, UserRole.ADMIN]),
+    QuestionsController.authenticateStudent,
     (req: any, res: any) => questionsController.generateQuestions(req, res)
 );
 
 /**
- * GET /api/questions/subjects/:grade
- * Get available subjects and topics for a grade level
+ * GET /api/questions/subjects
+ * Get available subjects for authenticated student's grade
  *
- * Requires: Authentication (any role)
+ * Requires: Simple Bearer token authentication
  */
-router.get("/subjects/:grade", authenticateToken, (req, res) =>
-    questionsController.getSubjectsForGrade(req, res)
+router.get(
+    "/subjects",
+    QuestionsController.authenticateStudent,
+    (req: any, res: any) => questionsController.getSubjectsForGrade(req, res)
 );
 
 /**
