@@ -39,9 +39,9 @@ export class QuestionGenerator implements OnInit, OnDestroy {
   // Question generation setup
   selectedSubject: Subject | null = null;
   selectedTopic: string | null = null;
-  selectedDifficulty: DifficultyLevel = DifficultyLevel.INTERMEDIATE;
+  selectedDifficulty: DifficultyLevel = DifficultyLevel.BEGINNER;
   selectedQuestionType: QuestionType = QuestionType.MULTIPLE_CHOICE;
-  questionCount = 5;
+  questionCount = 10;
 
   // Persona setup
   learningStyle: LearningStyle = LearningStyle.VISUAL;
