@@ -39,6 +39,7 @@ export enum LearningStyle {
  */
 export interface StudentPersona {
   userId: string;
+  grade: number; // Student's current grade/year level
   learningStyle: LearningStyle;
   interests: string[];
   culturalContext: string; // Country or region

@@ -218,7 +218,7 @@ export class QuestionsService {
             `Interests: ${persona.interests.join(", ")}`,
             `Cultural context: ${persona.culturalContext}`,
             `Motivational factors: ${persona.motivationalFactors.join(", ")}`,
-            `Grade level: ${user.grade || 5}`,
+            `Grade level: ${persona.grade || user.grade || 5}`,
             `Country: ${user.country || "International"}`,
         ];
 

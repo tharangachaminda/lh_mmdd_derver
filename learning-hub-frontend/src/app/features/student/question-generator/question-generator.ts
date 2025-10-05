@@ -213,6 +213,7 @@ export class QuestionGenerator implements OnInit, OnDestroy {
       // Create/update student persona
       const persona: StudentPersona = {
         userId: this.currentUser.id,
+        grade: this.currentUser.grade || 5, // Include user's grade
         learningStyle: this.learningStyle,
         interests: this.interests,
         culturalContext: this.currentUser.country || 'International',

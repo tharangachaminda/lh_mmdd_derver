@@ -24,6 +24,7 @@ export enum DifficultyLevel {
 // Student Persona Interface
 export interface IStudentPersona extends Document {
     userId: mongoose.Types.ObjectId;
+    grade: number; // Student's current grade/year level
     learningStyle: LearningStyle;
     interests: string[];
     culturalContext: string;
@@ -45,6 +46,16 @@ const StudentPersonaSchema: Schema = new Schema(
             required: true,
             unique: true,
             index: true,
+        },
+        grade: {
+            type: Number,
+            required: true,
+            min: 1,
+            max: 12,
+            validate: {
+                validator: Number.isInteger,
+                message: "Grade must be an integer between 1 and 12",
+            },
         },
         learningStyle: {
             type: String,

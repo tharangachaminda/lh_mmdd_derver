@@ -179,6 +179,7 @@ export class QuestionsController {
      * @example
      * PUT /api/questions/persona
      * {
+     *   "grade": 5,
      *   "learningStyle": "auditory",
      *   "interests": ["music", "history"],
      *   "culturalContext": "Eastern",
@@ -195,6 +196,7 @@ export class QuestionsController {
             }
 
             const {
+                grade,
                 learningStyle,
                 interests,
                 culturalContext,
@@ -204,6 +206,13 @@ export class QuestionsController {
             } = req.body;
 
             // Basic validation
+            if (grade && (typeof grade !== 'number' || grade < 1 || grade > 12 || !Number.isInteger(grade))) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Grade must be an integer between 1 and 12",
+                });
+            }
+
             if (
                 learningStyle &&
                 ![
@@ -232,6 +241,7 @@ export class QuestionsController {
 
             // Prepare persona data
             const personaData: any = {};
+            if (grade !== undefined) personaData.grade = grade;
             if (learningStyle) personaData.learningStyle = learningStyle;
             if (interests) personaData.interests = interests;
             if (culturalContext) personaData.culturalContext = culturalContext;
