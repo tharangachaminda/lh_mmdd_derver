@@ -7,7 +7,7 @@ import { User } from '../../../core/models/user.model';
   selector: 'app-dashboard',
   imports: [CommonModule],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.scss'
+  styleUrl: './dashboard.scss',
 })
 export class Dashboard implements OnInit {
   user: User | null = null;
@@ -42,7 +42,7 @@ export class Dashboard implements OnInit {
         this.loading = false;
         // If profile loading fails, user might not be authenticated
         this.authService.logout();
-      }
+      },
     });
   }
 

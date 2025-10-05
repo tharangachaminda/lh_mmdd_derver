@@ -4,11 +4,10 @@
       <div class="welcome-section">
         <h1>Admin Dashboard</h1>
         <p *ngIf="!loading && user">
-          Welcome, {{ user.firstName }} {{ user.lastName }}! Manage the Learning Hub platform, users, and content.
+          Welcome, {{ user.firstName }} {{ user.lastName }}! Manage the Learning Hub platform,
+          users, and content.
         </p>
-        <p *ngIf="loading">
-          Loading your dashboard...
-        </p>
+        <p *ngIf="loading">Loading your dashboard...</p>
       </div>
       <div class="user-actions" *ngIf="!loading && user">
         <div class="user-info">
@@ -16,10 +15,7 @@
           <span class="user-role">Administrator</span>
           <span class="user-country">{{ user.country }}</span>
         </div>
-        <button 
-          class="logout-btn" 
-          (click)="onLogout()"
-          title="Logout">
+        <button class="logout-btn" (click)="onLogout()" title="Logout">
           <span>Logout</span>
         </button>
       </div>
