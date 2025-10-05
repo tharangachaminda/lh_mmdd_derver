@@ -35,50 +35,20 @@ router.post(
     "/generate",
     authenticateToken,
     requireRole([UserRole.STUDENT, UserRole.ADMIN]),
-    questionsController.generateQuestions
+    (req, res) => questionsController.generateQuestions(req, res)
 );
 
 /**
- * GET /api/questions/persona
- * Get student persona for current user
- *
- * Requires: Authentication (Student or Admin role)
- */
-router.get(
-    "/persona",
-    authenticateToken,
-    requireRole([UserRole.STUDENT, UserRole.ADMIN]),
-    questionsController.getPersona
-);
-
-/**
- * PUT /api/questions/persona
- * Update student persona for current user
- *
- * Requires: Authentication (Student or Admin role)
- * Body: {
- *   learningStyle?: string,
- *   interests?: string[],
- *   culturalContext?: string,
- *   motivationalFactors?: string[],
- *   performanceLevel?: string,
- *   preferredDifficulty?: string
- * }
- */
-router.put(
-    "/persona",
-    authenticateToken,
-    requireRole([UserRole.STUDENT, UserRole.ADMIN]),
-    questionsController.updatePersona
-);
-
-/**
- * GET /api/questions/subjects
- * Get available subjects and topics for question generation
+ * GET /api/questions/subjects/:grade
+ * Get available subjects and topics for a grade level
  *
  * Requires: Authentication (any role)
  */
-router.get("/subjects", authenticateToken, questionsController.getSubjects);
+router.get(
+    "/subjects/:grade", 
+    authenticateToken, 
+    (req, res) => questionsController.getSubjectsForGrade(req, res)
+);
 
 /**
  * GET /api/questions/health
@@ -86,6 +56,6 @@ router.get("/subjects", authenticateToken, questionsController.getSubjects);
  *
  * Public endpoint - no authentication required
  */
-router.get("/health", questionsController.healthCheck);
+router.get("/health", (req, res) => questionsController.healthCheck(req, res));
 
 export default router;

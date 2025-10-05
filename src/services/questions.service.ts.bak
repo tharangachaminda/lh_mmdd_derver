@@ -1,10 +1,9 @@
 /**
  * Question Generation Service
  *
- * Bridges authentication system with existing core-api question generation
+ * Integrated AI question generation using Ollama LLM directly
  */
 
-import axios, { AxiosResponse } from "axios";
 import { IUser, User } from "../models/user.model.js";
 import { IStudentPersona, StudentPersona } from "../models/persona.model.js";
 import { JWTPayload } from "./auth.service.js";
@@ -61,14 +60,13 @@ export interface QuestionSession {
 }
 
 export class QuestionsService {
-    private readonly coreApiUrl =
-        process.env.CORE_API_URL || "http://localhost:3001";
-
     /**
-     * Generate AI questions using core-api with user context
+     * Generate AI questions using integrated Ollama LLM with user context
      *
      * @param request Question generation parameters
      * @param jwtPayload Current authenticated user payload
+     * @returns Generated questions with session ID
+     */
      * @returns Generated questions with session ID
      */
     async generateQuestions(

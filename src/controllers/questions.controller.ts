@@ -5,40 +5,41 @@
  */
 
 import { Request, Response } from "express";
-import {
-    QuestionsService,
-    QuestionGenerationRequest,
-} from "../services/questions.service.js";
+import { AIEnhancedQuestionsService } from "../services/questions-ai-enhanced.service.js";
+import { JWTPayload } from "../services/auth.service.js";
+
+interface AuthenticatedRequest extends Request {
+    user?: JWTPayload;
+}
 
 export class QuestionsController {
-    private questionsService = new QuestionsService();
+    private aiQuestionsService: AIEnhancedQuestionsService;
+
+    constructor() {
+        this.aiQuestionsService = new AIEnhancedQuestionsService();
+    }
 
     /**
-     * Generate AI questions based on subject, topic, and student persona
-     *
-     * @param req Request with question generation parameters
-     * @param res Response with generated questions
-     * @returns Generated questions with session ID
-     * @throws 400 if validation fails
-     * @throws 500 if generation fails
-     * @example
+     * Generate AI-enhanced questions with persona-based personalization
      * POST /api/questions/generate
-     * {
-     *   "subject": "mathematics",
-     *   "topic": "algebra",
-     *   "difficulty": "medium",
-     *   "questionType": "multiple_choice",
-     *   "count": 5,
-     *   "persona": {
-     *     "learningStyle": "visual",
-     *     "interests": ["sports", "technology"],
-     *     "culturalContext": "Western",
-     *     "motivationalFactors": ["achievement", "curiosity"]
-     *   }
-     * }
      */
-    generateQuestions = async (req: Request, res: Response) => {
+    async generateQuestions(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
+            console.log("🎯 Generate Questions Request:", {
+                body: req.body,
+                user: req.user
+            });
+
+            // Validate request body
+            if (!req.body || typeof req.body !== 'object') {
+                res.status(400).json({
+                    success: false,
+                    message: "Invalid request body",
+                    data: null
+                });
+                return;
+            }
+
             const {
                 subject,
                 topic,
@@ -46,384 +47,129 @@ export class QuestionsController {
                 difficulty,
                 questionType,
                 count,
-                persona,
-                previousQuestions,
+                persona
             } = req.body;
 
-            // Validation
-            if (
-                !subject ||
-                !topic ||
-                !difficulty ||
-                !questionType ||
-                !count ||
-                !persona
-            ) {
-                return res.status(400).json({
+            // Validate required fields
+            if (!subject || !topic || !difficulty || !questionType || !count || !persona) {
+                res.status(400).json({
                     success: false,
-                    message:
-                        "Missing required fields: subject, topic, difficulty, questionType, count, persona",
+                    message: "Missing required fields: subject, topic, difficulty, questionType, count, persona",
+                    data: null
                 });
+                return;
             }
 
-            if (count < 1 || count > 20) {
-                return res.status(400).json({
+            // Validate count
+            if (typeof count !== 'number' || count < 1 || count > 10) {
+                res.status(400).json({
                     success: false,
-                    message: "Question count must be between 1 and 20",
+                    message: "Count must be a number between 1 and 10",
+                    data: null
                 });
+                return;
             }
 
-            if (!req.user) {
-                return res.status(401).json({
-                    success: false,
-                    message: "Authentication required",
-                });
-            }
-
-            // Prepare request
-            const generationRequest: QuestionGenerationRequest = {
+            // Create question generation request
+            const questionRequest = {
                 subject,
                 topic,
                 subtopic,
                 difficulty,
                 questionType,
-                count: parseInt(count),
+                count,
                 persona,
-                previousQuestions: previousQuestions || [],
+                previousQuestions: req.body.previousQuestions || []
             };
 
-            // Generate questions
-            const result = await this.questionsService.generateQuestions(
-                generationRequest,
-                req.user
-            );
+            console.log("🚀 Generating AI-enhanced questions...", questionRequest);
 
-            res.status(200).json({
-                success: true,
-                message: "Questions generated successfully",
-                data: result,
-            });
-        } catch (error: any) {
-            console.error("Question generation error:", error);
-            res.status(500).json({
-                success: false,
-                message: error.message || "Failed to generate questions",
-                error:
-                    process.env.NODE_ENV === "development"
-                        ? error.stack
-                        : undefined,
-            });
-        }
-    };
-
-    /**
-     * Get student persona for current user
-     *
-     * @param req Authenticated request
-     * @param res Response with persona data
-     * @returns Student persona or null if not found
-     * @throws 401 if not authenticated
-     * @throws 500 if database error
-     * @example
-     * GET /api/questions/persona
-     * Response:
-     * {
-     *   "success": true,
-     *   "data": {
-     *     "userId": "user123",
-     *     "learningStyle": "visual",
-     *     "interests": ["sports", "technology"]
-     *   }
-     * }
-     */
-    getPersona = async (req: Request, res: Response) => {
-        try {
+            // Validate user authentication
             if (!req.user) {
-                return res.status(401).json({
+                res.status(401).json({
                     success: false,
                     message: "Authentication required",
+                    data: null
                 });
+                return;
             }
 
-            const persona = await this.questionsService.getStudentPersona(
-                req.user!.userId
-            );
+            // Generate questions using AI-enhanced service
+            const result = await this.aiQuestionsService.generateQuestions(questionRequest, req.user);
+
+            console.log("✅ Questions generated successfully");
 
             res.status(200).json({
                 success: true,
-                message: persona ? "Persona found" : "No persona found",
-                data: persona,
+                message: `Successfully generated ${result.questions.length} AI-enhanced questions`,
+                data: result
             });
+
         } catch (error: any) {
-            console.error("Error fetching persona:", error);
+            console.error("❌ Question generation error:", error);
             res.status(500).json({
                 success: false,
-                message: "Failed to fetch persona",
-                error:
-                    process.env.NODE_ENV === "development"
-                        ? error.stack
-                        : undefined,
+                message: "Internal server error during question generation",
+                data: null,
+                error: process.env.NODE_ENV === 'development' ? error.message : undefined
             });
         }
-    };
+    }
 
     /**
-     * Update student persona for current user
-     *
-     * @param req Request with persona data
-     * @param res Response with updated persona
-     * @returns Updated student persona
-     * @throws 400 if validation fails
-     * @throws 401 if not authenticated
-     * @throws 500 if update fails
-     * @example
-     * PUT /api/questions/persona
-     * {
-     *   "grade": 5,
-     *   "learningStyle": "auditory",
-     *   "interests": ["music", "history"],
-     *   "culturalContext": "Eastern",
-     *   "motivationalFactors": ["collaboration", "curiosity"]
-     * }
+     * Get available subjects and topics for a grade level
+     * GET /api/questions/subjects/:grade
      */
-    updatePersona = async (req: Request, res: Response) => {
+    async getSubjectsForGrade(req: Request, res: Response): Promise<void> {
         try {
-            if (!req.user) {
-                return res.status(401).json({
+            const grade = parseInt(req.params.grade);
+            
+            if (isNaN(grade) || grade < 3 || grade > 8) {
+                res.status(400).json({
                     success: false,
-                    message: "Authentication required",
+                    message: "Grade must be between 3 and 8",
+                    data: null
                 });
+                return;
             }
 
-            const {
-                grade,
-                learningStyle,
-                interests,
-                culturalContext,
-                motivationalFactors,
-                performanceLevel,
-                preferredDifficulty,
-            } = req.body;
-
-            // Basic validation
-            if (
-                grade &&
-                (typeof grade !== "number" ||
-                    grade < 1 ||
-                    grade > 12 ||
-                    !Number.isInteger(grade))
-            ) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Grade must be an integer between 1 and 12",
-                });
-            }
-
-            if (
-                learningStyle &&
-                ![
-                    "visual",
-                    "auditory",
-                    "kinesthetic",
-                    "reading_writing",
-                ].includes(learningStyle)
-            ) {
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "Invalid learning style. Must be one of: visual, auditory, kinesthetic, reading_writing",
-                });
-            }
-
-            if (
-                interests &&
-                (!Array.isArray(interests) || interests.length === 0)
-            ) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Interests must be a non-empty array",
-                });
-            }
-
-            // Prepare persona data
-            const personaData: any = {};
-            if (grade !== undefined) personaData.grade = grade;
-            if (learningStyle) personaData.learningStyle = learningStyle;
-            if (interests) personaData.interests = interests;
-            if (culturalContext) personaData.culturalContext = culturalContext;
-            if (motivationalFactors)
-                personaData.motivationalFactors = motivationalFactors;
-            if (performanceLevel)
-                personaData.performanceLevel = performanceLevel;
-            if (preferredDifficulty)
-                personaData.preferredDifficulty = preferredDifficulty;
-
-            // Update timestamp
-            personaData.updatedAt = new Date();
-
-            const updatedPersona =
-                await this.questionsService.updateStudentPersona(
-                    req.user!.userId,
-                    personaData
-                );
-
-            res.status(200).json({
-                success: true,
-                message: "Persona updated successfully",
-                data: updatedPersona,
-            });
-        } catch (error: any) {
-            console.error("Error updating persona:", error);
-            res.status(500).json({
-                success: false,
-                message: error.message || "Failed to update persona",
-                error:
-                    process.env.NODE_ENV === "development"
-                        ? error.stack
-                        : undefined,
-            });
-        }
-    };
-
-    /**
-     * Get available subjects and topics for question generation
-     *
-     * @param req Request
-     * @param res Response with subjects and topics
-     * @returns Available subjects with their topics
-     * @example
-     * GET /api/questions/subjects
-     * Response:
-     * {
-     *   "success": true,
-     *   "data": {
-     *     "mathematics": ["algebra", "geometry", "statistics"],
-     *     "science": ["physics", "chemistry", "biology"]
-     *   }
-     * }
-     */
-    getSubjects = async (req: Request, res: Response) => {
-        try {
-            // Static configuration for now - could be made dynamic later
+            // Simplified subjects response
             const subjects = {
-                mathematics: {
-                    topics: [
-                        "algebra",
-                        "geometry",
-                        "statistics",
-                        "calculus",
-                        "trigonometry",
-                        "number_theory",
-                    ],
-                    grades: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-                },
-                science: {
-                    topics: [
-                        "physics",
-                        "chemistry",
-                        "biology",
-                        "earth_science",
-                        "astronomy",
-                    ],
-                    grades: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-                },
-                english: {
-                    topics: [
-                        "grammar",
-                        "literature",
-                        "writing",
-                        "reading_comprehension",
-                        "vocabulary",
-                    ],
-                    grades: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-                },
-                social_studies: {
-                    topics: [
-                        "history",
-                        "geography",
-                        "civics",
-                        "economics",
-                        "culture",
-                    ],
-                    grades: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-                },
+                mathematics: ['Numbers', 'Algebra', 'Geometry', 'Statistics'],
+                science: ['Physics', 'Chemistry', 'Biology', 'Earth Science'],
+                english: ['Reading', 'Writing', 'Grammar', 'Literature'],
+                social_studies: ['History', 'Geography', 'Civics', 'Culture']
             };
-
-            const questionTypes = [
-                "multiple_choice",
-                "true_false",
-                "short_answer",
-                "problem_solving",
-                "creative_writing",
-                "fill_in_blank",
-            ];
-
-            const difficulties = ["easy", "medium", "hard"];
 
             res.status(200).json({
                 success: true,
-                message: "Subjects fetched successfully",
-                data: {
-                    subjects,
-                    questionTypes,
-                    difficulties,
-                },
+                message: `Available subjects for grade ${grade}`,
+                data: subjects
             });
+
         } catch (error: any) {
-            console.error("Error fetching subjects:", error);
+            console.error("❌ Error getting subjects:", error);
             res.status(500).json({
                 success: false,
-                message: "Failed to fetch subjects",
-                error:
-                    process.env.NODE_ENV === "development"
-                        ? error.stack
-                        : undefined,
+                message: "Internal server error",
+                data: null
             });
         }
-    };
+    }
 
     /**
-     * Health check for questions service
-     *
-     * @param req Request
-     * @param res Response with service status
-     * @returns Service health status
-     * @example
+     * Health check endpoint
      * GET /api/questions/health
-     * Response:
-     * {
-     *   "success": true,
-     *   "message": "Questions service is healthy",
-     *   "data": {
-     *     "timestamp": "2024-01-01T12:00:00.000Z",
-     *     "coreApiConnection": "healthy"
-     *   }
-     * }
      */
-    healthCheck = async (req: Request, res: Response) => {
-        try {
-            // Basic health check
-            const health = {
-                timestamp: new Date(),
-                coreApiConnection: "unknown", // Could ping core-api here
-                database: "connected",
-            };
-
-            res.status(200).json({
-                success: true,
-                message: "Questions service is healthy",
-                data: health,
-            });
-        } catch (error: any) {
-            console.error("Health check error:", error);
-            res.status(500).json({
-                success: false,
-                message: "Service health check failed",
-                error:
-                    process.env.NODE_ENV === "development"
-                        ? error.stack
-                        : undefined,
-            });
-        }
-    };
+    async healthCheck(req: Request, res: Response): Promise<void> {
+        res.status(200).json({
+            success: true,
+            message: "AI Question Generation Service is operational",
+            data: {
+                service: "questions-ai-enhanced",
+                status: "healthy",
+                timestamp: new Date().toISOString()
+            }
+        });
+    }
 }

@@ -132,6 +132,11 @@ export interface QuestionGenerationResponse {
     questions: GeneratedQuestion[];
     estimatedTotalTime: number;
     personalizationSummary: string;
+    qualityMetrics?: {
+      vectorRelevanceScore: number;
+      agenticValidationScore: number;
+      personalizationScore: number;
+    };
   };
   message: string;
 }
@@ -174,7 +179,13 @@ export const GRADE_TOPICS: Record<number, SubjectTopics> = {
       'Creative Writing',
       'Spelling',
     ],
-    [Subject.SOCIAL_STUDIES]: ['Community', 'Geography', 'History', 'Culture', 'Citizenship'],
+    [Subject.SOCIAL_STUDIES]: [
+      'Community',
+      'Geography',
+      'History',
+      'Culture',
+      'New Zealand Heritage',
+    ],
     [Subject.GENERAL]: ['Critical Thinking', 'Problem Solving', 'Logic'],
   },
   4: {
@@ -187,7 +198,7 @@ export const GRADE_TOPICS: Record<number, SubjectTopics> = {
     ],
     [Subject.SCIENCE]: ['Ecosystems', 'Life Cycles', 'Forces', 'Energy', 'Earth Science'],
     [Subject.ENGLISH]: ['Reading Analysis', 'Writing Process', 'Poetry', 'Research Skills'],
-    [Subject.SOCIAL_STUDIES]: ['State History', 'Government', 'Economics', 'Native Americans'],
+    [Subject.SOCIAL_STUDIES]: ['New Zealand History', 'Government', 'Economics', 'Māori Culture'],
     [Subject.GENERAL]: ['Research Skills', 'Presentation', 'Collaboration'],
   },
   5: {
@@ -200,7 +211,7 @@ export const GRADE_TOPICS: Record<number, SubjectTopics> = {
     ],
     [Subject.SCIENCE]: ['Human Body', 'Earth Changes', 'Matter & Energy', 'Scientific Method'],
     [Subject.ENGLISH]: ['Literature Analysis', 'Persuasive Writing', 'Research Projects'],
-    [Subject.SOCIAL_STUDIES]: ['US History', 'Constitution', 'Geography Skills', 'Economics'],
+    [Subject.SOCIAL_STUDIES]: ['NZ History', 'Constitution', 'Geography Skills', 'Economics'],
     [Subject.GENERAL]: ['Digital Literacy', 'Study Skills', 'Goal Setting'],
   },
   // Add more grades as needed

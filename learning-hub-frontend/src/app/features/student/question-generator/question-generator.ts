@@ -77,6 +77,14 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     'Recognition',
   ];
 
+  // AI Quality Metrics
+  qualityMetrics: {
+    vectorRelevanceScore: number;
+    agenticValidationScore: number;
+    personalizationScore: number;
+  } | null = null;
+  showAIMetrics = false;
+
   // Available options
   subjects = Object.values(Subject);
   difficultyLevels = Object.values(DifficultyLevel);
@@ -216,7 +224,7 @@ export class QuestionGenerator implements OnInit, OnDestroy {
         grade: this.currentUser.grade || 5, // Include user's grade
         learningStyle: this.learningStyle,
         interests: this.interests,
-        culturalContext: this.currentUser.country || 'International',
+        culturalContext: this.currentUser.country || 'New Zealand',
         preferredQuestionTypes: [this.selectedQuestionType],
         performanceLevel: this.selectedDifficulty,
         strengths: [],
@@ -240,6 +248,9 @@ export class QuestionGenerator implements OnInit, OnDestroy {
       const response = await this.questionService.generateQuestions(request).toPromise();
 
       if (response?.success) {
+        // Capture AI quality metrics
+        this.qualityMetrics = response.data.qualityMetrics || null;
+
         // Start the question session
         const session: QuestionSession = {
           id: response.data.sessionId,
@@ -256,6 +267,15 @@ export class QuestionGenerator implements OnInit, OnDestroy {
 
         this.questionService.startSession(session);
         this.currentStep = 'questions';
+
+        // Log AI enhancement details
+        if (this.qualityMetrics) {
+          console.log('🤖 AI Question Generation Metrics:', {
+            vectorRelevance: `${(this.qualityMetrics.vectorRelevanceScore * 100).toFixed(1)}%`,
+            agenticValidation: `${(this.qualityMetrics.agenticValidationScore * 100).toFixed(1)}%`,
+            personalization: `${(this.qualityMetrics.personalizationScore * 100).toFixed(1)}%`,
+          });
+        }
       } else {
         this.error = response?.message || 'Failed to generate questions';
         this.currentStep = 'setup';
@@ -363,7 +383,37 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     this.questionService.clearSession();
     this.currentStep = 'setup';
     this.sessionResults = null;
+    this.qualityMetrics = null;
+    this.showAIMetrics = false;
     this.error = null;
+  }
+
+  /**
+   * Toggle AI metrics display
+   */
+  toggleAIMetrics(): void {
+    this.showAIMetrics = !this.showAIMetrics;
+  }
+
+  /**
+   * Get quality score description
+   */
+  getQualityDescription(score: number): string {
+    if (score >= 0.9) return 'Excellent';
+    if (score >= 0.8) return 'Very Good';
+    if (score >= 0.7) return 'Good';
+    if (score >= 0.6) return 'Fair';
+    return 'Needs Improvement';
+  }
+
+  /**
+   * Get quality score color class
+   */
+  getQualityColorClass(score: number): string {
+    if (score >= 0.8) return 'text-green-600';
+    if (score >= 0.7) return 'text-blue-600';
+    if (score >= 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
 
   /**

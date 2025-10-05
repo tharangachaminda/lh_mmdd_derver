@@ -70,7 +70,7 @@ const StudentPersonaSchema: Schema = new Schema(
         ],
         culturalContext: {
             type: String,
-            default: "International",
+            default: "New Zealand",
             trim: true,
         },
         preferredQuestionTypes: [
