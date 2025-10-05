@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { User } from '../../../core/models/user.model';
 
@@ -13,7 +14,7 @@ export class Dashboard implements OnInit {
   user: User | null = null;
   loading = true;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadUserProfile();
@@ -51,5 +52,12 @@ export class Dashboard implements OnInit {
    */
   onLogout(): void {
     this.authService.logout();
+  }
+
+  /**
+   * Navigate to AI Question Generator
+   */
+  startQuestionGenerator(): void {
+    this.router.navigate(['/student/question-generator']);
   }
 }

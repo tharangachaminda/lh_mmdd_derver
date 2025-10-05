@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
-import questionRoutes from "./routes/question.routes.js";
+import questionsRoutes from "./routes/questions.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import { errorHandler } from "./utils/error.handler.js";
 import { DatabaseConfig } from "./config/database.config.js";
@@ -40,7 +40,7 @@ app.get("/health", (_req: Request, res: Response) => {
 
 // API routes
 app.use("/api/auth", authRoutes);
-app.use("/api/questions", questionRoutes);
+app.use("/api/questions", questionsRoutes);
 
 // 404 handler for undefined routes
 app.use((_req: Request, res: Response) => {
