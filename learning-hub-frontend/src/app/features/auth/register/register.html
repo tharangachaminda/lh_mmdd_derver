@@ -16,11 +16,10 @@
 
       <mat-card-content>
         <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
-          
           <!-- Personal Information Section -->
           <div class="form-section">
             <h3>Personal Information</h3>
-            
+
             <div class="form-row">
               <!-- First Name -->
               <mat-form-field appearance="outline" class="half-width">
@@ -70,9 +69,7 @@
                 autocomplete="email"
               />
               <mat-icon matSuffix>email</mat-icon>
-              <mat-error *ngIf="email?.hasError('required')">
-                Email is required
-              </mat-error>
+              <mat-error *ngIf="email?.hasError('required')"> Email is required </mat-error>
               <mat-error *ngIf="email?.hasError('email')">
                 Please enter a valid email address
               </mat-error>
@@ -81,15 +78,24 @@
             <!-- Date of Birth -->
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Date of Birth</mat-label>
-              <input
-                matInput
-                type="date"
-                formControlName="dateOfBirth"
-                [max]="getTodayDate()"
-              />
+              <input matInput type="date" formControlName="dateOfBirth" [max]="getTodayDate()" />
               <mat-icon matSuffix>cake</mat-icon>
               <mat-error *ngIf="dateOfBirth?.hasError('required')">
                 Date of birth is required
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Country -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Country</mat-label>
+              <mat-select formControlName="country">
+                <mat-option *ngFor="let country of countryOptions" [value]="country.value">
+                  {{ country.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>public</mat-icon>
+              <mat-error *ngIf="country?.hasError('required')">
+                Please select your country
               </mat-error>
             </mat-form-field>
           </div>
@@ -97,11 +103,11 @@
           <!-- Academic Information Section -->
           <div class="form-section">
             <h3>Academic Information</h3>
-            
+
             <div class="form-row">
-              <!-- Grade Level -->
+              <!-- Year/Grade Level -->
               <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Grade Level</mat-label>
+                <mat-label>Year/Grade Level</mat-label>
                 <mat-select formControlName="gradeLevel">
                   <mat-option *ngFor="let grade of gradeOptions" [value]="grade.value">
                     {{ grade.label }}
@@ -109,18 +115,14 @@
                 </mat-select>
                 <mat-icon matSuffix>school</mat-icon>
                 <mat-error *ngIf="gradeLevel?.hasError('required')">
-                  Please select your grade level
+                  Please select your year/grade level
                 </mat-error>
               </mat-form-field>
 
               <!-- School -->
               <mat-form-field appearance="outline" class="half-width">
                 <mat-label>School Name</mat-label>
-                <input
-                  matInput
-                  formControlName="school"
-                  placeholder="Enter your school name"
-                />
+                <input matInput formControlName="school" placeholder="Enter your school name" />
                 <mat-icon matSuffix>domain</mat-icon>
                 <mat-error *ngIf="school?.hasError('required')">
                   School name is required
@@ -135,7 +137,7 @@
           <!-- Security Section -->
           <div class="form-section">
             <h3>Account Security</h3>
-            
+
             <!-- Password -->
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Password</mat-label>
@@ -146,17 +148,10 @@
                 placeholder="Create a strong password"
                 autocomplete="new-password"
               />
-              <button
-                mat-icon-button
-                matSuffix
-                type="button"
-                (click)="togglePasswordVisibility()"
-              >
+              <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
                 <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
-              <mat-error *ngIf="password?.hasError('required')">
-                Password is required
-              </mat-error>
+              <mat-error *ngIf="password?.hasError('required')"> Password is required </mat-error>
               <mat-error *ngIf="password?.hasError('minlength')">
                 Password must be at least 8 characters
               </mat-error>
@@ -186,7 +181,9 @@
               <mat-error *ngIf="confirmPassword?.hasError('required')">
                 Please confirm your password
               </mat-error>
-              <mat-error *ngIf="registrationForm.hasError('passwordMismatch') && confirmPassword?.touched">
+              <mat-error
+                *ngIf="registrationForm.hasError('passwordMismatch') && confirmPassword?.touched"
+              >
                 Passwords do not match
               </mat-error>
             </mat-form-field>
@@ -196,10 +193,18 @@
               <p>Password Requirements:</p>
               <ul>
                 <li [class.met]="password?.value?.length >= 8">At least 8 characters</li>
-                <li [class.met]="password?.value && hasUppercase(password?.value || '')">One uppercase letter</li>
-                <li [class.met]="password?.value && hasLowercase(password?.value || '')">One lowercase letter</li>
-                <li [class.met]="password?.value && hasNumber(password?.value || '')">One number</li>
-                <li [class.met]="password?.value && hasSpecialChar(password?.value || '')">One special character</li>
+                <li [class.met]="password?.value && hasUppercase(password?.value || '')">
+                  One uppercase letter
+                </li>
+                <li [class.met]="password?.value && hasLowercase(password?.value || '')">
+                  One lowercase letter
+                </li>
+                <li [class.met]="password?.value && hasNumber(password?.value || '')">
+                  One number
+                </li>
+                <li [class.met]="password?.value && hasSpecialChar(password?.value || '')">
+                  One special character
+                </li>
               </ul>
             </div>
           </div>
@@ -207,7 +212,7 @@
           <!-- Terms and Conditions Section -->
           <div class="form-section">
             <h3>Terms & Privacy</h3>
-            
+
             <div class="checkbox-group">
               <mat-checkbox formControlName="agreeToTerms" class="full-width">
                 I agree to the <a href="#" target="_blank">Terms of Service</a>
@@ -250,7 +255,7 @@
         <div class="divider">
           <span>Already have an account?</span>
         </div>
-        
+
         <button
           mat-stroked-button
           color="primary"

@@ -180,5 +180,6 @@ export interface StudentRegistration {
   firstName: string;
   lastName: string;
   grade: number;
+  country: string;
   preferredSubjects: string[];
 }

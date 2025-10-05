@@ -10,24 +10,36 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 16px;
+  padding: 20px;
+  animation: gradientShift 8s ease-in-out infinite;
+
+  @keyframes gradientShift {
+    0%, 100% { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    50% { background: linear-gradient(135deg, #667eea 0%, #667eea 50%, #764ba2 100%); }
+  }
 
   @media (max-width: 768px) {
     align-items: flex-start;
-    padding: 8px;
+    padding: 12px;
   }
 }
 
 .registration-card {
-  max-width: 800px;
+  max-width: 900px;
   width: 100%;
   background: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+  }
 
   @media (max-width: 768px) {
-    border-radius: 8px;
+    border-radius: 12px;
     margin-top: 8px;
   }
 }
@@ -90,16 +102,28 @@
 }
 
 .section-title {
-  margin: 0 0 24px;
+  margin: 0 0 28px;
   color: #1976d2;
-  font-size: 18px;
-  font-weight: 500;
-  border-bottom: 2px solid #e3f2fd;
-  padding-bottom: 8px;
+  font-size: 20px;
+  font-weight: 600;
+  border-bottom: 3px solid #e3f2fd;
+  padding-bottom: 12px;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(135deg, #1976d2, #2196f3);
+    border-radius: 2px;
+  }
 
   @media (max-width: 768px) {
-    font-size: 16px;
-    margin-bottom: 16px;
+    font-size: 18px;
+    margin-bottom: 20px;
   }
 }
 
@@ -241,14 +265,81 @@
   opacity: 0.7;
 }
 
+// Form sections with enhanced styling
+.form-section {
+  background: #fafafa;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #f5f5f5;
+    border-color: #2196f3;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
+  }
+
+  h3 {
+    margin: 0 0 20px;
+    color: #1976d2;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &::before {
+      content: '📝';
+      font-size: 20px;
+    }
+  }
+
+  &:nth-child(1) h3::before { content: '👤'; }  // Personal info
+  &:nth-child(2) h3::before { content: '🎓'; }  // Academic info
+  &:nth-child(3) h3::before { content: '🔒'; }  // Security
+  &:nth-child(4) h3::before { content: '📋'; }  // Terms
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+}
+
 // Form validation styles
 .mat-form-field {
   width: 100%;
-}
+  
+  &.mat-form-field-invalid {
+    .mat-form-field-outline {
+      color: #f44336;
+    }
+  }
 
-.mat-form-field.mat-form-field-invalid {
-  .mat-form-field-outline {
-    color: #f44336;
+  // Enhanced focus states
+  &.mat-focused {
+    .mat-form-field-outline-thick {
+      color: #1976d2;
+      border-width: 3px;
+    }
+  }
+
+  // Country field specific styling
+  &:has(mat-select[formControlName="country"]) {
+    .mat-form-field-wrapper {
+      position: relative;
+      
+      &::after {
+        content: '🌍';
+        position: absolute;
+        right: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+        pointer-events: none;
+        z-index: 1;
+      }
+    }
   }
 }
 

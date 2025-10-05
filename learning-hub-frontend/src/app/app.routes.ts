@@ -24,7 +24,8 @@ export const routes: Routes = [
   },
   {
     path: 'auth/register',
-    loadComponent: () => import('./features/auth/register/register').then((m) => m.RegisterComponent),
+    loadComponent: () =>
+      import('./features/auth/register/register').then((m) => m.RegisterComponent),
   },
 
   // Student routes (protected by AuthGuard and StudentGuard)

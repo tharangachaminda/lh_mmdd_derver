@@ -7,7 +7,13 @@
 
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  AbstractControl,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -55,13 +61,36 @@ export class RegisterComponent implements OnInit {
   isLoading = false;
 
   // Grade options for students
+  /**
+   * Available year/grade level options
+   */
   gradeOptions = [
-    { value: 3, label: 'Grade 3' },
-    { value: 4, label: 'Grade 4' },
-    { value: 5, label: 'Grade 5' },
-    { value: 6, label: 'Grade 6' },
-    { value: 7, label: 'Grade 7' },
-    { value: 8, label: 'Grade 8' },
+    { value: 3, label: 'Year/Grade 3' },
+    { value: 4, label: 'Year/Grade 4' },
+    { value: 5, label: 'Year/Grade 5' },
+    { value: 6, label: 'Year/Grade 6' },
+    { value: 7, label: 'Year/Grade 7' },
+    { value: 8, label: 'Year/Grade 8' },
+    { value: 9, label: 'Year/Grade 9' },
+    { value: 10, label: 'Year/Grade 10' },
+    { value: 11, label: 'Year/Grade 11' },
+    { value: 12, label: 'Year/Grade 12' },
+  ];
+
+  /**
+   * Available country options
+   */
+  countryOptions = [
+    { value: 'AU', label: 'Australia' },
+    { value: 'CA', label: 'Canada' },
+    { value: 'NZ', label: 'New Zealand' },
+    { value: 'UK', label: 'United Kingdom' },
+    { value: 'US', label: 'United States' },
+    { value: 'SG', label: 'Singapore' },
+    { value: 'IN', label: 'India' },
+    { value: 'MY', label: 'Malaysia' },
+    { value: 'ZA', label: 'South Africa' },
+    { value: 'OTHER', label: 'Other' },
   ];
 
   ngOnInit(): void {
@@ -72,28 +101,35 @@ export class RegisterComponent implements OnInit {
    * Initialize registration form with validation
    */
   private initializeForm(): void {
-    this.registrationForm = this.fb.group({
-      // Personal Information
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      dateOfBirth: ['', [Validators.required]],
-      
-      // Academic Information
-      gradeLevel: ['', [Validators.required]],
-      school: ['', [Validators.required, Validators.minLength(3)]],
-      
-      // Account Security
-      password: ['', [Validators.required, Validators.minLength(8), this.passwordStrengthValidator]],
-      confirmPassword: ['', [Validators.required]],
-      
-      // Terms and Privacy
-      agreeToTerms: [false, [Validators.requiredTrue]],
-      agreeToPrivacy: [false, [Validators.requiredTrue]],
-      
-      // Optional Marketing
-      emailUpdates: [false],
-    }, { validators: this.passwordMatchValidator });
+    this.registrationForm = this.fb.group(
+      {
+        // Personal Information
+        firstName: ['', [Validators.required, Validators.minLength(2)]],
+        lastName: ['', [Validators.required, Validators.minLength(2)]],
+        email: ['', [Validators.required, Validators.email]],
+        dateOfBirth: ['', [Validators.required]],
+        country: ['', [Validators.required]],
+
+        // Academic Information
+        gradeLevel: ['', [Validators.required]],
+        school: ['', [Validators.required, Validators.minLength(3)]],
+
+        // Account Security
+        password: [
+          '',
+          [Validators.required, Validators.minLength(8), this.passwordStrengthValidator],
+        ],
+        confirmPassword: ['', [Validators.required]],
+
+        // Terms and Privacy
+        agreeToTerms: [false, [Validators.requiredTrue]],
+        agreeToPrivacy: [false, [Validators.requiredTrue]],
+
+        // Optional Marketing
+        emailUpdates: [false],
+      },
+      { validators: this.passwordMatchValidator }
+    );
   }
 
   /**
@@ -134,7 +170,7 @@ export class RegisterComponent implements OnInit {
   onSubmit(): void {
     if (this.registrationForm.valid && !this.isLoading) {
       this.isLoading = true;
-      
+
       const formData = this.registrationForm.value;
       const registration: StudentRegistration = {
         email: formData.email,
@@ -142,6 +178,7 @@ export class RegisterComponent implements OnInit {
         firstName: formData.firstName,
         lastName: formData.lastName,
         grade: formData.gradeLevel,
+        country: formData.country,
         preferredSubjects: [], // Will be set later in onboarding
       };
 
@@ -149,25 +186,25 @@ export class RegisterComponent implements OnInit {
         next: () => {
           this.snackBar.open('Registration successful! Welcome to Learning Hub!', 'Close', {
             duration: 5000,
-            panelClass: ['success-snackbar']
+            panelClass: ['success-snackbar'],
           });
           // AuthService will automatically redirect to student dashboard
         },
         error: (error) => {
           this.isLoading = false;
           let errorMessage = 'Registration failed. Please try again.';
-          
+
           if (error.status === 409) {
             errorMessage = 'An account with this email already exists.';
           } else if (error.status === 400) {
             errorMessage = 'Please check your information and try again.';
           }
-          
+
           this.snackBar.open(errorMessage, 'Close', {
             duration: 5000,
-            panelClass: ['error-snackbar']
+            panelClass: ['error-snackbar'],
           });
-        }
+        },
       });
     } else {
       this.markFormGroupTouched(this.registrationForm);
@@ -178,7 +215,7 @@ export class RegisterComponent implements OnInit {
    * Mark all form controls as touched to show validation errors
    */
   private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach(key => {
+    Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);
       control?.markAsTouched();
 
@@ -245,14 +282,37 @@ export class RegisterComponent implements OnInit {
   }
 
   // Form control getters for validation
-  get firstName() { return this.registrationForm.get('firstName'); }
-  get lastName() { return this.registrationForm.get('lastName'); }
-  get email() { return this.registrationForm.get('email'); }
-  get dateOfBirth() { return this.registrationForm.get('dateOfBirth'); }
-  get gradeLevel() { return this.registrationForm.get('gradeLevel'); }
-  get school() { return this.registrationForm.get('school'); }
-  get password() { return this.registrationForm.get('password'); }
-  get confirmPassword() { return this.registrationForm.get('confirmPassword'); }
-  get agreeToTerms() { return this.registrationForm.get('agreeToTerms'); }
-  get agreeToPrivacy() { return this.registrationForm.get('agreeToPrivacy'); }
+  get firstName() {
+    return this.registrationForm.get('firstName');
+  }
+  get lastName() {
+    return this.registrationForm.get('lastName');
+  }
+  get email() {
+    return this.registrationForm.get('email');
+  }
+  get dateOfBirth() {
+    return this.registrationForm.get('dateOfBirth');
+  }
+  get country() {
+    return this.registrationForm.get('country');
+  }
+  get gradeLevel() {
+    return this.registrationForm.get('gradeLevel');
+  }
+  get school() {
+    return this.registrationForm.get('school');
+  }
+  get password() {
+    return this.registrationForm.get('password');
+  }
+  get confirmPassword() {
+    return this.registrationForm.get('confirmPassword');
+  }
+  get agreeToTerms() {
+    return this.registrationForm.get('agreeToTerms');
+  }
+  get agreeToPrivacy() {
+    return this.registrationForm.get('agreeToPrivacy');
+  }
 }
