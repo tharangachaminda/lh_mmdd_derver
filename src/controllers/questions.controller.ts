@@ -206,7 +206,13 @@ export class QuestionsController {
             } = req.body;
 
             // Basic validation
-            if (grade && (typeof grade !== 'number' || grade < 1 || grade > 12 || !Number.isInteger(grade))) {
+            if (
+                grade &&
+                (typeof grade !== "number" ||
+                    grade < 1 ||
+                    grade > 12 ||
+                    !Number.isInteger(grade))
+            ) {
                 return res.status(400).json({
                     success: false,
                     message: "Grade must be an integer between 1 and 12",
