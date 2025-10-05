@@ -8,7 +8,8 @@ export enum Subject {
   MATHEMATICS = 'mathematics',
   SCIENCE = 'science',
   ENGLISH = 'english',
-  SOCIAL_STUDIES = 'social_studies',
+  SOCIAL_STUDIES = 'social-studies',
+  TECHNOLOGY = 'technology',
   GENERAL = 'general',
 }
 
@@ -43,8 +44,8 @@ export interface StudentPersona {
   learningStyle: LearningStyle;
   interests: string[];
   culturalContext: string; // Country or region
-  preferredQuestionTypes: QuestionType[];
-  performanceLevel: DifficultyLevel;
+  preferredQuestionTypes: string[]; // Changed to string array to match backend
+  performanceLevel: string; // Changed to string to match backend
   strengths: string[];
   improvementAreas: string[];
   motivationalFactors: string[];
@@ -54,33 +55,30 @@ export interface StudentPersona {
  * Question Generation Request
  */
 export interface QuestionGenerationRequest {
-  subject: Subject;
+  subject: string; // Changed to string to match backend
   topic: string;
-  subtopic?: string;
-  difficulty: DifficultyLevel;
-  questionType: QuestionType;
+  difficulty: string; // Changed to string to match backend
+  questionType: string; // Changed to string to match backend
   count: number;
   persona: StudentPersona;
-  previousQuestions?: string[]; // To avoid repetition
 }
 
 /**
- * Generated Question Structure
+ * Generated Question
  */
 export interface GeneratedQuestion {
   id: string;
-  subject: Subject;
+  subject: string;
   topic: string;
-  subtopic?: string;
-  difficulty: DifficultyLevel;
-  questionType: QuestionType;
+  difficulty: string;
+  questionType: string;
   question: string;
-  options?: string[]; // For multiple choice
+  options?: string[];
   correctAnswer: string;
   explanation: string;
   hints: string[];
   personalizationContext: {
-    learningStyle: LearningStyle;
+    learningStyle: string;
     interests: string[];
     culturalReferences: string[];
   };
@@ -88,7 +86,7 @@ export interface GeneratedQuestion {
     estimatedTimeMinutes: number;
     gradeLevel: number;
     tags: string[];
-    createdAt: Date;
+    createdAt: string;
   };
 }
 
@@ -105,7 +103,7 @@ export interface QuestionSession {
   totalScore: number;
   maxScore: number;
   timeSpentMinutes: number;
-  subject: Subject;
+  subject: string; // Changed to string to match backend
   topic: string;
 }
 
@@ -138,81 +136,37 @@ export interface QuestionGenerationResponse {
       personalizationScore: number;
     };
   };
+  metrics?: {
+    vectorRelevanceScore: number;
+    agenticValidationScore: number;
+    personalizationScore: number;
+  };
+  user?: any;
   message: string;
 }
 
 /**
- * Subject Topics Configuration
+ * Grade-Based Topic Mappings
  */
 export interface SubjectTopics {
-  [Subject.MATHEMATICS]: string[];
-  [Subject.SCIENCE]: string[];
-  [Subject.ENGLISH]: string[];
-  [Subject.SOCIAL_STUDIES]: string[];
-  [Subject.GENERAL]: string[];
+  [key: string]: string[]; // Simplified to use string keys
 }
 
-export const GRADE_TOPICS: Record<number, SubjectTopics> = {
-  3: {
-    [Subject.MATHEMATICS]: [
-      'Addition',
-      'Subtraction',
-      'Multiplication',
-      'Division',
-      'Fractions',
-      'Shapes',
-      'Time',
-      'Money',
-    ],
-    [Subject.SCIENCE]: [
-      'Animals',
-      'Plants',
-      'Weather',
-      'Solar System',
-      'Matter',
-      'Simple Machines',
-    ],
-    [Subject.ENGLISH]: [
-      'Reading Comprehension',
-      'Vocabulary',
-      'Grammar',
-      'Creative Writing',
-      'Spelling',
-    ],
-    [Subject.SOCIAL_STUDIES]: [
-      'Community',
-      'Geography',
-      'History',
-      'Culture',
-      'New Zealand Heritage',
-    ],
-    [Subject.GENERAL]: ['Critical Thinking', 'Problem Solving', 'Logic'],
-  },
-  4: {
-    [Subject.MATHEMATICS]: [
-      'Multi-digit Operations',
-      'Decimals',
-      'Geometry',
-      'Data Analysis',
-      'Measurement',
-    ],
-    [Subject.SCIENCE]: ['Ecosystems', 'Life Cycles', 'Forces', 'Energy', 'Earth Science'],
-    [Subject.ENGLISH]: ['Reading Analysis', 'Writing Process', 'Poetry', 'Research Skills'],
-    [Subject.SOCIAL_STUDIES]: ['New Zealand History', 'Government', 'Economics', 'Māori Culture'],
-    [Subject.GENERAL]: ['Research Skills', 'Presentation', 'Collaboration'],
-  },
-  5: {
-    [Subject.MATHEMATICS]: [
-      'Fractions & Decimals',
-      'Volume',
-      'Coordinate Plane',
-      'Patterns',
-      'Statistics',
-    ],
-    [Subject.SCIENCE]: ['Human Body', 'Earth Changes', 'Matter & Energy', 'Scientific Method'],
-    [Subject.ENGLISH]: ['Literature Analysis', 'Persuasive Writing', 'Research Projects'],
-    [Subject.SOCIAL_STUDIES]: ['NZ History', 'Constitution', 'Geography Skills', 'Economics'],
-    [Subject.GENERAL]: ['Digital Literacy', 'Study Skills', 'Goal Setting'],
+export interface GradeTopics {
+  [grade: number]: SubjectTopics;
+}
+
+/**
+ * Sample grade-based topics (this would typically come from the backend)
+ */
+export const GRADE_TOPICS: GradeTopics = {
+  9: {
+    mathematics: ['Algebra', 'Geometry', 'Statistics', 'Linear Equations'],
+    science: ['Biology', 'Chemistry', 'Physics', 'Earth Science'],
+    english: ['Literature', 'Writing', 'Grammar', 'Reading Comprehension'],
+    'social-studies': ['History', 'Geography', 'Government', 'Economics'],
+    technology: ['Computer Basics', 'Programming', 'Digital Literacy'],
+    general: ['General Knowledge', 'Critical Thinking'],
   },
   // Add more grades as needed
 };

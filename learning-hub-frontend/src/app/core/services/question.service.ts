@@ -55,10 +55,36 @@ export class QuestionService {
    * ```
    */
   generateQuestions(request: QuestionGenerationRequest): Observable<QuestionGenerationResponse> {
+    // Transform frontend request to backend format
+    const backendRequest = {
+      subject: request.subject.toLowerCase(),
+      topic: request.topic,
+      count: request.count || 5,
+      difficulty: request.difficulty?.toLowerCase() || 'medium',
+      questionType: request.questionType?.toLowerCase() || 'multiple_choice',
+    };
+
     return this.http.post<QuestionGenerationResponse>(
       `${environment.apiUrl}/questions/generate`,
-      request
+      backendRequest
     );
+  }
+
+  /**
+   * Get available subjects for the current user's grade
+   *
+   * @returns Observable of available subjects
+   */
+  getAvailableSubjectsForUser(): Observable<{
+    success: boolean;
+    message: string;
+    data: {
+      grade: number;
+      subjects: string[];
+      user: any;
+    };
+  }> {
+    return this.http.get<any>(`${environment.apiUrl}/questions/subjects`);
   }
 
   /**
@@ -134,7 +160,7 @@ export class QuestionService {
    * @param grade Student's grade level
    * @returns Array of available topics
    */
-  getAvailableTopics(subject: Subject, grade: number): string[] {
+  getAvailableTopics(subject: string, grade: number): string[] {
     return GRADE_TOPICS[grade]?.[subject] || [];
   }
 
@@ -144,13 +170,11 @@ export class QuestionService {
    * @param grade Student's grade level
    * @returns Array of available subjects
    */
-  getAvailableSubjects(grade: number): Subject[] {
+  getAvailableSubjects(grade: number): string[] {
     const topics = GRADE_TOPICS[grade];
     if (!topics) return [];
 
-    return Object.keys(topics).filter(
-      (subject) => topics[subject as Subject].length > 0
-    ) as Subject[];
+    return Object.keys(topics).filter((subject) => topics[subject].length > 0);
   }
 
   /**

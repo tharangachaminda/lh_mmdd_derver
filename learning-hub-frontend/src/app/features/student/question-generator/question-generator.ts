@@ -37,11 +37,11 @@ export class QuestionGenerator implements OnInit, OnDestroy {
   error: string | null = null;
 
   // Question generation setup
-  selectedSubject: Subject | null = null;
+  selectedSubject: string | null = null;
   selectedTopic: string | null = null;
-  selectedDifficulty: DifficultyLevel = DifficultyLevel.BEGINNER;
-  selectedQuestionType: QuestionType = QuestionType.MULTIPLE_CHOICE;
-  questionCount = 10;
+  selectedDifficulty: string = 'medium';
+  selectedQuestionType: string = 'multiple_choice';
+  questionCount = 5;
 
   // Persona setup
   learningStyle: LearningStyle = LearningStyle.VISUAL;
@@ -86,9 +86,9 @@ export class QuestionGenerator implements OnInit, OnDestroy {
   showAIMetrics = false;
 
   // Available options
-  subjects = Object.values(Subject);
-  difficultyLevels = Object.values(DifficultyLevel);
-  questionTypes = Object.values(QuestionType);
+  subjects: string[] = []; // Will be loaded from backend
+  difficultyLevels: string[] = ['beginner', 'intermediate', 'advanced'];
+  questionTypes: string[] = ['multiple_choice', 'short_answer', 'true_false'];
   learningStyles = Object.values(LearningStyle);
   availableTopics: string[] = [];
 
@@ -103,6 +103,15 @@ export class QuestionGenerator implements OnInit, OnDestroy {
   sessionResults: any = null;
 
   ngOnInit(): void {
+    console.log('🚀 Question Generator initialized');
+
+    // Check if user is authenticated
+    if (!this.authService.isAuthenticated()) {
+      console.log('❌ User not authenticated, redirecting to login');
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+
     this.loadUserData();
     this.subscribeToSessionChanges();
   }
@@ -120,6 +129,28 @@ export class QuestionGenerator implements OnInit, OnDestroy {
       this.router.navigate(['/auth/login']);
       return;
     }
+
+    console.log('🔍 Loading subjects for user:', this.currentUser);
+
+    // Load available subjects for the user's grade
+    this.questionService.getAvailableSubjectsForUser().subscribe({
+      next: (response) => {
+        console.log('✅ Subjects response:', response);
+        if (response.success) {
+          this.subjects = response.data.subjects;
+          console.log('📚 Loaded subjects:', this.subjects);
+        } else {
+          console.error('❌ Failed to load subjects:', response.message);
+          this.error = 'Failed to load available subjects';
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error loading subjects:', error);
+        this.error = 'Failed to load subjects. Please try logging in again.';
+        // Fallback to default subjects
+        this.subjects = ['mathematics', 'english', 'science', 'social-studies'];
+      },
+    });
 
     // Load existing persona if available
     this.questionService.getStudentPersona().subscribe({
@@ -160,12 +191,45 @@ export class QuestionGenerator implements OnInit, OnDestroy {
    */
   onSubjectChange(): void {
     if (this.selectedSubject && this.currentUser?.grade) {
+      console.log('📖 Loading topics for subject:', this.selectedSubject);
+
+      // Get topics from service or provide fallbacks
       this.availableTopics = this.questionService.getAvailableTopics(
         this.selectedSubject,
         this.currentUser.grade
       );
+
+      // If no topics found, provide some basic fallback topics
+      if (!this.availableTopics || this.availableTopics.length === 0) {
+        console.log('⚠️ No topics found, using fallback topics');
+        this.availableTopics = this.getFallbackTopics(this.selectedSubject);
+      }
+
+      console.log('📚 Available topics:', this.availableTopics);
       this.selectedTopic = null;
     }
+  }
+
+  /**
+   * Get fallback topics for a subject
+   */
+  private getFallbackTopics(subject: string): string[] {
+    const topicMap: { [key: string]: string[] } = {
+      mathematics: [
+        'Addition',
+        'Subtraction',
+        'Multiplication',
+        'Division',
+        'Fractions',
+        'Algebra',
+      ],
+      english: ['Grammar', 'Reading Comprehension', 'Writing', 'Vocabulary', 'Literature'],
+      science: ['Biology', 'Chemistry', 'Physics', 'Earth Science', 'Environmental Science'],
+      'social-studies': ['History', 'Geography', 'Government', 'Economics', 'Culture'],
+      technology: ['Computer Basics', 'Programming', 'Digital Literacy', 'Internet Safety'],
+    };
+
+    return topicMap[subject] || ['General Topics'];
   }
 
   /**
@@ -232,13 +296,10 @@ export class QuestionGenerator implements OnInit, OnDestroy {
         motivationalFactors: this.motivationalFactors,
       };
 
-      // Save persona
-      await this.questionService.updateStudentPersona(persona).toPromise();
-
-      // Generate questions
+      // Generate questions - simplified request for our backend
       const request: QuestionGenerationRequest = {
-        subject: this.selectedSubject,
-        topic: this.selectedTopic,
+        subject: this.selectedSubject!,
+        topic: this.selectedTopic!,
         difficulty: this.selectedDifficulty,
         questionType: this.selectedQuestionType,
         count: this.questionCount,
@@ -248,8 +309,8 @@ export class QuestionGenerator implements OnInit, OnDestroy {
       const response = await this.questionService.generateQuestions(request).toPromise();
 
       if (response?.success) {
-        // Capture AI quality metrics
-        this.qualityMetrics = response.data.qualityMetrics || null;
+        // Capture AI quality metrics from backend response
+        this.qualityMetrics = response.metrics || null;
 
         // Start the question session
         const session: QuestionSession = {
@@ -260,9 +321,9 @@ export class QuestionGenerator implements OnInit, OnDestroy {
           startedAt: new Date(),
           totalScore: 0,
           maxScore: response.data.questions.length,
-          timeSpentMinutes: 0,
-          subject: this.selectedSubject,
-          topic: this.selectedTopic,
+          timeSpentMinutes: response.data.estimatedTotalTime || 0,
+          subject: this.selectedSubject!,
+          topic: this.selectedTopic!,
         };
 
         this.questionService.startSession(session);
@@ -281,7 +342,9 @@ export class QuestionGenerator implements OnInit, OnDestroy {
         this.currentStep = 'setup';
       }
     } catch (error: any) {
-      this.error = error.message || 'An error occurred while generating questions';
+      console.error('Question generation error:', error);
+      this.error =
+        error.error?.message || error.message || 'An error occurred while generating questions';
       this.currentStep = 'setup';
     } finally {
       this.loading = false;
