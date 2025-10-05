@@ -116,6 +116,13 @@ export class AuthService {
   }
 
   /**
+   * Get user profile from backend
+   */
+  getProfile(): Observable<AuthResponse> {
+    return this.http.get<AuthResponse>(`${environment.apiUrl}/auth/profile`);
+  }
+
+  /**
    * Check if user is authenticated
    */
   isAuthenticated(): boolean {
