@@ -5,12 +5,14 @@ A comprehensive math learning application with LLM-powered question generation a
 ## Features
 
 ### 🎓 Educational Features
+
 -   Generates age-appropriate math questions using LLM
 -   Supports multiple categories: addition, multiplication, division, and pattern recognition
 -   Provides contextual learning based on curriculum standards
 -   Adapts to student performance and learning pace
 
 ### 🔐 Authentication System
+
 -   **User Management**: Student and Admin registration with role-based access
 -   **JWT Authentication**: Secure token-based authentication with refresh tokens
 -   **Password Security**: bcryptjs hashing with salt rounds
@@ -18,6 +20,7 @@ A comprehensive math learning application with LLM-powered question generation a
 -   **Role-based Authorization**: Separate access levels for students and administrators
 
 ### 🎨 Frontend Integration
+
 -   **Angular Frontend**: Complete user interface with authentication flows
 -   **Responsive Design**: Mobile-friendly registration and login forms
 -   **Role-based Routing**: Automatic redirection based on user roles
@@ -26,6 +29,7 @@ A comprehensive math learning application with LLM-powered question generation a
 ## Tech Stack
 
 ### Backend
+
 -   **Framework**: Express.js with TypeScript
 -   **Database**: MongoDB with Mongoose ODM
 -   **Authentication**: JWT with bcryptjs password hashing
@@ -36,6 +40,7 @@ A comprehensive math learning application with LLM-powered question generation a
 -   **Testing**: Jest with comprehensive TDD coverage
 
 ### Frontend
+
 -   **Framework**: Angular 18+ with standalone components
 -   **UI Library**: Angular Material
 -   **State Management**: RxJS with BehaviorSubject patterns
@@ -43,6 +48,7 @@ A comprehensive math learning application with LLM-powered question generation a
 -   **HTTP Client**: Angular HttpClient with interceptors
 
 ### Development Tools
+
 -   **TypeScript**: Full type safety across frontend and backend
 -   **Development**: Hot reload with nodemon and Angular CLI
 -   **Testing**: Jest for backend, Angular testing utilities for frontend
@@ -58,11 +64,12 @@ A comprehensive math learning application with LLM-powered question generation a
 
 1. Clone the repository
 2. Install dependencies:
+
     ```bash
     # Backend dependencies
     npm install
-    
-    # Frontend dependencies  
+
+    # Frontend dependencies
     cd learning-hub-frontend
     npm install
     cd ..
@@ -98,10 +105,11 @@ A comprehensive math learning application with LLM-powered question generation a
     ```
 
 4. Start MongoDB:
+
     ```bash
     # Using Docker
     docker run -d -p 27017:27017 --name mongodb mongo:latest
-    
+
     # Or using local MongoDB installation
     mongod
     ```
@@ -109,56 +117,70 @@ A comprehensive math learning application with LLM-powered question generation a
 ### Development
 
 #### Backend Development
+
 Run the backend development server:
+
 ```bash
 npm run dev
 ```
+
 Server will start at: http://localhost:3000
 
-#### Frontend Development  
+#### Frontend Development
+
 Run the Angular development server:
+
 ```bash
 cd learning-hub-frontend
 npm start
 ```
+
 Frontend will start at: http://localhost:4200
 
 #### Full Stack Development
+
 For complete development with both servers:
+
 ```bash
 # Terminal 1: Backend
 npm run dev
 
-# Terminal 2: Frontend  
+# Terminal 2: Frontend
 cd learning-hub-frontend && npm start
 ```
 
 ### API Endpoints
 
 #### Authentication Endpoints
-- `POST /api/auth/register/student` - Student registration
-- `POST /api/auth/register/admin` - Admin registration (requires admin privileges)
-- `POST /api/auth/login` - User login
-- `GET /api/auth/profile` - Get user profile (requires authentication)
-- `POST /api/auth/refresh` - Refresh authentication token
+
+-   `POST /api/auth/register/student` - Student registration
+-   `POST /api/auth/register/admin` - Admin registration (requires admin privileges)
+-   `POST /api/auth/login` - User login
+-   `GET /api/auth/profile` - Get user profile (requires authentication)
+-   `POST /api/auth/logout` - User logout (requires authentication)
+-   `POST /api/auth/refresh` - Refresh authentication token
 
 #### Question Generation Endpoints
-- `GET /api/questions/generate` - Generate math questions
-- `GET /health` - Health check endpoint
+
+-   `GET /api/questions/generate` - Generate math questions
+-   `GET /health` - Health check endpoint
 
 ### Testing
 
 Run backend tests:
+
 ```bash
 npm test
 ```
 
 Run tests in watch mode:
+
 ```bash
 npm run test:watch
 ```
 
 Build for production:
+
 ```bash
 # Backend
 npm run build

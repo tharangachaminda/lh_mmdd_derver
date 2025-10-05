@@ -50,6 +50,7 @@ Implement a complete authentication system with MongoDB, JWT tokens, role-based 
     - Admin registration: `POST /api/auth/register/admin`
     - User login: `POST /api/auth/login`
     - Profile access: `GET /api/auth/profile`
+    - User logout: `POST /api/auth/logout` (authenticated)
     - Token refresh: `POST /api/auth/refresh`
     - Comprehensive Swagger documentation
 
@@ -192,6 +193,13 @@ curl -X POST http://localhost:3000/api/auth/register/student
 ```bash
 curl -X POST http://localhost:3000/api/auth/login
 # Response: 200 OK with authentication tokens
+```
+
+✅ **User Logout** (Protected)
+
+```bash
+curl -X POST http://localhost:3000/api/auth/logout -H "Authorization: Bearer ..."
+# Response: 200 OK {"success":true,"message":"Logout successful"}
 ```
 
 ✅ **Profile Access** (Protected)
