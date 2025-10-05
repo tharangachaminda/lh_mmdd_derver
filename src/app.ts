@@ -2,6 +2,8 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import questionsRoutes from "./routes/questions.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import simpleAuthRoutes from "./routes/simple-auth.routes.js";
+import productionQuestionsRoutes from "./routes/production-questions.routes.js";
 import { errorHandler } from "./utils/error.handler.js";
 import { DatabaseConfig } from "./config/database.config.js";
 
@@ -40,7 +42,9 @@ app.get("/health", (_req: Request, res: Response) => {
 
 // API routes
 app.use("/api/auth", authRoutes);
+app.use("/api/simple-auth", simpleAuthRoutes);
 app.use("/api/questions", questionsRoutes);
+app.use("/api/production-questions", productionQuestionsRoutes);
 
 // 404 handler for undefined routes
 app.use((_req: Request, res: Response) => {
