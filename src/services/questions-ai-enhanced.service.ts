@@ -64,9 +64,23 @@ export class AIEnhancedQuestionsService {
         };
     }> {
         try {
-            const user = await User.findById(jwtPayload.userId);
-            if (!user) {
-                throw new Error("User not found");
+            // Handle demo users
+            let user: any;
+            if (jwtPayload.userId === "demo-user-id") {
+                user = {
+                    _id: "demo-user-id",
+                    email: jwtPayload.email,
+                    firstName: "Demo",
+                    lastName: "User",
+                    role: jwtPayload.role,
+                    grade: (jwtPayload as any).grade || 5,
+                    country: (jwtPayload as any).country || "New Zealand",
+                };
+            } else {
+                user = await User.findById(jwtPayload.userId);
+                if (!user) {
+                    throw new Error("User not found");
+                }
             }
 
             console.log("🤖 AI Question Generation Pipeline Started");

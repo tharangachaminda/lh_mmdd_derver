@@ -56,4 +56,14 @@ router.get("/subjects/:grade", authenticateToken, (req, res) =>
  */
 router.get("/health", (req, res) => questionsController.healthCheck(req, res));
 
+/**
+ * POST /api/questions/demo
+ * Demo question generation for testing
+ *
+ * Public endpoint - no authentication required
+ */
+router.post("/demo", (req, res) =>
+    questionsController.demoQuestionGeneration(req, res)
+);
+
 export default router;

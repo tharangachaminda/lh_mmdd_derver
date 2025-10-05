@@ -81,6 +81,24 @@ export class QuestionsController {
                 return;
             }
 
+            console.log("🚀 Generating AI-enhanced questions...", {
+                subject,
+                topic,
+                difficulty,
+                questionType,
+                count,
+            });
+
+            // Validate user authentication
+            if (!req.user) {
+                res.status(401).json({
+                    success: false,
+                    message: "Authentication required",
+                    data: null,
+                });
+                return;
+            }
+
             // Create question generation request
             const questionRequest = {
                 subject,
@@ -92,21 +110,6 @@ export class QuestionsController {
                 persona,
                 previousQuestions: req.body.previousQuestions || [],
             };
-
-            console.log(
-                "🚀 Generating AI-enhanced questions...",
-                questionRequest
-            );
-
-            // Validate user authentication
-            if (!req.user) {
-                res.status(401).json({
-                    success: false,
-                    message: "Authentication required",
-                    data: null,
-                });
-                return;
-            }
 
             // Generate questions using AI-enhanced service
             const result = await this.aiQuestionsService.generateQuestions(
@@ -189,5 +192,74 @@ export class QuestionsController {
                 timestamp: new Date().toISOString(),
             },
         });
+    }
+
+    /**
+     * Demo question generation (no auth required for testing)
+     * POST /api/questions/demo
+     */
+    async demoQuestionGeneration(req: Request, res: Response): Promise<void> {
+        try {
+            console.log("🎯 Demo Question Generation Request");
+
+            // Create demo request
+            const demoRequest = {
+                subject: req.body.subject || "mathematics",
+                topic: req.body.topic || "Fractions & Decimals",
+                difficulty: req.body.difficulty || "intermediate",
+                questionType: req.body.questionType || "multiple_choice",
+                count: Math.min(req.body.count || 2, 3), // Limit to 3 for demo
+                persona: {
+                    userId: "demo-user",
+                    grade: req.body.grade || 5,
+                    learningStyle: req.body.learningStyle || "visual",
+                    interests: req.body.interests || ["mathematics", "puzzles"],
+                    culturalContext: req.body.culturalContext || "New Zealand",
+                    preferredQuestionTypes: ["multiple_choice"],
+                    performanceLevel: "intermediate",
+                    strengths: ["logical thinking"],
+                    improvementAreas: ["word problems"],
+                    motivationalFactors: ["achievement", "visual feedback"],
+                },
+                previousQuestions: [],
+            };
+
+            // Create demo JWT payload
+            const demoJwtPayload = {
+                userId: "demo-user-id",
+                email: "demo@example.com",
+                role: "STUDENT" as any,
+                grade: demoRequest.persona.grade,
+                country: demoRequest.persona.culturalContext,
+            };
+
+            console.log("🚀 Generating demo AI-enhanced questions...");
+
+            // Generate questions using AI-enhanced service
+            const result = await this.aiQuestionsService.generateQuestions(
+                demoRequest as any,
+                demoJwtPayload
+            );
+
+            console.log("✅ Demo questions generated successfully");
+
+            res.status(200).json({
+                success: true,
+                message: `Successfully generated ${result.questions.length} AI-enhanced demo questions`,
+                data: result,
+                demo: true,
+            });
+        } catch (error: any) {
+            console.error("❌ Demo question generation error:", error);
+            res.status(500).json({
+                success: false,
+                message: "Demo generation failed",
+                data: null,
+                error:
+                    process.env.NODE_ENV === "development"
+                        ? error.message
+                        : undefined,
+            });
+        }
     }
 }
