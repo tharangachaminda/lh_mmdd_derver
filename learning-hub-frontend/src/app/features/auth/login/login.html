@@ -1,0 +1,143 @@
+<div class="login-container">
+  <div class="login-wrapper">
+    <!-- Header Section -->
+    <div class="login-header">
+      <img src="/assets/logo.svg" alt="Learning Hub" class="logo" />
+      <h1>Welcome to Learning Hub</h1>
+      <p>AI-Powered Educational Platform</p>
+    </div>
+
+    <!-- Login Card -->
+    <mat-card class="login-card">
+      <mat-card-header>
+        <mat-card-title>Sign In</mat-card-title>
+        <mat-card-subtitle>Choose your account type and sign in</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- User Type Tabs -->
+        <mat-tab-group mat-align-tabs="center" class="user-type-tabs">
+          <mat-tab label="Student Login">
+            <div class="tab-content">
+              <div class="tab-icon">
+                <mat-icon>school</mat-icon>
+              </div>
+              <p>Access AI-powered questions and track your learning progress</p>
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Admin Login">
+            <div class="tab-content">
+              <div class="tab-icon">
+                <mat-icon>admin_panel_settings</mat-icon>
+              </div>
+              <p>Manage questions, users, and platform administration</p>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+
+        <!-- Login Form -->
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+          <!-- Email Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email Address</mat-label>
+            <input
+              matInput
+              type="email"
+              formControlName="email"
+              placeholder="Enter your email"
+              autocomplete="email"
+            />
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="email?.hasError('required')"> Email is required </mat-error>
+            <mat-error *ngIf="email?.hasError('email')">
+              Please enter a valid email address
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Password Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input
+              matInput
+              [type]="hidePassword ? 'password' : 'text'"
+              formControlName="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hidePassword"
+            >
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="password?.hasError('required')"> Password is required </mat-error>
+            <mat-error *ngIf="password?.hasError('minlength')">
+              Password must be at least 6 characters long
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Remember Me -->
+          <div class="form-options">
+            <mat-checkbox formControlName="rememberMe"> Remember me </mat-checkbox>
+
+            <button
+              type="button"
+              mat-button
+              color="primary"
+              (click)="goToForgotPassword()"
+              class="forgot-password-link"
+            >
+              Forgot Password?
+            </button>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            class="login-button full-width"
+            [disabled]="!loginForm.valid || isLoading"
+          >
+            <span *ngIf="!isLoading">Sign In</span>
+            <div *ngIf="isLoading" class="loading-content">
+              <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+              <span>Signing In...</span>
+            </div>
+          </button>
+        </form>
+      </mat-card-content>
+
+      <mat-card-actions class="card-actions">
+        <div class="divider">
+          <span>New Student?</span>
+        </div>
+
+        <button
+          mat-stroked-button
+          color="accent"
+          (click)="goToStudentRegistration()"
+          class="register-button full-width"
+        >
+          <mat-icon>person_add</mat-icon>
+          Create Student Account
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p>&copy; 2025 Learning Hub. AI-Powered Education Platform.</p>
+      <div class="footer-links">
+        <a href="#" mat-button>Privacy Policy</a>
+        <a href="#" mat-button>Terms of Service</a>
+        <a href="#" mat-button>Support</a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+<div class="admin-dashboard">
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="welcome-section">
+        <h1>Admin Dashboard</h1>
+        <p *ngIf="!loading && user">
+          Welcome, {{ user.firstName }} {{ user.lastName }}! Manage the Learning Hub platform,
+          users, and content.
+        </p>
+        <p *ngIf="loading">Loading your dashboard...</p>
+      </div>
+      <div class="user-actions" *ngIf="!loading && user">
+        <div class="user-info">
+          <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+          <span class="user-role">Administrator</span>
+          <span class="user-country">{{ user.country }}</span>
+        </div>
+        <button class="logout-btn" (click)="onLogout()" title="Logout">
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-cards">
+    <div class="card">
+      <h3>User Management</h3>
+      <p>Manage student and admin accounts</p>
+      <button>Manage Users</button>
+    </div>
+
+    <div class="card">
+      <h3>Question Management</h3>
+      <p>Oversee AI-generated questions and content</p>
+      <button>Manage Questions</button>
+    </div>
+
+    <div class="card">
+      <h3>Analytics</h3>
+      <p>View platform usage and performance metrics</p>
+      <button>View Analytics</button>
+    </div>
+
+    <div class="card">
+      <h3>System Settings</h3>
+      <p>Configure platform settings and preferences</p>
+      <button>Settings</button>
+    </div>
+  </div>
+</div>

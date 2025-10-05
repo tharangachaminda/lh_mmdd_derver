@@ -1,0 +1,44 @@
+<div class="student-dashboard">
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="welcome-section">
+        <h1>Student Dashboard</h1>
+        <p *ngIf="!loading && user">
+          Welcome back, {{ user.firstName }} {{ user.lastName }}! Start generating AI-powered
+          questions to enhance your learning.
+        </p>
+        <p *ngIf="loading">Loading your dashboard...</p>
+      </div>
+      <div class="user-actions" *ngIf="!loading && user">
+        <div class="user-info">
+          <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+          <span class="user-grade">Year/Grade {{ user.grade }}</span>
+          <span class="user-country">{{ user.country }}</span>
+        </div>
+        <button class="logout-btn" (click)="onLogout()" title="Logout">
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-cards">
+    <div class="card">
+      <h3>AI Question Generator</h3>
+      <p>Generate custom questions based on your curriculum</p>
+      <button>Start Learning</button>
+    </div>
+
+    <div class="card">
+      <h3>My Progress</h3>
+      <p>Track your learning achievements and progress</p>
+      <button>View Progress</button>
+    </div>
+
+    <div class="card">
+      <h3>Recent Activities</h3>
+      <p>Review your recent learning sessions</p>
+      <button>View Activities</button>
+    </div>
+  </div>
+</div>
