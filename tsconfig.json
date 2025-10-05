@@ -25,5 +25,13 @@
     "experimentalSpecifierResolution": "node"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": [
+    "node_modules", 
+    "dist",
+    "src/tests/**/*",
+    "src/__mocks__/**/*",
+    "src/services/opensearch.service.ts",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
 }

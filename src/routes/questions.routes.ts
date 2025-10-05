@@ -35,7 +35,7 @@ router.post(
     "/generate",
     authenticateToken,
     requireRole([UserRole.STUDENT, UserRole.ADMIN]),
-    (req, res) => questionsController.generateQuestions(req, res)
+    (req: any, res: any) => questionsController.generateQuestions(req, res)
 );
 
 /**
@@ -44,10 +44,8 @@ router.post(
  *
  * Requires: Authentication (any role)
  */
-router.get(
-    "/subjects/:grade", 
-    authenticateToken, 
-    (req, res) => questionsController.getSubjectsForGrade(req, res)
+router.get("/subjects/:grade", authenticateToken, (req, res) =>
+    questionsController.getSubjectsForGrade(req, res)
 );
 
 /**
