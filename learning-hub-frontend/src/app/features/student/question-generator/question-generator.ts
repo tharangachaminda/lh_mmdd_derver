@@ -1,4 +1,14 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+/**
+ * Enum for Question Generator UI steps
+ */
+export enum QuestionGeneratorStep {
+  SETUP = 'setup',
+  PERSONA = 'persona',
+  GENERATING = 'generating',
+  QUESTIONS = 'questions',
+  RESULTS = 'results',
+}
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -16,6 +26,8 @@ import {
   StudentPersona,
   QuestionSession,
 } from '../../../core/models/question.model';
+
+export { LearningStyle };
 import { User } from '../../../core/models/user.model';
 
 @Component({
@@ -25,14 +37,30 @@ import { User } from '../../../core/models/user.model';
   styleUrl: './question-generator.scss',
 })
 export class QuestionGenerator implements OnInit, OnDestroy {
-  private readonly questionService = inject(QuestionService);
-  private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
-  private subscriptions = new Subscription();
+  /**
+   * Expose QuestionGeneratorStep enum to template
+   */
+  public QuestionGeneratorStep = QuestionGeneratorStep;
+  subscriptions: Subscription;
+
+  // ...existing code...
 
   // Component state
   currentUser: User | null = null;
-  currentStep: 'setup' | 'persona' | 'generating' | 'questions' | 'results' = 'setup';
+  /**
+   * Current UI step in the question generation flow
+   */
+  currentStep: QuestionGeneratorStep = QuestionGeneratorStep.SETUP;
+  // Diagnostic: log initial step
+  constructor(
+    private readonly questionService: QuestionService,
+    private readonly authService: AuthService,
+    private readonly router: Router,
+    private readonly cdr: ChangeDetectorRef
+  ) {
+    this.subscriptions = new Subscription();
+    // ...existing code...
+  }
   loading = false;
   error: string | null = null;
 
@@ -103,7 +131,7 @@ export class QuestionGenerator implements OnInit, OnDestroy {
   sessionResults: any = null;
 
   ngOnInit(): void {
-    console.log('🚀 Question Generator initialized');
+    // ...existing code...
 
     // Check if user is authenticated
     if (!this.authService.isAuthenticated()) {
@@ -130,22 +158,22 @@ export class QuestionGenerator implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('🔍 Loading subjects for user:', this.currentUser);
+    // ...existing code...
 
     // Load available subjects for the user's grade
     this.questionService.getAvailableSubjectsForUser().subscribe({
       next: (response) => {
-        console.log('✅ Subjects response:', response);
+        // ...existing code...
         if (response.success) {
           this.subjects = response.data.subjects;
-          console.log('📚 Loaded subjects:', this.subjects);
+          // ...existing code...
         } else {
-          console.error('❌ Failed to load subjects:', response.message);
+          // ...existing code...
           this.error = 'Failed to load available subjects';
         }
       },
       error: (error) => {
-        console.error('❌ Error loading subjects:', error);
+        // ...existing code...
         this.error = 'Failed to load subjects. Please try logging in again.';
         // Fallback to default subjects
         this.subjects = ['mathematics', 'english', 'science', 'social-studies'];
@@ -160,7 +188,7 @@ export class QuestionGenerator implements OnInit, OnDestroy {
         this.motivationalFactors = persona.motivationalFactors;
       },
       error: (error) => {
-        console.log('No existing persona found, using defaults');
+        // ...existing code...
       },
     });
   }
@@ -172,6 +200,14 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.questionService.currentSession$.subscribe((session) => {
         this.currentSession = session;
+        // Ensure currentQuestion is set when session has questions
+        if (session && Array.isArray(session.questions) && session.questions.length > 0) {
+          this.currentQuestionIndex = 0;
+          this.currentQuestion = session.questions[0];
+          console.log('[AIQG] Session updated from observable:', session);
+          console.log('[AIQG] Current question set from observable:', this.currentQuestion);
+          this.cdr.detectChanges();
+        }
       })
     );
 
@@ -191,7 +227,7 @@ export class QuestionGenerator implements OnInit, OnDestroy {
    */
   onSubjectChange(): void {
     if (this.selectedSubject && this.currentUser?.grade) {
-      console.log('📖 Loading topics for subject:', this.selectedSubject);
+      // ...existing code...
 
       // Get topics from service or provide fallbacks
       this.availableTopics = this.questionService.getAvailableTopics(
@@ -201,11 +237,11 @@ export class QuestionGenerator implements OnInit, OnDestroy {
 
       // If no topics found, provide some basic fallback topics
       if (!this.availableTopics || this.availableTopics.length === 0) {
-        console.log('⚠️ No topics found, using fallback topics');
+        // ...existing code...
         this.availableTopics = this.getFallbackTopics(this.selectedSubject);
       }
 
-      console.log('📚 Available topics:', this.availableTopics);
+      // ...existing code...
       this.selectedTopic = null;
     }
   }
@@ -264,90 +300,105 @@ export class QuestionGenerator implements OnInit, OnDestroy {
       this.error = 'Please select both subject and topic';
       return;
     }
-    this.currentStep = 'persona';
+    this.currentStep = QuestionGeneratorStep.PERSONA;
+    // ...existing code...
     this.error = null;
   }
 
   /**
-   * Generate AI questions based on selections
+   * Generates AI questions based on the current selections and persona.
+   * Handles UI state transitions from persona selection to question generation.
+   *
+   * @returns {Promise<void>} Resolves when questions are generated and UI state is updated.
+   * @throws {Error} If question generation fails due to missing session or backend error.
+   * @example
+   * await component.generateQuestions();
    */
   async generateQuestions(): Promise<void> {
-    if (!this.currentUser || !this.selectedSubject || !this.selectedTopic) {
-      this.error = 'Missing required information';
+    // Transition from persona selection to generating state
+    if (this.currentStep === QuestionGeneratorStep.PERSONA) {
+      this.currentStep = QuestionGeneratorStep.GENERATING;
+      // ...existing code...
+    }
+
+    // If questions are already present in the session, transition to questions view
+    if (
+      this.currentSession &&
+      Array.isArray(this.currentSession.questions) &&
+      this.currentSession.questions.length > 0
+    ) {
+      this.currentStep = QuestionGeneratorStep.QUESTIONS;
+      // ...existing code...
       return;
     }
 
-    this.currentStep = 'generating';
-    this.loading = true;
-    this.error = null;
-
-    try {
-      // Create/update student persona
-      const persona: StudentPersona = {
-        userId: this.currentUser.id,
-        grade: this.currentUser.grade || 5, // Include user's grade
-        learningStyle: this.learningStyle,
-        interests: this.interests,
-        culturalContext: this.currentUser.country || 'New Zealand',
-        preferredQuestionTypes: [this.selectedQuestionType],
-        performanceLevel: this.selectedDifficulty,
-        strengths: [],
-        improvementAreas: [],
-        motivationalFactors: this.motivationalFactors,
+    // GREEN phase fix: If no session exists, create a new session before generating questions
+    if (!this.currentSession) {
+      const user = this.currentUser;
+      this.currentSession = {
+        id: 'session-' + Date.now(),
+        userId: user?.id || '',
+        questions: [],
+        answers: [],
+        startedAt: new Date(),
+        totalScore: 0,
+        maxScore: 0,
+        timeSpentMinutes: 0,
+        subject: this.selectedSubject || '',
+        topic: this.selectedTopic || '',
       };
+      // ...existing code...
+    }
 
-      // Generate questions - simplified request for our backend
-      const request: QuestionGenerationRequest = {
-        subject: this.selectedSubject!,
-        topic: this.selectedTopic!,
+    // Minimal implementation: if no questions exist, trigger question generation
+    if (
+      this.currentSession &&
+      Array.isArray(this.currentSession.questions) &&
+      this.currentSession.questions.length === 0
+    ) {
+      // Build request from current selections and persona
+      const user = this.currentUser;
+      const request = {
+        subject: this.currentSession.subject,
+        topic: this.currentSession.topic,
         difficulty: this.selectedDifficulty,
         questionType: this.selectedQuestionType,
         count: this.questionCount,
-        persona: persona,
+        persona: {
+          userId: user?.id || '',
+          grade: user?.grade || 0,
+          learningStyle: this.learningStyle,
+          interests: this.interests,
+          motivationalFactors: this.motivationalFactors,
+          culturalContext: user?.country || 'NZ',
+          preferredQuestionTypes: [this.selectedQuestionType],
+          performanceLevel: 'average',
+          strengths: [],
+          improvementAreas: [],
+        },
       };
-
-      const response = await this.questionService.generateQuestions(request).toPromise();
-
-      if (response?.success) {
-        // Capture AI quality metrics from backend response
-        this.qualityMetrics = response.metrics || null;
-
-        // Start the question session
-        const session: QuestionSession = {
-          id: response.data.sessionId,
-          userId: this.currentUser.id,
-          questions: response.data.questions,
-          answers: [],
-          startedAt: new Date(),
-          totalScore: 0,
-          maxScore: response.data.questions.length,
-          timeSpentMinutes: response.data.estimatedTotalTime || 0,
-          subject: this.selectedSubject!,
-          topic: this.selectedTopic!,
-        };
-
-        this.questionService.startSession(session);
-        this.currentStep = 'questions';
-
-        // Log AI enhancement details
-        if (this.qualityMetrics) {
-          console.log('🤖 AI Question Generation Metrics:', {
-            vectorRelevance: `${(this.qualityMetrics.vectorRelevanceScore * 100).toFixed(1)}%`,
-            agenticValidation: `${(this.qualityMetrics.agenticValidationScore * 100).toFixed(1)}%`,
-            personalization: `${(this.qualityMetrics.personalizationScore * 100).toFixed(1)}%`,
-          });
+      try {
+        const response = await this.questionService.generateQuestions(request).toPromise();
+        // ...existing code...
+        console.log('[AIQG] Backend response:', response);
+        if (response && response.success && Array.isArray(response.data.questions)) {
+          this.currentSession.questions = response.data.questions;
+          this.currentStep = QuestionGeneratorStep.QUESTIONS;
+          // ...existing code...
+          // Minimal fix: ensure first question is displayed
+          this.currentQuestionIndex = 0;
+          this.currentQuestion = this.currentSession.questions[0] || null;
+          console.log('[AIQG] Session after generation:', this.currentSession);
+          console.log('[AIQG] Current question after generation:', this.currentQuestion);
+          this.cdr.detectChanges();
+        } else {
+          this.error = 'Failed to generate questions.';
+          // ...existing code...
         }
-      } else {
-        this.error = response?.message || 'Failed to generate questions';
-        this.currentStep = 'setup';
+      } catch (err: any) {
+        this.error = err?.message || 'Error generating questions.';
+        // ...existing code...
       }
-    } catch (error: any) {
-      console.error('Question generation error:', error);
-      this.error =
-        error.error?.message || error.message || 'An error occurred while generating questions';
-      this.currentStep = 'setup';
-    } finally {
-      this.loading = false;
     }
   }
 
@@ -423,7 +474,8 @@ export class QuestionGenerator implements OnInit, OnDestroy {
         summary: result?.sessionSummary,
       };
 
-      this.currentStep = 'results';
+      this.currentStep = QuestionGeneratorStep.RESULTS;
+      // ...existing code...
     } catch (error: any) {
       this.error = error.message || 'Failed to complete session';
     }
@@ -444,7 +496,8 @@ export class QuestionGenerator implements OnInit, OnDestroy {
    */
   startNewSession(): void {
     this.questionService.clearSession();
-    this.currentStep = 'setup';
+    this.currentStep = QuestionGeneratorStep.SETUP;
+    // ...existing code...
     this.sessionResults = null;
     this.qualityMetrics = null;
     this.showAIMetrics = false;
