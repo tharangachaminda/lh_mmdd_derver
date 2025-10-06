@@ -38,7 +38,8 @@ describe('QuestionGenerator UI Regression', () => {
     const router = {
       navigate: jasmine.createSpy('navigate'),
     } as unknown as import('@angular/router').Router;
-    const component = new QuestionGenerator(questionService, authService, router);
+    const mockCdr = { detectChanges: () => {} } as any;
+    const component = new QuestionGenerator(questionService, authService, router, mockCdr);
     // Set up required state
     component.selectedSubject = 'mathematics';
     component.selectedTopic = 'Addition';
@@ -151,7 +152,9 @@ describe('QuestionGenerator UI Regression', () => {
       } as AuthService;
       const mockRouter = { navigate: () => {} } as any;
 
-      component = new QuestionGenerator(mockQuestionService, mockAuthService, mockRouter);
+      // Provide a mock ChangeDetectorRef for constructor
+      const mockCdr = { detectChanges: () => {} } as any;
+      component = new QuestionGenerator(mockQuestionService, mockAuthService, mockRouter, mockCdr);
       // Simulate initial state
       component.currentStep = QuestionGeneratorStep.GENERATING;
       const mockQuestion = {
@@ -189,6 +192,82 @@ describe('QuestionGenerator UI Regression', () => {
         subject: 'mathematics',
         topic: 'Addition',
       };
+    });
+    // MMDD NOTE: UI template tests requiring Angular TestBed and DOM queries are not supported in Zone.js-free projects.
+    // Navigation controls (Next/Previous buttons) are tested via class-based logic and manual UI inspection only.
+    it('should allow navigation between questions using next/previous controls (RED phase)', async () => {
+      // Arrange: Create a session with multiple questions
+      const mockQuestions = [
+        {
+          id: 'q1',
+          subject: 'mathematics',
+          topic: 'Addition',
+          difficulty: 'beginner',
+          questionType: 'multiple_choice',
+          question: 'What is 2+2?',
+          options: ['3', '4'],
+          correctAnswer: '4',
+          explanation: '2 + 2 = 4',
+          hints: [],
+          personalizationContext: {
+            learningStyle: 'visual',
+            interests: ['Sports'],
+            culturalReferences: [],
+          },
+          metadata: {
+            estimatedTimeMinutes: 1,
+            gradeLevel: 5,
+            tags: ['math'],
+            createdAt: new Date().toISOString(),
+          },
+        },
+        {
+          id: 'q2',
+          subject: 'mathematics',
+          topic: 'Addition',
+          difficulty: 'beginner',
+          questionType: 'multiple_choice',
+          question: 'What is 3+3?',
+          options: ['5', '6'],
+          correctAnswer: '6',
+          explanation: '3 + 3 = 6',
+          hints: [],
+          personalizationContext: {
+            learningStyle: 'visual',
+            interests: ['Sports'],
+            culturalReferences: [],
+          },
+          metadata: {
+            estimatedTimeMinutes: 1,
+            gradeLevel: 5,
+            tags: ['math'],
+            createdAt: new Date().toISOString(),
+          },
+        },
+      ];
+      component.currentSession = {
+        id: 'session-nav',
+        userId: 'user1',
+        questions: mockQuestions,
+        answers: [],
+        startedAt: new Date(),
+        totalScore: 0,
+        maxScore: 2,
+        timeSpentMinutes: 0,
+        subject: 'mathematics',
+        topic: 'Addition',
+      };
+      component.currentStep = QuestionGeneratorStep.QUESTIONS;
+      // Act: Try to navigate to next question
+      // (Assume navigation methods exist: goToNextQuestion, goToPreviousQuestion)
+      expect(component.currentQuestionIndex).toBe(0); // Should start at first question
+      component.goToNextQuestion();
+      expect(component.currentQuestionIndex).toBe(1); // Should move to second question
+      expect(component.currentQuestion && component.currentQuestion.id).toBe('q2');
+      component.goToPreviousQuestion();
+      expect(component.currentQuestionIndex).toBe(0); // Should return to first question
+      expect(component.currentQuestion && component.currentQuestion.id).toBe('q1');
+      // This test should fail until navigation logic is implemented
     });
 
     it('should transition from "generating" to "questions" when questions are generated', () => {

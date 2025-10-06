@@ -135,6 +135,7 @@
           }
         </div>
       </div>
+      <!-- Navigation controls are only rendered in the QUESTIONS step for UI consistency (MMDD REFACTOR) -->
 
       <div class="form-group">
         <label>What are you interested in? (Select up to 5)</label>
@@ -201,6 +202,8 @@
   <!-- Step 4: Question Interface -->
   @if (currentStep === QuestionGeneratorStep.QUESTIONS && currentQuestion) {
   <div class="questions-step">
+    <!-- Navigation Controls (MMDD: Placed after answer options, before submit) -->
+    <!-- ...existing code... -->
     <!-- AI Quality Metrics Panel -->
     @if (qualityMetrics) {
     <div class="ai-metrics-panel">
@@ -329,6 +332,35 @@
           </textarea>
         </div>
         }
+
+        <!-- Navigation Controls (moved here) -->
+        <div
+          class="question-navigation"
+          style="display: flex; gap: 1rem; margin: 1rem 0; justify-content: center"
+        >
+          <button
+            mat-stroked-button
+            color="primary"
+            class="previous-question"
+            (click)="goToPreviousQuestion()"
+            [disabled]="currentQuestionIndex === 0"
+            aria-label="Go to previous question"
+          >
+            <mat-icon>arrow_back</mat-icon>
+            Previous
+          </button>
+          <button
+            mat-raised-button
+            color="accent"
+            class="next-question"
+            (click)="goToNextQuestion()"
+            [disabled]="currentQuestionIndex === (currentSession?.questions?.length || 1) - 1"
+            aria-label="Go to next question"
+          >
+            Next
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
       </div>
 
       <div class="question-actions">
