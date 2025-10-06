@@ -15,7 +15,7 @@
   }
 
   <!-- Step 1: Question Setup -->
-  @if (currentStep === 'setup') {
+  @if (currentStep === QuestionGeneratorStep.SETUP) {
   <div class="setup-step">
     <div class="step-header">
       <h2>📚 Let's Set Up Your Questions</h2>
@@ -102,7 +102,7 @@
   }
 
   <!-- Step 2: Persona Setup -->
-  @if (currentStep === 'persona') {
+  @if (currentStep === QuestionGeneratorStep.PERSONA) {
   <div class="persona-step">
     <div class="step-header">
       <h2>🎯 Personalize Your Experience</h2>
@@ -171,7 +171,7 @@
       </div>
 
       <div class="persona-actions">
-        <button class="back-btn" (click)="currentStep = 'setup'">← Back</button>
+        <button class="back-btn" (click)="currentStep = QuestionGeneratorStep.SETUP">← Back</button>
         <button
           class="generate-btn"
           (click)="generateQuestions()"
@@ -185,7 +185,7 @@
   }
 
   <!-- Step 3: Generating Questions -->
-  @if (currentStep === 'generating') {
+  @if (currentStep === QuestionGeneratorStep.GENERATING) {
   <div class="generating-step">
     <div class="loading-container">
       <div class="loading-spinner"></div>
@@ -199,7 +199,7 @@
   }
 
   <!-- Step 4: Question Interface -->
-  @if (currentStep === 'questions' && currentQuestion) {
+  @if (currentStep === QuestionGeneratorStep.QUESTIONS && currentQuestion) {
   <div class="questions-step">
     <!-- AI Quality Metrics Panel -->
     @if (qualityMetrics) {
@@ -363,7 +363,7 @@
   }
 
   <!-- Step 5: Results -->
-  @if (currentStep === 'results' && sessionResults) {
+  @if (currentStep === QuestionGeneratorStep.RESULTS && sessionResults) {
   <div class="results-step">
     <div class="results-container">
       <div class="results-header">
