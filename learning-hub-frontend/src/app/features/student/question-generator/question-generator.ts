@@ -9,6 +9,8 @@ export enum QuestionGeneratorStep {
   RESULTS = 'results',
 }
 import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -32,41 +34,53 @@ import { User } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-question-generator',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule],
   templateUrl: './question-generator.html',
   styleUrl: './question-generator.scss',
 })
 export class QuestionGenerator implements OnInit, OnDestroy {
   /**
-   * Navigate to the next question in the session
-   * Minimal implementation for GREEN phase
+   * Advances to the next question in the session, if possible.
+   * Updates `currentQuestionIndex` and `currentQuestion`.
+   * Calls change detection to update the UI.
+   *
+   * @returns {void}
+   * @example
+   * component.goToNextQuestion();
+   * @throws {Error} If session or questions are not available.
    */
   goToNextQuestion(): void {
-    if (
-      this.currentSession &&
-      Array.isArray(this.currentSession.questions) &&
-      this.currentQuestionIndex < this.currentSession.questions.length - 1
-    ) {
+    if (!this.currentSession || !Array.isArray(this.currentSession.questions)) {
+      throw new Error('No session or questions available for navigation.');
+    }
+    if (this.currentQuestionIndex < this.currentSession.questions.length - 1) {
       this.currentQuestionIndex++;
       this.currentQuestion = this.currentSession.questions[this.currentQuestionIndex];
       this.cdr.detectChanges();
     }
+    // Optionally: else do nothing (already at last question)
   }
 
   /**
-   * Navigate to the previous question in the session
-   * Minimal implementation for GREEN phase
+   * Moves to the previous question in the session, if possible.
+   * Updates `currentQuestionIndex` and `currentQuestion`.
+   * Calls change detection to update the UI.
+   *
+   * @returns {void}
+   * @example
+   * component.goToPreviousQuestion();
+   * @throws {Error} If session or questions are not available.
    */
   goToPreviousQuestion(): void {
-    if (
-      this.currentSession &&
-      Array.isArray(this.currentSession.questions) &&
-      this.currentQuestionIndex > 0
-    ) {
+    if (!this.currentSession || !Array.isArray(this.currentSession.questions)) {
+      throw new Error('No session or questions available for navigation.');
+    }
+    if (this.currentQuestionIndex > 0) {
       this.currentQuestionIndex--;
       this.currentQuestion = this.currentSession.questions[this.currentQuestionIndex];
       this.cdr.detectChanges();
     }
+    // Optionally: else do nothing (already at first question)
   }
   /**
    * Expose QuestionGeneratorStep enum to template

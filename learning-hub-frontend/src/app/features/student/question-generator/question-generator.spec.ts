@@ -193,6 +193,8 @@ describe('QuestionGenerator UI Regression', () => {
         topic: 'Addition',
       };
     });
+    // MMDD NOTE: UI template tests requiring Angular TestBed and DOM queries are not supported in Zone.js-free projects.
+    // Navigation controls (Next/Previous buttons) are tested via class-based logic and manual UI inspection only.
     it('should allow navigation between questions using next/previous controls (RED phase)', async () => {
       // Arrange: Create a session with multiple questions
       const mockQuestions = [
