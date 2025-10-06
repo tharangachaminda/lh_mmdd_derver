@@ -1,0 +1,396 @@
+<div class="question-generator">
+  <!-- Header -->
+  <div class="generator-header">
+    <button class="back-btn" (click)="returnToDashboard()">← Back to Dashboard</button>
+    <h1>AI Question Generator</h1>
+    <p>Get personalized questions designed just for you!</p>
+  </div>
+
+  <!-- Error Message -->
+  @if (error) {
+  <div class="error-message">
+    <span>⚠️ {{ error }}</span>
+    <button (click)="error = null">×</button>
+  </div>
+  }
+
+  <!-- Step 1: Question Setup -->
+  @if (currentStep === QuestionGeneratorStep.SETUP) {
+  <div class="setup-step">
+    <div class="step-header">
+      <h2>📚 Let's Set Up Your Questions</h2>
+      <p>Choose what you'd like to practice today</p>
+    </div>
+
+    <div class="setup-form">
+      <div class="form-group">
+        <label for="subject">Subject *</label>
+        <select
+          id="subject"
+          [(ngModel)]="selectedSubject"
+          (change)="onSubjectChange()"
+          class="form-select"
+        >
+          <option value="">Select a subject...</option>
+          @for (subject of subjects; track subject) {
+          <option [value]="subject">
+            {{ subject | titlecase }}
+          </option>
+          }
+        </select>
+      </div>
+
+      @if (availableTopics.length > 0) {
+      <div class="form-group">
+        <label for="topic">Topic *</label>
+        <select id="topic" [(ngModel)]="selectedTopic" class="form-select">
+          <option value="">Select a topic...</option>
+          @for (topic of availableTopics; track topic) {
+          <option [value]="topic">
+            {{ topic }}
+          </option>
+          }
+        </select>
+      </div>
+      }
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="difficulty">Difficulty Level</label>
+          <select id="difficulty" [(ngModel)]="selectedDifficulty" class="form-select">
+            @for (level of difficultyLevels; track level) {
+            <option [value]="level">
+              {{ level | titlecase }}
+            </option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="questionType">Question Type</label>
+          <select id="questionType" [(ngModel)]="selectedQuestionType" class="form-select">
+            @for (type of questionTypes; track type) {
+            <option [value]="type">
+              {{ type.replace('_', ' ') | titlecase }}
+            </option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="count">Number of Questions</label>
+        <input
+          type="number"
+          id="count"
+          [(ngModel)]="questionCount"
+          min="1"
+          max="10"
+          class="form-input"
+        />
+      </div>
+
+      <button
+        class="proceed-btn"
+        (click)="proceedToPersona()"
+        [disabled]="!selectedSubject || !selectedTopic"
+      >
+        Next: Personalize Questions →
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- Step 2: Persona Setup -->
+  @if (currentStep === QuestionGeneratorStep.PERSONA) {
+  <div class="persona-step">
+    <div class="step-header">
+      <h2>🎯 Personalize Your Experience</h2>
+      <p>Help us create questions that match your learning style and interests</p>
+    </div>
+
+    <div class="persona-form">
+      <div class="form-group">
+        <label>How do you learn best?</label>
+        <div class="learning-styles">
+          @for (style of learningStyles; track style) {
+          <div
+            class="style-option"
+            [class.selected]="learningStyle === style"
+            (click)="learningStyle = style"
+          >
+            <div class="style-icon">
+              @if (style === 'visual') {
+              <span>👁️</span>
+              } @if (style === 'auditory') {
+              <span>👂</span>
+              } @if (style === 'kinesthetic') {
+              <span>🤲</span>
+              } @if (style === 'reading_writing') {
+              <span>📝</span>
+              }
+            </div>
+            <span>{{ style.replace('_', ' ') | titlecase }}</span>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>What are you interested in? (Select up to 5)</label>
+        <div class="interests-grid">
+          @for (interest of availableInterests; track interest) {
+          <div
+            class="interest-tag"
+            [class.selected]="interests.includes(interest)"
+            [class.disabled]="!interests.includes(interest) && interests.length >= 5"
+            (click)="toggleInterest(interest)"
+          >
+            {{ interest }}
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>What motivates you to learn? (Select up to 3)</label>
+        <div class="motivators-grid">
+          @for (motivator of availableMotivators; track motivator) {
+          <div
+            class="motivator-tag"
+            [class.selected]="motivationalFactors.includes(motivator)"
+            [class.disabled]="
+              !motivationalFactors.includes(motivator) && motivationalFactors.length >= 3
+            "
+            (click)="toggleMotivator(motivator)"
+          >
+            {{ motivator }}
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="persona-actions">
+        <button class="back-btn" (click)="currentStep = QuestionGeneratorStep.SETUP">← Back</button>
+        <button
+          class="generate-btn"
+          (click)="generateQuestions()"
+          [disabled]="interests.length === 0"
+        >
+          🤖 Generate My Questions
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Step 3: Generating Questions -->
+  @if (currentStep === QuestionGeneratorStep.GENERATING) {
+  <div class="generating-step">
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <h2>🤖 Creating Your Personalized Questions...</h2>
+      <p>Our AI is analyzing your preferences and generating questions just for you!</p>
+      <div class="loading-facts">
+        <p>💡 Did you know? Personalized questions can improve learning by up to 40%!</p>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Step 4: Question Interface -->
+  @if (currentStep === QuestionGeneratorStep.QUESTIONS && currentQuestion) {
+  <div class="questions-step">
+    <!-- AI Quality Metrics Panel -->
+    @if (qualityMetrics) {
+    <div class="ai-metrics-panel">
+      <button
+        class="ai-metrics-toggle"
+        (click)="toggleAIMetrics()"
+        [class.expanded]="showAIMetrics"
+      >
+        <span class="ai-icon">🤖</span>
+        <span>AI Enhancement Metrics</span>
+        <span class="toggle-icon" [class.rotated]="showAIMetrics">▼</span>
+      </button>
+
+      @if (showAIMetrics) {
+      <div class="ai-metrics-content">
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <div class="metric-label">Vector Database Relevance</div>
+            <div
+              class="metric-value"
+              [class]="getQualityColorClass(qualityMetrics.vectorRelevanceScore)"
+            >
+              {{ (qualityMetrics.vectorRelevanceScore * 100).toFixed(1) }}%
+            </div>
+            <div class="metric-description">
+              {{ getQualityDescription(qualityMetrics.vectorRelevanceScore) }}
+            </div>
+          </div>
+
+          <div class="metric-item">
+            <div class="metric-label">Multi-Agent Validation</div>
+            <div
+              class="metric-value"
+              [class]="getQualityColorClass(qualityMetrics.agenticValidationScore)"
+            >
+              {{ (qualityMetrics.agenticValidationScore * 100).toFixed(1) }}%
+            </div>
+            <div class="metric-description">
+              {{ getQualityDescription(qualityMetrics.agenticValidationScore) }}
+            </div>
+          </div>
+
+          <div class="metric-item">
+            <div class="metric-label">Personalization Score</div>
+            <div
+              class="metric-value"
+              [class]="getQualityColorClass(qualityMetrics.personalizationScore)"
+            >
+              {{ (qualityMetrics.personalizationScore * 100).toFixed(1) }}%
+            </div>
+            <div class="metric-description">
+              {{ getQualityDescription(qualityMetrics.personalizationScore) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-explanation">
+          <p><strong>🧠 How AI Enhanced Your Questions:</strong></p>
+          <ul>
+            <li>
+              <strong>Vector Database:</strong> Found similar high-quality questions for context and
+              variety
+            </li>
+            <li>
+              <strong>Multi-Agent System:</strong> Validated mathematical accuracy and pedagogical
+              soundness
+            </li>
+            <li>
+              <strong>Personalization Engine:</strong> Adapted content to your learning style and
+              interests
+            </li>
+          </ul>
+        </div>
+      </div>
+      }
+    </div>
+    }
+
+    <div class="question-progress">
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          [style.width.%]="
+            ((currentQuestionIndex + 1) / (currentSession?.questions?.length || 1)) * 100
+          "
+        ></div>
+      </div>
+      <span class="progress-text">
+        Question {{ currentQuestionIndex + 1 }} of {{ currentSession?.questions?.length || 0 }}
+      </span>
+    </div>
+
+    <div class="question-card">
+      <div class="question-header">
+        <span class="question-topic">{{ selectedSubject | titlecase }} - {{ selectedTopic }}</span>
+        <span class="question-difficulty">{{ selectedDifficulty | titlecase }}</span>
+      </div>
+
+      <div class="question-content">
+        <h3>{{ currentQuestion.question }}</h3>
+
+        <!-- Multiple Choice Options -->
+        @if (currentQuestion.questionType === 'multiple_choice') {
+        <div class="question-options">
+          @for (option of currentQuestion.options; track option; let i = $index) {
+          <div
+            class="option"
+            [class.selected]="userAnswer === option"
+            (click)="userAnswer = option"
+          >
+            <span class="option-letter">{{ getOptionLetter(i) }}</span>
+            <span class="option-text">{{ option }}</span>
+          </div>
+          }
+        </div>
+        }
+
+        <!-- Text Answer Input -->
+        @if (currentQuestion.questionType !== 'multiple_choice') {
+        <div class="answer-input">
+          <textarea
+            [(ngModel)]="userAnswer"
+            placeholder="Type your answer here..."
+            class="answer-textarea"
+          >
+          </textarea>
+        </div>
+        }
+      </div>
+
+      <div class="question-actions">
+        @if (currentQuestion.hints.length > 0) {
+        <button
+          class="hint-btn"
+          (click)="showQuestionHint()"
+          [disabled]="showHint || currentQuestion.hints.length === 0"
+        >
+          💡 Get Hint ({{ hintsUsed }}/{{ currentQuestion.hints.length }})
+        </button>
+        }
+
+        <button
+          class="submit-btn"
+          (click)="submitAnswer()"
+          [disabled]="!userAnswer.trim() || loading"
+        >
+          {{ loading ? 'Submitting...' : 'Submit Answer' }}
+        </button>
+      </div>
+
+      <!-- Hint Display -->
+      @if (showHint && currentQuestion.hints.length > 0) {
+      <div class="hint-display">
+        <h4>💡 Hint:</h4>
+        <p>{{ currentQuestion.hints[hintsUsed - 1] }}</p>
+      </div>
+      }
+    </div>
+  </div>
+  }
+
+  <!-- Step 5: Results -->
+  @if (currentStep === QuestionGeneratorStep.RESULTS && sessionResults) {
+  <div class="results-step">
+    <div class="results-container">
+      <div class="results-header">
+        <h2>🎉 Great Job!</h2>
+        <p>Here's how you did on your personalized questions</p>
+      </div>
+
+      <div class="score-display">
+        <div class="score-circle">
+          <span class="score-percentage">{{ sessionResults.percentage }}%</span>
+        </div>
+        <div class="score-details">
+          <p>
+            <strong>{{ sessionResults.score }}</strong> out of
+            <strong>{{ sessionResults.maxScore }}</strong> correct
+          </p>
+          <p>
+            Time spent: <strong>{{ sessionResults.timeSpent }}</strong> minutes
+          </p>
+        </div>
+      </div>
+
+      <div class="results-actions">
+        <button class="new-session-btn" (click)="startNewSession()">🔄 Try More Questions</button>
+        <button class="dashboard-btn" (click)="returnToDashboard()">📊 Back to Dashboard</button>
+      </div>
+    </div>
+  </div>
+  }
+</div>

@@ -3,13 +3,17 @@
     <div class="header-content">
       <div class="welcome-section">
         <h1>Admin Dashboard</h1>
-        <p *ngIf="!loading && user">
+        @if (!loading && user) {
+        <p>
           Welcome, {{ user.firstName }} {{ user.lastName }}! Manage the Learning Hub platform,
           users, and content.
         </p>
-        <p *ngIf="loading">Loading your dashboard...</p>
+        } @if (loading) {
+        <p>Loading your dashboard...</p>
+        }
       </div>
-      <div class="user-actions" *ngIf="!loading && user">
+      @if (!loading && user) {
+      <div class="user-actions">
         <div class="user-info">
           <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
           <span class="user-role">Administrator</span>
@@ -19,6 +23,7 @@
           <span>Logout</span>
         </button>
       </div>
+      }
     </div>
   </div>
 

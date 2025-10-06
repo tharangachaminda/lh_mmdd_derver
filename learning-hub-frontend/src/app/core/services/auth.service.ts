@@ -61,9 +61,17 @@ export class AuthService {
    * User Login with role-based redirection
    */
   login(credentials: LoginCredentials): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials).pipe(
+    return this.http.post<any>(`${environment.apiUrl}/auth/login`, credentials).pipe(
       tap((response) => {
-        this.handleAuthSuccess(response);
+        // Transform backend response to frontend format
+        const authResponse: AuthResponse = {
+          success: response.success,
+          message: response.message,
+          user: response.user,
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken || response.accessToken, // Use accessToken as fallback
+        };
+        this.handleAuthSuccess(authResponse);
         this.redirectBasedOnRole(response.user.role);
       })
     );
@@ -73,14 +81,18 @@ export class AuthService {
    * Student Registration
    */
   registerStudent(registration: StudentRegistration): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(`${environment.apiUrl}/auth/register/student`, registration)
-      .pipe(
-        tap((response) => {
-          this.handleAuthSuccess(response);
-          this.redirectBasedOnRole(UserRole.STUDENT);
-        })
-      );
+    return this.http.post<any>(`${environment.apiUrl}/auth/register/student`, registration).pipe(
+      tap((response) => {
+        // For registration, we don't get tokens immediately, so redirect to login
+        if (response.success) {
+          this.router.navigate(['/auth/login'], {
+            queryParams: {
+              message: 'Registration successful! Please login with your credentials.',
+            },
+          });
+        }
+      })
+    );
   }
 
   /**

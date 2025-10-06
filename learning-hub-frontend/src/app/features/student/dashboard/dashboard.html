@@ -3,13 +3,17 @@
     <div class="header-content">
       <div class="welcome-section">
         <h1>Student Dashboard</h1>
-        <p *ngIf="!loading && user">
+        @if (!loading && user) {
+        <p>
           Welcome back, {{ user.firstName }} {{ user.lastName }}! Start generating AI-powered
           questions to enhance your learning.
         </p>
-        <p *ngIf="loading">Loading your dashboard...</p>
+        } @if (loading) {
+        <p>Loading your dashboard...</p>
+        }
       </div>
-      <div class="user-actions" *ngIf="!loading && user">
+      @if (!loading && user) {
+      <div class="user-actions">
         <div class="user-info">
           <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
           <span class="user-grade">Year/Grade {{ user.grade }}</span>
@@ -19,14 +23,15 @@
           <span>Logout</span>
         </button>
       </div>
+      }
     </div>
   </div>
 
   <div class="dashboard-cards">
     <div class="card">
-      <h3>AI Question Generator</h3>
-      <p>Generate custom questions based on your curriculum</p>
-      <button>Start Learning</button>
+      <h3>🤖 AI Question Generator</h3>
+      <p>Generate personalized questions based on your grade, interests, and learning style</p>
+      <button (click)="startQuestionGenerator()">Start Learning</button>
     </div>
 
     <div class="card">

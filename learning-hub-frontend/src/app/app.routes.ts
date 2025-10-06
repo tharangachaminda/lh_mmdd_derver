@@ -39,6 +39,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/student/dashboard/dashboard').then((m) => m.Dashboard),
       },
+      {
+        path: 'question-generator',
+        loadComponent: () =>
+          import('./features/student/question-generator/question-generator').then(
+            (m) => m.QuestionGenerator
+          ),
+      },
     ],
   },
 

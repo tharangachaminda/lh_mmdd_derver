@@ -4,7 +4,8 @@
  */
 
 import * as bcrypt from "bcryptjs";
-import jwt, { SignOptions } from "jsonwebtoken";
+import * as jwt from "jsonwebtoken";
+import { SignOptions } from "jsonwebtoken";
 import mongoose from "mongoose";
 import { User, IUser, UserRole } from "../models/user.model.js";
 
@@ -121,13 +122,13 @@ export class AuthService {
 
             // Generate tokens
             const accessToken = this.generateAccessToken({
-                userId: newUser._id.toString(),
+                userId: (newUser._id as any).toString(),
                 email: newUser.email,
                 role: newUser.role,
             });
 
             const refreshToken = this.generateRefreshToken({
-                userId: newUser._id.toString(),
+                userId: (newUser._id as any).toString(),
                 email: newUser.email,
                 role: newUser.role,
             });
@@ -192,13 +193,13 @@ export class AuthService {
 
             // Generate tokens
             const accessToken = this.generateAccessToken({
-                userId: newUser._id.toString(),
+                userId: (newUser._id as any).toString(),
                 email: newUser.email,
                 role: newUser.role,
             });
 
             const refreshToken = this.generateRefreshToken({
-                userId: newUser._id.toString(),
+                userId: (newUser._id as any).toString(),
                 email: newUser.email,
                 role: newUser.role,
             });

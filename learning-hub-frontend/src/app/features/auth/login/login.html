@@ -49,10 +49,11 @@
               autocomplete="email"
             />
             <mat-icon matSuffix>email</mat-icon>
-            <mat-error *ngIf="email?.hasError('required')"> Email is required </mat-error>
-            <mat-error *ngIf="email?.hasError('email')">
-              Please enter a valid email address
-            </mat-error>
+            @if (email?.hasError('required')) {
+            <mat-error>Email is required</mat-error>
+            } @if (email?.hasError('email')) {
+            <mat-error>Please enter a valid email address</mat-error>
+            }
           </mat-form-field>
 
           <!-- Password Field -->
@@ -75,10 +76,11 @@
             >
               <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
-            <mat-error *ngIf="password?.hasError('required')"> Password is required </mat-error>
-            <mat-error *ngIf="password?.hasError('minlength')">
-              Password must be at least 6 characters long
-            </mat-error>
+            @if (password?.hasError('required')) {
+            <mat-error>Password is required</mat-error>
+            } @if (password?.hasError('minlength')) {
+            <mat-error>Password must be at least 6 characters long</mat-error>
+            }
           </mat-form-field>
 
           <!-- Remember Me -->
@@ -104,11 +106,14 @@
             class="login-button full-width"
             [disabled]="!loginForm.valid || isLoading"
           >
-            <span *ngIf="!isLoading">Sign In</span>
-            <div *ngIf="isLoading" class="loading-content">
+            @if (!isLoading) {
+            <span>Sign In</span>
+            } @else {
+            <div class="loading-content">
               <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
               <span>Signing In...</span>
             </div>
+            }
           </button>
         </form>
       </mat-card-content>
