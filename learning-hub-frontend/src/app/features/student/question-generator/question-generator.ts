@@ -38,6 +38,37 @@ import { User } from '../../../core/models/user.model';
 })
 export class QuestionGenerator implements OnInit, OnDestroy {
   /**
+   * Navigate to the next question in the session
+   * Minimal implementation for GREEN phase
+   */
+  goToNextQuestion(): void {
+    if (
+      this.currentSession &&
+      Array.isArray(this.currentSession.questions) &&
+      this.currentQuestionIndex < this.currentSession.questions.length - 1
+    ) {
+      this.currentQuestionIndex++;
+      this.currentQuestion = this.currentSession.questions[this.currentQuestionIndex];
+      this.cdr.detectChanges();
+    }
+  }
+
+  /**
+   * Navigate to the previous question in the session
+   * Minimal implementation for GREEN phase
+   */
+  goToPreviousQuestion(): void {
+    if (
+      this.currentSession &&
+      Array.isArray(this.currentSession.questions) &&
+      this.currentQuestionIndex > 0
+    ) {
+      this.currentQuestionIndex--;
+      this.currentQuestion = this.currentSession.questions[this.currentQuestionIndex];
+      this.cdr.detectChanges();
+    }
+  }
+  /**
    * Expose QuestionGeneratorStep enum to template
    */
   public QuestionGeneratorStep = QuestionGeneratorStep;
