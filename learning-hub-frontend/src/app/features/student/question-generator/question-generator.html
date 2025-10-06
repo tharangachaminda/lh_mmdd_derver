@@ -7,13 +7,16 @@
   </div>
 
   <!-- Error Message -->
-  <div class="error-message" *ngIf="error">
+  @if (error) {
+  <div class="error-message">
     <span>⚠️ {{ error }}</span>
     <button (click)="error = null">×</button>
   </div>
+  }
 
   <!-- Step 1: Question Setup -->
-  <div class="setup-step" *ngIf="currentStep === 'setup'">
+  @if (currentStep === 'setup') {
+  <div class="setup-step">
     <div class="step-header">
       <h2>📚 Let's Set Up Your Questions</h2>
       <p>Choose what you'd like to practice today</p>
@@ -29,38 +32,48 @@
           class="form-select"
         >
           <option value="">Select a subject...</option>
-          <option *ngFor="let subject of subjects" [value]="subject">
+          @for (subject of subjects; track subject) {
+          <option [value]="subject">
             {{ subject | titlecase }}
           </option>
+          }
         </select>
       </div>
 
-      <div class="form-group" *ngIf="availableTopics.length > 0">
+      @if (availableTopics.length > 0) {
+      <div class="form-group">
         <label for="topic">Topic *</label>
         <select id="topic" [(ngModel)]="selectedTopic" class="form-select">
           <option value="">Select a topic...</option>
-          <option *ngFor="let topic of availableTopics" [value]="topic">
+          @for (topic of availableTopics; track topic) {
+          <option [value]="topic">
             {{ topic }}
           </option>
+          }
         </select>
       </div>
+      }
 
       <div class="form-row">
         <div class="form-group">
           <label for="difficulty">Difficulty Level</label>
           <select id="difficulty" [(ngModel)]="selectedDifficulty" class="form-select">
-            <option *ngFor="let level of difficultyLevels" [value]="level">
+            @for (level of difficultyLevels; track level) {
+            <option [value]="level">
               {{ level | titlecase }}
             </option>
+            }
           </select>
         </div>
 
         <div class="form-group">
           <label for="questionType">Question Type</label>
           <select id="questionType" [(ngModel)]="selectedQuestionType" class="form-select">
-            <option *ngFor="let type of questionTypes" [value]="type">
+            @for (type of questionTypes; track type) {
+            <option [value]="type">
               {{ type.replace('_', ' ') | titlecase }}
             </option>
+            }
           </select>
         </div>
       </div>
@@ -86,9 +99,11 @@
       </button>
     </div>
   </div>
+  }
 
   <!-- Step 2: Persona Setup -->
-  <div class="persona-step" *ngIf="currentStep === 'persona'">
+  @if (currentStep === 'persona') {
+  <div class="persona-step">
     <div class="step-header">
       <h2>🎯 Personalize Your Experience</h2>
       <p>Help us create questions that match your learning style and interests</p>
@@ -98,44 +113,51 @@
       <div class="form-group">
         <label>How do you learn best?</label>
         <div class="learning-styles">
+          @for (style of learningStyles; track style) {
           <div
             class="style-option"
-            *ngFor="let style of learningStyles"
             [class.selected]="learningStyle === style"
             (click)="learningStyle = style"
           >
             <div class="style-icon">
-              <span *ngIf="style === 'visual'">👁️</span>
-              <span *ngIf="style === 'auditory'">👂</span>
-              <span *ngIf="style === 'kinesthetic'">🤲</span>
-              <span *ngIf="style === 'reading_writing'">📝</span>
+              @if (style === 'visual') {
+              <span>👁️</span>
+              } @if (style === 'auditory') {
+              <span>👂</span>
+              } @if (style === 'kinesthetic') {
+              <span>🤲</span>
+              } @if (style === 'reading_writing') {
+              <span>📝</span>
+              }
             </div>
             <span>{{ style.replace('_', ' ') | titlecase }}</span>
           </div>
+          }
         </div>
       </div>
 
       <div class="form-group">
         <label>What are you interested in? (Select up to 5)</label>
         <div class="interests-grid">
+          @for (interest of availableInterests; track interest) {
           <div
             class="interest-tag"
-            *ngFor="let interest of availableInterests"
             [class.selected]="interests.includes(interest)"
             [class.disabled]="!interests.includes(interest) && interests.length >= 5"
             (click)="toggleInterest(interest)"
           >
             {{ interest }}
           </div>
+          }
         </div>
       </div>
 
       <div class="form-group">
         <label>What motivates you to learn? (Select up to 3)</label>
         <div class="motivators-grid">
+          @for (motivator of availableMotivators; track motivator) {
           <div
             class="motivator-tag"
-            *ngFor="let motivator of availableMotivators"
             [class.selected]="motivationalFactors.includes(motivator)"
             [class.disabled]="
               !motivationalFactors.includes(motivator) && motivationalFactors.length >= 3
@@ -144,6 +166,7 @@
           >
             {{ motivator }}
           </div>
+          }
         </div>
       </div>
 
@@ -159,9 +182,11 @@
       </div>
     </div>
   </div>
+  }
 
   <!-- Step 3: Generating Questions -->
-  <div class="generating-step" *ngIf="currentStep === 'generating'">
+  @if (currentStep === 'generating') {
+  <div class="generating-step">
     <div class="loading-container">
       <div class="loading-spinner"></div>
       <h2>🤖 Creating Your Personalized Questions...</h2>
@@ -171,11 +196,14 @@
       </div>
     </div>
   </div>
+  }
 
   <!-- Step 4: Question Interface -->
-  <div class="questions-step" *ngIf="currentStep === 'questions' && currentQuestion">
+  @if (currentStep === 'questions' && currentQuestion) {
+  <div class="questions-step">
     <!-- AI Quality Metrics Panel -->
-    <div class="ai-metrics-panel" *ngIf="qualityMetrics">
+    @if (qualityMetrics) {
+    <div class="ai-metrics-panel">
       <button
         class="ai-metrics-toggle"
         (click)="toggleAIMetrics()"
@@ -186,7 +214,8 @@
         <span class="toggle-icon" [class.rotated]="showAIMetrics">▼</span>
       </button>
 
-      <div class="ai-metrics-content" *ngIf="showAIMetrics">
+      @if (showAIMetrics) {
+      <div class="ai-metrics-content">
         <div class="metrics-grid">
           <div class="metric-item">
             <div class="metric-label">Vector Database Relevance</div>
@@ -246,7 +275,9 @@
           </ul>
         </div>
       </div>
+      }
     </div>
+    }
 
     <div class="question-progress">
       <div class="progress-bar">
@@ -272,20 +303,24 @@
         <h3>{{ currentQuestion.question }}</h3>
 
         <!-- Multiple Choice Options -->
-        <div class="question-options" *ngIf="currentQuestion.questionType === 'multiple_choice'">
+        @if (currentQuestion.questionType === 'multiple_choice') {
+        <div class="question-options">
+          @for (option of currentQuestion.options; track option; let i = $index) {
           <div
             class="option"
-            *ngFor="let option of currentQuestion.options; let i = index"
             [class.selected]="userAnswer === option"
             (click)="userAnswer = option"
           >
             <span class="option-letter">{{ getOptionLetter(i) }}</span>
             <span class="option-text">{{ option }}</span>
           </div>
+          }
         </div>
+        }
 
         <!-- Text Answer Input -->
-        <div class="answer-input" *ngIf="currentQuestion.questionType !== 'multiple_choice'">
+        @if (currentQuestion.questionType !== 'multiple_choice') {
+        <div class="answer-input">
           <textarea
             [(ngModel)]="userAnswer"
             placeholder="Type your answer here..."
@@ -293,17 +328,19 @@
           >
           </textarea>
         </div>
+        }
       </div>
 
       <div class="question-actions">
+        @if (currentQuestion.hints.length > 0) {
         <button
           class="hint-btn"
           (click)="showQuestionHint()"
           [disabled]="showHint || currentQuestion.hints.length === 0"
-          *ngIf="currentQuestion.hints.length > 0"
         >
           💡 Get Hint ({{ hintsUsed }}/{{ currentQuestion.hints.length }})
         </button>
+        }
 
         <button
           class="submit-btn"
@@ -315,15 +352,19 @@
       </div>
 
       <!-- Hint Display -->
-      <div class="hint-display" *ngIf="showHint && currentQuestion.hints.length > 0">
+      @if (showHint && currentQuestion.hints.length > 0) {
+      <div class="hint-display">
         <h4>💡 Hint:</h4>
         <p>{{ currentQuestion.hints[hintsUsed - 1] }}</p>
       </div>
+      }
     </div>
   </div>
+  }
 
   <!-- Step 5: Results -->
-  <div class="results-step" *ngIf="currentStep === 'results' && sessionResults">
+  @if (currentStep === 'results' && sessionResults) {
+  <div class="results-step">
     <div class="results-container">
       <div class="results-header">
         <h2>🎉 Great Job!</h2>
@@ -351,4 +392,5 @@
       </div>
     </div>
   </div>
+  }
 </div>
