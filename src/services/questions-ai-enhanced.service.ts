@@ -90,6 +90,18 @@ export class AIEnhancedQuestionsService {
                 applied: boolean;
                 engagementScore: number;
             };
+            difficultySettings?: {
+                numberRange: { min: number; max: number };
+                complexity: string;
+                cognitiveLoad: string;
+                allowedOperations: string[];
+            };
+            questionGeneration?: {
+                questionsGenerated: number;
+                averageConfidence: number;
+                modelsUsed: string[];
+                vectorContextUsed: boolean;
+            };
         };
     }> {
         try {
@@ -480,6 +492,34 @@ export class AIEnhancedQuestionsService {
      * //   agentMetrics: { qualityChecks, agentsUsed, workflowTiming, ... }
      * // }
      */
+    /**
+     * Executes a comprehensive 4-agent educational question workflow.
+     *
+     * **Workflow Order Rationale:**
+     * 1. **DifficultyCalibrator** - Sets grade-appropriate constraints (number ranges, operations)
+     *    to prevent issues like "division by 100+" for young learners
+     * 2. **QuestionGenerator** - Creates questions using calibrated settings + vector DB context
+     *    with optimal LLM routing (llama3.1 vs qwen3:14b)
+     * 3. **QualityValidator** - Validates mathematical accuracy, pedagogical soundness, diversity
+     * 4. **ContextEnhancer** - Adds real-world context and story-based engagement
+     *
+     * This sequential order ensures each agent builds on previous results for optimal quality.
+     *
+     * @param request - Question generation request with persona, topic, count
+     * @returns Promise with validation score and comprehensive agent metrics
+     * @throws {Error} If OpenSearch is unavailable (returns fallback metrics instead)
+     *
+     * @example
+     * ```typescript
+     * const result = await performRealAgenticValidation({
+     *   persona: { grade: 5, ageYears: 10 },
+     *   topic: 'arithmetic',
+     *   count: 5
+     * });
+     * console.log(`Validation score: ${result.score}`);
+     * console.log(`Agents used: ${result.agentMetrics.agentsUsed.join(', ')}`);
+     * ```
+     */
     private async performRealAgenticValidation(
         request: QuestionGenerationRequest
     ): Promise<{
@@ -523,7 +563,10 @@ export class AIEnhancedQuestionsService {
             console.log("🤖 Executing real multi-agent workflow...");
             const workflowStart = Date.now();
 
-            // REFACTOR: Dynamic agent imports with error handling
+            // GREEN PHASE SESSION 2: Dynamic agent imports with 4-agent pipeline
+            const { DifficultyCalibatorAgent } = await import(
+                "../agents/difficulty-calibrator.agent.js"
+            );
             const { QuestionGeneratorAgent } = await import(
                 "../agents/question-generator.agent.js"
             );
@@ -540,43 +583,135 @@ export class AIEnhancedQuestionsService {
                 `📋 Agent context built for ${request.count} questions, grade ${request.persona.grade}`
             );
 
-            // REFACTOR: Execute sequential agent workflow with enhanced timing
+            // GREEN PHASE SESSION 2: Execute 4-agent sequential workflow
             const timing: Record<string, number> = {};
             const agentsUsed: string[] = [];
 
-            // Step 1: Quality Validation
+            // Step 0: Difficulty Calibration (Sets grade-appropriate constraints)
+            console.log("⚙️  Running DifficultyCalibatorAgent...");
+            const calibratorStart = Date.now();
+            let calibratedContext = agentContext;
+            try {
+                const difficultyCalibrator = new DifficultyCalibatorAgent();
+                calibratedContext = await difficultyCalibrator.process(
+                    agentContext
+                );
+                timing[difficultyCalibrator.name] =
+                    Date.now() - calibratorStart;
+                agentsUsed.push(difficultyCalibrator.name);
+                console.log(
+                    `  ✅ Difficulty calibration: ${
+                        timing[difficultyCalibrator.name]
+                    }ms`
+                );
+            } catch (error) {
+                const elapsed = Date.now() - calibratorStart;
+                timing["DifficultyCalibatorAgent"] = elapsed;
+                console.warn(
+                    `  ⚠️  DifficultyCalibrator failed (${elapsed}ms): ${
+                        error instanceof Error ? error.message : "Unknown error"
+                    }`
+                );
+                // Continue with uncalibrated context
+            }
+
+            // Step 1: Question Generation (LLM-based, may take 5-10 minutes)
+            console.log("📝 Running QuestionGeneratorAgent...");
+            const generatorStart = Date.now();
+            let generatedContext = calibratedContext;
+            try {
+                const questionGenerator = new QuestionGeneratorAgent();
+                generatedContext = await questionGenerator.process(
+                    calibratedContext
+                );
+                const elapsed = Date.now() - generatorStart;
+                timing[questionGenerator.name] = elapsed;
+                agentsUsed.push(questionGenerator.name);
+                console.log(
+                    `  ✅ Question generation: ${elapsed}ms ${
+                        elapsed > 300000 ? "(⚠️  Consider caching)" : ""
+                    }`
+                );
+            } catch (error) {
+                const elapsed = Date.now() - generatorStart;
+                timing["QuestionGeneratorAgent"] = elapsed;
+                console.warn(
+                    `  ⚠️  QuestionGenerator failed (${elapsed}ms): ${
+                        error instanceof Error ? error.message : "Unknown error"
+                    }`
+                );
+                // Continue with existing questions from context
+            }
+
+            // Step 2: Quality Validation (Validates accuracy & pedagogical soundness)
             console.log("🔍 Running QualityValidatorAgent...");
             const validatorStart = Date.now();
-            const qualityValidator = new QualityValidatorAgent();
-            const validatedContext = await qualityValidator.process(
-                agentContext
-            );
-            timing[qualityValidator.name] = Date.now() - validatorStart;
-            agentsUsed.push(qualityValidator.name);
-            console.log(
-                `  ✅ Quality validation: ${timing[qualityValidator.name]}ms`
-            );
+            let validatedContext = generatedContext;
+            try {
+                const qualityValidator = new QualityValidatorAgent();
+                validatedContext = await qualityValidator.process(
+                    generatedContext
+                );
+                timing[qualityValidator.name] = Date.now() - validatorStart;
+                agentsUsed.push(qualityValidator.name);
+                console.log(
+                    `  ✅ Quality validation: ${
+                        timing[qualityValidator.name]
+                    }ms`
+                );
+            } catch (error) {
+                const elapsed = Date.now() - validatorStart;
+                timing["QualityValidatorAgent"] = elapsed;
+                console.warn(
+                    `  ⚠️  QualityValidator failed (${elapsed}ms): ${
+                        error instanceof Error ? error.message : "Unknown error"
+                    }`
+                );
+                // Continue without quality checks
+            }
 
-            // Step 2: Context Enhancement
+            // Step 3: Context Enhancement (Adds engagement & real-world context)
             console.log("🎨 Running ContextEnhancerAgent...");
             const enhancerStart = Date.now();
-            const contextEnhancer = new ContextEnhancerAgent();
-            const enhancedContext = await contextEnhancer.process(
-                validatedContext
-            );
-            timing[contextEnhancer.name] = Date.now() - enhancerStart;
-            agentsUsed.push(contextEnhancer.name);
-            console.log(
-                `  ✅ Context enhancement: ${timing[contextEnhancer.name]}ms`
-            );
+            let enhancedContext = validatedContext;
+            try {
+                const contextEnhancer = new ContextEnhancerAgent();
+                enhancedContext = await contextEnhancer.process(
+                    validatedContext
+                );
+                timing[contextEnhancer.name] = Date.now() - enhancerStart;
+                agentsUsed.push(contextEnhancer.name);
+                console.log(
+                    `  ✅ Context enhancement: ${
+                        timing[contextEnhancer.name]
+                    }ms`
+                );
+            } catch (error) {
+                const elapsed = Date.now() - enhancerStart;
+                timing["ContextEnhancerAgent"] = elapsed;
+                console.warn(
+                    `  ⚠️  ContextEnhancer failed (${elapsed}ms): ${
+                        error instanceof Error ? error.message : "Unknown error"
+                    }`
+                );
+                // Continue with unenhanced context
+            }
 
             const totalTime = Date.now() - workflowStart;
+            const totalSeconds = (totalTime / 1000).toFixed(1);
 
             // Calculate overall confidence score
             const confidenceScore =
                 this.calculateWorkflowConfidence(enhancedContext);
 
-            // Build agent metrics response
+            // REFACTOR: Log workflow summary with performance metrics
+            console.log(
+                `✅ 4-agent workflow complete: ${
+                    agentsUsed.length
+                } agents, ${totalSeconds}s, score ${confidenceScore.toFixed(3)}`
+            );
+
+            // GREEN PHASE SESSION 2: Build comprehensive agent metrics with 4-agent data
             const agentMetrics = {
                 qualityChecks: enhancedContext.qualityChecks || {
                     mathematicalAccuracy: false,
@@ -597,6 +732,32 @@ export class AIEnhancedQuestionsService {
                     engagementScore:
                         this.calculateEngagementScore(enhancedContext),
                 },
+                // GREEN PHASE SESSION 2: Add difficulty settings from calibrator
+                difficultySettings:
+                    enhancedContext.difficultySettings || undefined,
+                // GREEN PHASE SESSION 2: Add question generation metrics
+                questionGeneration: enhancedContext.questions
+                    ? {
+                          questionsGenerated: enhancedContext.questions.length,
+                          averageConfidence:
+                              enhancedContext.questions.reduce(
+                                  (sum: number, q: any) =>
+                                      sum + (q.confidence || 0),
+                                  0
+                              ) / (enhancedContext.questions.length || 1),
+                          modelsUsed: [
+                              ...new Set(
+                                  enhancedContext.questions.map(
+                                      (q: any) =>
+                                          q.metadata?.modelUsed || "unknown"
+                                  )
+                              ),
+                          ],
+                          vectorContextUsed:
+                              (enhancedContext.curriculumContext
+                                  ?.similarQuestions?.length || 0) > 0,
+                      }
+                    : undefined,
             };
 
             // Calculate final validation score

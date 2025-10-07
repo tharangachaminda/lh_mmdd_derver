@@ -178,20 +178,84 @@ try {
         failCount++;
     }
     
-    console.log('\n' + '='.repeat(60));
-    console.log(`📊 RED PHASE SUMMARY: ${failCount} Failed / ${passCount} Passed`);
+    console.log('\n🔵 ADDITIONAL AGENTS CHECKS (Session 2):');
     console.log('='.repeat(60));
     
-    if (failCount === 10 && passCount === 0) {
+    // Check 11: DifficultyCalibrator in workflow
+    const hasDifficultyCalibrator = result.agentMetrics?.agentsUsed?.includes('DifficultyCalibatorAgent');
+    if (hasDifficultyCalibrator) {
+        console.log('✅ PASS: DifficultyCalibrator in agent workflow');
+        passCount++;
+    } else {
+        console.log('❌ FAIL: No DifficultyCalibrator in workflow (EXPECTED)');
+        failCount++;
+    }
+    
+    // Check 12: QuestionGeneratorAgent in workflow
+    const hasQuestionGenerator = result.agentMetrics?.agentsUsed?.includes('QuestionGeneratorAgent');
+    if (hasQuestionGenerator) {
+        console.log('✅ PASS: QuestionGeneratorAgent in workflow');
+        passCount++;
+    } else {
+        console.log('❌ FAIL: No QuestionGeneratorAgent in workflow (EXPECTED)');
+        failCount++;
+    }
+    
+    // Check 13: Difficulty settings from calibrator
+    const hasDifficultySettings = result.agentMetrics?.difficultySettings !== undefined;
+    if (hasDifficultySettings) {
+        console.log('✅ PASS: Difficulty settings from calibrator present');
+        passCount++;
+    } else {
+        console.log('❌ FAIL: No difficulty settings (EXPECTED)');
+        failCount++;
+    }
+    
+    // Check 14: Question generation metadata
+    const hasGenerationMetadata = result.agentMetrics?.questionGeneration !== undefined;
+    if (hasGenerationMetadata) {
+        console.log('✅ PASS: Question generation metadata present');
+        passCount++;
+    } else {
+        console.log('❌ FAIL: No question generation metadata (EXPECTED)');
+        failCount++;
+    }
+    
+    // Check 15: 4-agent workflow (full pipeline)
+    const hasFourAgents = result.agentMetrics?.agentsUsed?.length >= 4;
+    if (hasFourAgents) {
+        console.log('✅ PASS: 4-agent workflow active');
+        passCount++;
+    } else {
+        console.log(`❌ FAIL: Only ${result.agentMetrics?.agentsUsed?.length || 0} agents (EXPECTED, need 4)`);
+        failCount++;
+    }
+    
+    console.log('\n' + '='.repeat(60));
+    console.log(`📊 TOTAL SUMMARY: ${failCount} Failed / ${passCount} Passed`);
+    console.log('='.repeat(60));
+    
+    // Session 1: Expected 10 failures
+    // Session 2: Expected 15 failures (10 original + 5 new)
+    const expectedFails = 15;
+    const expectedPasses = 0;
+    
+    if (failCount === expectedFails && passCount === expectedPasses) {
         console.log('\n🎯 RED PHASE SUCCESSFUL!');
         console.log('✅ All checks failed as expected');
-        console.log('✅ Proves real multi-agent workflow is NOT integrated');
+        console.log('✅ Proves 4-agent workflow is NOT yet integrated');
         console.log('✅ Ready to proceed to GREEN phase implementation\n');
+    } else if (failCount === 5 && passCount === 10) {
+        console.log('\n🎯 SESSION 2 RED PHASE SUCCESSFUL!');
+        console.log('✅ Original 10 checks passing (Session 1 complete)');
+        console.log('✅ New 5 checks failing (Session 2 needs implementation)');
+        console.log('✅ Ready to integrate DifficultyCalibrator and QuestionGenerator\n');
     } else {
         console.log('\n⚠️  UNEXPECTED RESULTS!');
-        console.log(`Expected: 10 failures, 0 passes`);
+        console.log(`Expected Session 1: ${expectedFails} failures, ${expectedPasses} passes`);
+        console.log(`Expected Session 2: 5 failures, 10 passes`);
         console.log(`Got: ${failCount} failures, ${passCount} passes`);
-        console.log('Some agent integration may already exist\n');
+        console.log('Review agent integration status\n');
     }
     
     // Show current validation score (simplified)
