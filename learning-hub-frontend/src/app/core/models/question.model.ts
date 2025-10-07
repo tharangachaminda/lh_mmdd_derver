@@ -59,7 +59,7 @@ export interface QuestionGenerationRequest {
   topic: string;
   difficulty: string; // Changed to string to match backend
   questionType: string; // Changed to string to match backend
-  count: number;
+  numQuestions: number;
   persona: StudentPersona;
 }
 
