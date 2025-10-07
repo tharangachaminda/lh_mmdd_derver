@@ -121,7 +121,54 @@ export interface StudentAnswer {
 }
 
 /**
+ * Phase 1: AI Quality Metrics
+ * Provides transparency into AI-generated question quality
+ */
+export interface QualityMetrics {
+  vectorRelevanceScore: number; // Vector database similarity (0-1)
+  agenticValidationScore: number; // Multi-agent validation score (0-1)
+  personalizationScore: number; // Persona alignment score (0-1)
+}
+
+/**
+ * Phase 1: Agent Metrics
+ * Detailed information about multi-agent workflow execution
+ */
+export interface AgentMetrics {
+  agentsUsed: string[]; // Names of agents executed
+  workflowTiming: {
+    totalMs: number; // Total workflow execution time
+    perAgent: Record<string, number>; // Per-agent execution time
+  };
+  qualityChecks: {
+    mathematicalAccuracy: boolean; // Math correctness validation
+    ageAppropriateness: boolean; // Grade-level appropriateness
+    pedagogicalSoundness: boolean; // Educational value check
+    diversityScore: number; // Question variety score (0-1)
+    issues: string[]; // Any quality issues found
+  };
+  confidenceScore: number; // Overall workflow confidence (0-1)
+  contextEnhancement: {
+    applied: boolean; // Whether context was enhanced
+    engagementScore: number; // Engagement level (0-1)
+  };
+  difficultySettings?: {
+    numberRange: { min: number; max: number };
+    complexity: string;
+    cognitiveLoad: string;
+    allowedOperations: string[];
+  };
+  questionGeneration?: {
+    questionsGenerated: number;
+    averageConfidence: number;
+    modelsUsed: string[];
+    vectorContextUsed: boolean;
+  };
+}
+
+/**
  * Question Generation Response
+ * Updated for Phase 1: Core Metrics Integration
  */
 export interface QuestionGenerationResponse {
   success: boolean;
@@ -136,11 +183,8 @@ export interface QuestionGenerationResponse {
       personalizationScore: number;
     };
   };
-  metrics?: {
-    vectorRelevanceScore: number;
-    agenticValidationScore: number;
-    personalizationScore: number;
-  };
+  metrics?: QualityMetrics; // Phase 1: Quality metrics
+  agentMetrics?: AgentMetrics; // Phase 1: Agent workflow metrics
   user?: any;
   message: string;
 }

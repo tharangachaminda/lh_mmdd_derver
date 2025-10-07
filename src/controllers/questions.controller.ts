@@ -169,6 +169,7 @@ export class QuestionsController {
                     personalizationSummary: result.personalizationSummary,
                 },
                 metrics: result.qualityMetrics,
+                agentMetrics: result.agentMetrics, // Phase 1: Expose agent metrics for frontend
                 user: {
                     id: authReq.user?.userId,
                     email: authReq.user?.email,

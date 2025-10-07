@@ -27,6 +27,8 @@ import {
   GeneratedQuestion,
   StudentPersona,
   QuestionSession,
+  QualityMetrics, // Phase 1: Import quality metrics
+  AgentMetrics, // Phase 1: Import agent metrics
 } from '../../../core/models/question.model';
 
 export { LearningStyle };
@@ -150,13 +152,10 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     'Recognition',
   ];
 
-  // AI Quality Metrics
-  qualityMetrics: {
-    vectorRelevanceScore: number;
-    agenticValidationScore: number;
-    personalizationScore: number;
-  } | null = null;
-  showAIMetrics = false;
+  // Phase 1: AI Quality Metrics Integration
+  qualityMetrics: QualityMetrics | null = null;
+  agentMetrics: AgentMetrics | null = null;
+  showAIMetrics = false; // Toggle for showing/hiding AI metrics section
 
   // Available options
   subjects: string[] = []; // Will be loaded from backend
@@ -430,6 +429,16 @@ export class QuestionGenerator implements OnInit, OnDestroy {
           this.currentSession.questions = response.data.questions;
           this.currentStep = QuestionGeneratorStep.QUESTIONS;
           // ...existing code...
+
+          // Phase 1: Capture AI quality metrics and agent metrics
+          this.qualityMetrics = response.metrics || null;
+          this.agentMetrics = response.agentMetrics || null;
+
+          console.log('✅ Phase 1: AI Metrics captured:', {
+            qualityMetrics: this.qualityMetrics,
+            agentMetrics: this.agentMetrics,
+          });
+
           // Minimal fix: ensure first question is displayed
           this.currentQuestionIndex = 0;
           this.currentQuestion = this.currentSession.questions[0] || null;

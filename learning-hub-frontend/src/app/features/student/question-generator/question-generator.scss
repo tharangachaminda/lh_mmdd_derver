@@ -723,6 +723,213 @@
       }
     }
   }
+
+  // Phase 1: Enhanced Metric Item with Progress Bar
+  .metric-item-enhanced {
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .metric-label {
+      font-size: 0.875rem;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .metric-value-badge {
+      font-size: 1.125rem;
+      font-weight: 700;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      
+      &.text-green-600 { 
+        color: #059669; 
+        background: #d1fae5;
+      }
+      &.text-blue-600 { 
+        color: #2563eb; 
+        background: #dbeafe;
+      }
+      &.text-yellow-600 { 
+        color: #d97706; 
+        background: #fef3c7;
+      }
+      &.text-red-600 { 
+        color: #dc2626; 
+        background: #fee2e2;
+      }
+    }
+
+    .metric-progress-bar {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-progress-fill {
+      height: 100%;
+      transition: width 0.5s ease;
+      border-radius: 4px;
+      
+      &.text-green-600 { 
+        background: linear-gradient(90deg, #059669, #10b981);
+      }
+      &.text-blue-600 { 
+        background: linear-gradient(90deg, #2563eb, #3b82f6);
+      }
+      &.text-yellow-600 { 
+        background: linear-gradient(90deg, #d97706, #f59e0b);
+      }
+      &.text-red-600 { 
+        background: linear-gradient(90deg, #dc2626, #ef4444);
+      }
+    }
+
+    .metric-description {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+  }
+
+  // Phase 1: Agent Metrics Section
+  .metrics-section-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 1.5rem 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .agent-metrics-section {
+    margin-top: 1.5rem;
+  }
+
+  .agent-info-card {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e2e8f0;
+
+    .agent-info-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+
+      .info-icon {
+        font-size: 1.25rem;
+      }
+
+      .info-label {
+        font-size: 0.875rem;
+        color: #475569;
+        font-weight: 600;
+      }
+
+      .info-value {
+        margin-left: auto;
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #4f46e5;
+      }
+    }
+
+    .agent-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .agent-badge {
+      display: inline-block;
+      padding: 0.375rem 0.75rem;
+      background: white;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      color: #374151;
+      font-weight: 500;
+    }
+  }
+
+  .quality-checks-card {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e2e8f0;
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #e2e8f0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .check-icon {
+        font-size: 1.25rem;
+
+        &.check-pass {
+          color: #059669;
+        }
+      }
+
+      .check-label {
+        font-size: 0.875rem;
+        color: #475569;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .workflow-performance-card {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e2e8f0;
+
+    .performance-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #e2e8f0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .perf-label {
+        font-size: 0.875rem;
+        color: #475569;
+        font-weight: 500;
+      }
+
+      .perf-value {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #4f46e5;
+      }
+    }
+  }
 }
 
 // Responsive AI Metrics
@@ -737,12 +944,23 @@
       gap: 1rem;
     }
 
-    .metric-item {
+    .metric-item,
+    .metric-item-enhanced {
       padding: 0.75rem;
     }
 
     .ai-explanation {
       padding: 0.75rem;
+    }
+
+    .agent-info-card,
+    .quality-checks-card,
+    .workflow-performance-card {
+      padding: 0.75rem;
+    }
+
+    .agent-list {
+      gap: 0.375rem;
     }
   }
 }

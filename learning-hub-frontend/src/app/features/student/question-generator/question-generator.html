@@ -219,40 +219,69 @@
 
       @if (showAIMetrics) {
       <div class="ai-metrics-content">
+        <!-- Phase 1: Quality Scores with Progress Bars -->
+        <h3 class="metrics-section-title">🎯 AI Quality Scores</h3>
         <div class="metrics-grid">
-          <div class="metric-item">
-            <div class="metric-label">Vector Database Relevance</div>
-            <div
-              class="metric-value"
-              [class]="getQualityColorClass(qualityMetrics.vectorRelevanceScore)"
-            >
-              {{ (qualityMetrics.vectorRelevanceScore * 100).toFixed(1) }}%
+          <div class="metric-item-enhanced">
+            <div class="metric-header">
+              <span class="metric-label">Vector Database Relevance</span>
+              <span
+                class="metric-value-badge"
+                [class]="getQualityColorClass(qualityMetrics.vectorRelevanceScore)"
+              >
+                {{ (qualityMetrics.vectorRelevanceScore * 100).toFixed(1) }}%
+              </span>
+            </div>
+            <div class="metric-progress-bar">
+              <div
+                class="metric-progress-fill"
+                [style.width.%]="qualityMetrics.vectorRelevanceScore * 100"
+                [class]="getQualityColorClass(qualityMetrics.vectorRelevanceScore)"
+              ></div>
             </div>
             <div class="metric-description">
               {{ getQualityDescription(qualityMetrics.vectorRelevanceScore) }}
             </div>
           </div>
 
-          <div class="metric-item">
-            <div class="metric-label">Multi-Agent Validation</div>
-            <div
-              class="metric-value"
-              [class]="getQualityColorClass(qualityMetrics.agenticValidationScore)"
-            >
-              {{ (qualityMetrics.agenticValidationScore * 100).toFixed(1) }}%
+          <div class="metric-item-enhanced">
+            <div class="metric-header">
+              <span class="metric-label">Multi-Agent Validation</span>
+              <span
+                class="metric-value-badge"
+                [class]="getQualityColorClass(qualityMetrics.agenticValidationScore)"
+              >
+                {{ (qualityMetrics.agenticValidationScore * 100).toFixed(1) }}%
+              </span>
+            </div>
+            <div class="metric-progress-bar">
+              <div
+                class="metric-progress-fill"
+                [style.width.%]="qualityMetrics.agenticValidationScore * 100"
+                [class]="getQualityColorClass(qualityMetrics.agenticValidationScore)"
+              ></div>
             </div>
             <div class="metric-description">
               {{ getQualityDescription(qualityMetrics.agenticValidationScore) }}
             </div>
           </div>
 
-          <div class="metric-item">
-            <div class="metric-label">Personalization Score</div>
-            <div
-              class="metric-value"
-              [class]="getQualityColorClass(qualityMetrics.personalizationScore)"
-            >
-              {{ (qualityMetrics.personalizationScore * 100).toFixed(1) }}%
+          <div class="metric-item-enhanced">
+            <div class="metric-header">
+              <span class="metric-label">Personalization Quality</span>
+              <span
+                class="metric-value-badge"
+                [class]="getQualityColorClass(qualityMetrics.personalizationScore)"
+              >
+                {{ (qualityMetrics.personalizationScore * 100).toFixed(1) }}%
+              </span>
+            </div>
+            <div class="metric-progress-bar">
+              <div
+                class="metric-progress-fill"
+                [style.width.%]="qualityMetrics.personalizationScore * 100"
+                [class]="getQualityColorClass(qualityMetrics.personalizationScore)"
+              ></div>
             </div>
             <div class="metric-description">
               {{ getQualityDescription(qualityMetrics.personalizationScore) }}
@@ -260,20 +289,110 @@
           </div>
         </div>
 
+        <!-- Phase 1: Agent Metrics Section -->
+        @if (agentMetrics) {
+        <div class="agent-metrics-section">
+          <h3 class="metrics-section-title">🤖 Multi-Agent Workflow Details</h3>
+
+          <!-- Agents Used -->
+          <div class="agent-info-card">
+            <div class="agent-info-header">
+              <span class="info-icon">👥</span>
+              <span class="info-label">Agents Executed:</span>
+              <span class="info-value">{{ agentMetrics.agentsUsed.length }} agents</span>
+            </div>
+            <div class="agent-list">
+              @for (agent of agentMetrics.agentsUsed; track agent) {
+              <span class="agent-badge">{{ agent }}</span>
+              }
+            </div>
+          </div>
+
+          <!-- Quality Checks -->
+          <div class="quality-checks-card">
+            <div class="check-item">
+              <span
+                class="check-icon"
+                [class.check-pass]="agentMetrics.qualityChecks.mathematicalAccuracy"
+              >
+                {{ agentMetrics.qualityChecks.mathematicalAccuracy ? '✅' : '❌' }}
+              </span>
+              <span class="check-label">Mathematical Accuracy</span>
+            </div>
+            <div class="check-item">
+              <span
+                class="check-icon"
+                [class.check-pass]="agentMetrics.qualityChecks.ageAppropriateness"
+              >
+                {{ agentMetrics.qualityChecks.ageAppropriateness ? '✅' : '❌' }}
+              </span>
+              <span class="check-label">Age Appropriateness</span>
+            </div>
+            <div class="check-item">
+              <span
+                class="check-icon"
+                [class.check-pass]="agentMetrics.qualityChecks.pedagogicalSoundness"
+              >
+                {{ agentMetrics.qualityChecks.pedagogicalSoundness ? '✅' : '❌' }}
+              </span>
+              <span class="check-label">Pedagogical Soundness</span>
+            </div>
+            <div class="check-item">
+              <span class="check-icon">📊</span>
+              <span class="check-label"
+                >Diversity Score:
+                {{ (agentMetrics.qualityChecks.diversityScore * 100).toFixed(0) }}%</span
+              >
+            </div>
+          </div>
+
+          <!-- Workflow Performance -->
+          <div class="workflow-performance-card">
+            <div class="performance-item">
+              <span class="perf-label">⚡ Total Execution Time:</span>
+              <span class="perf-value">{{ agentMetrics.workflowTiming.totalMs }}ms</span>
+            </div>
+            <div class="performance-item">
+              <span class="perf-label">🎯 Confidence Score:</span>
+              <span class="perf-value">{{ (agentMetrics.confidenceScore * 100).toFixed(1) }}%</span>
+            </div>
+            <div class="performance-item">
+              <span class="perf-label">🎨 Context Enhanced:</span>
+              <span class="perf-value">{{
+                agentMetrics.contextEnhancement.applied ? 'Yes' : 'No'
+              }}</span>
+            </div>
+            @if (agentMetrics.contextEnhancement.applied) {
+            <div class="performance-item">
+              <span class="perf-label">📈 Engagement Score:</span>
+              <span class="perf-value"
+                >{{ (agentMetrics.contextEnhancement.engagementScore * 100).toFixed(1) }}%</span
+              >
+            </div>
+            }
+          </div>
+        </div>
+        }
+
         <div class="ai-explanation">
           <p><strong>🧠 How AI Enhanced Your Questions:</strong></p>
           <ul>
             <li>
-              <strong>Vector Database:</strong> Found similar high-quality questions for context and
-              variety
+              <strong>Vector Database:</strong> Found similar high-quality questions from our
+              curriculum database for context and variety
             </li>
             <li>
-              <strong>Multi-Agent System:</strong> Validated mathematical accuracy and pedagogical
-              soundness
+              <strong>Multi-Agent System:</strong>
+              {{
+                agentMetrics
+                  ? agentMetrics.agentsUsed.length + ' specialized agents'
+                  : 'Multiple agents'
+              }}
+              validated mathematical accuracy and pedagogical soundness
             </li>
             <li>
               <strong>Personalization Engine:</strong> Adapted content to your learning style and
-              interests
+              interests with {{ (qualityMetrics.personalizationScore * 100).toFixed(0) }}% alignment
             </li>
           </ul>
         </div>
