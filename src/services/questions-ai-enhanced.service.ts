@@ -446,23 +446,23 @@ export class AIEnhancedQuestionsService {
 
     /**
      * Executes real multi-agent workflow for comprehensive question validation.
-     * 
+     *
      * Orchestrates a sequential workflow of educational agents (QualityValidatorAgent,
      * ContextEnhancerAgent) to validate and enhance question generation requests.
      * Returns detailed metrics including quality checks, agent performance timing,
      * confidence scores, and context enhancement effectiveness.
-     * 
+     *
      * **Workflow Steps**:
      * 1. Health check: Verify OpenSearch availability
      * 2. Import agents: Dynamically load agent modules
      * 3. Build context: Create AgentContext from request
      * 4. Execute agents: Run QualityValidator → ContextEnhancer
      * 5. Aggregate metrics: Compile comprehensive validation results
-     * 
+     *
      * **Fallback Strategy**: Returns safe defaults if OpenSearch unavailable or agents fail
-     * 
+     *
      * REFACTOR: Enhanced with comprehensive TSDoc documentation and error handling
-     * 
+     *
      * @param {QuestionGenerationRequest} request - Question generation parameters
      * @returns {Promise<AgentValidationResult>} Validation score and detailed agent metrics
      * @throws {Error} Never throws - all errors result in fallback metrics
@@ -536,7 +536,9 @@ export class AIEnhancedQuestionsService {
 
             // REFACTOR: Build agent context with validation
             const agentContext = await this.buildAgentContext(request);
-            console.log(`📋 Agent context built for ${request.count} questions, grade ${request.persona.grade}`);
+            console.log(
+                `📋 Agent context built for ${request.count} questions, grade ${request.persona.grade}`
+            );
 
             // REFACTOR: Execute sequential agent workflow with enhanced timing
             const timing: Record<string, number> = {};
@@ -551,7 +553,9 @@ export class AIEnhancedQuestionsService {
             );
             timing[qualityValidator.name] = Date.now() - validatorStart;
             agentsUsed.push(qualityValidator.name);
-            console.log(`  ✅ Quality validation: ${timing[qualityValidator.name]}ms`);
+            console.log(
+                `  ✅ Quality validation: ${timing[qualityValidator.name]}ms`
+            );
 
             // Step 2: Context Enhancement
             console.log("🎨 Running ContextEnhancerAgent...");
@@ -562,7 +566,9 @@ export class AIEnhancedQuestionsService {
             );
             timing[contextEnhancer.name] = Date.now() - enhancerStart;
             agentsUsed.push(contextEnhancer.name);
-            console.log(`  ✅ Context enhancement: ${timing[contextEnhancer.name]}ms`);
+            console.log(
+                `  ✅ Context enhancement: ${timing[contextEnhancer.name]}ms`
+            );
 
             const totalTime = Date.now() - workflowStart;
 
@@ -605,18 +611,23 @@ export class AIEnhancedQuestionsService {
             return { score, agentMetrics };
         } catch (error) {
             // REFACTOR: Enhanced error handling with specific error types
-            const errorMessage = error instanceof Error ? error.message : String(error);
+            const errorMessage =
+                error instanceof Error ? error.message : String(error);
             console.warn("⚠️  Agentic validation error:", errorMessage);
-            
+
             // Log error type for debugging
             if (errorMessage.includes("Cannot find module")) {
-                console.warn("   → Agent module import failed - check agent file paths");
+                console.warn(
+                    "   → Agent module import failed - check agent file paths"
+                );
             } else if (errorMessage.includes("timeout")) {
-                console.warn("   → Agent execution timeout - workflow too slow");
+                console.warn(
+                    "   → Agent execution timeout - workflow too slow"
+                );
             } else {
                 console.warn("   → Unknown agent workflow error");
             }
-            
+
             // REFACTOR: Return graceful fallback with error context
             return {
                 score: 0.75,
@@ -1154,14 +1165,14 @@ export class AIEnhancedQuestionsService {
 
     /**
      * Constructs an AgentContext object for multi-agent workflow execution.
-     * 
+     *
      * This method transforms the question generation request into a standardized
      * context structure that can be processed by educational agents in the workflow.
      * The context includes curriculum parameters, workflow metadata, and placeholders
      * for agent-generated content.
-     * 
+     *
      * REFACTOR: Enhanced with comprehensive TSDoc documentation
-     * 
+     *
      * @param {QuestionGenerationRequest} request - The original question generation request
      * @returns {Promise<AgentContext>} Agent context ready for workflow processing
      * @throws {Error} If QuestionType or DifficultyLevel models cannot be imported
@@ -1200,13 +1211,13 @@ export class AIEnhancedQuestionsService {
 
     /**
      * Calculates overall confidence score by aggregating agent validation results.
-     * 
+     *
      * Analyzes quality checks performed by agents (mathematical accuracy, age
      * appropriateness, pedagogical soundness, diversity) and computes a composite
      * confidence metric. Higher scores indicate stronger validation consensus.
-     * 
+     *
      * REFACTOR: Enhanced with comprehensive TSDoc documentation
-     * 
+     *
      * @param {AgentContext} context - Agent context containing quality check results
      * @returns {number} Confidence score between 0.7 and 1.0
      * @example
@@ -1236,13 +1247,13 @@ export class AIEnhancedQuestionsService {
 
     /**
      * Measures the effectiveness of context enhancement by calculating average engagement.
-     * 
+     *
      * Analyzes enhanced questions produced by the ContextEnhancerAgent and computes
      * the mean engagement score. Returns 0 if no questions were enhanced. Higher scores
      * indicate more engaging, contextually relevant question content.
-     * 
+     *
      * REFACTOR: Enhanced with comprehensive TSDoc documentation
-     * 
+     *
      * @param {AgentContext} context - Agent context containing enhanced questions
      * @returns {number} Average engagement score (0.0 to 1.0), or 0 if no enhanced questions
      * @example
@@ -1273,13 +1284,13 @@ export class AIEnhancedQuestionsService {
 
     /**
      * Computes final workflow validation score by combining all quality check results.
-     * 
+     *
      * Aggregates mathematical accuracy, age appropriateness, pedagogical soundness,
      * and diversity metrics into a single comprehensive quality score. Used to determine
      * the overall success of the multi-agent validation workflow.
-     * 
+     *
      * REFACTOR: Enhanced with comprehensive TSDoc documentation
-     * 
+     *
      * @param {AgentContext} context - Agent context with complete quality checks
      * @returns {number} Final workflow score between 0.75 and 0.98
      * @example
@@ -1309,13 +1320,13 @@ export class AIEnhancedQuestionsService {
 
     /**
      * Generates default agent metrics when the multi-agent workflow is unavailable.
-     * 
+     *
      * Provides graceful degradation by returning a safe default metrics object
      * when OpenSearch is down, agents fail to load, or workflow execution errors occur.
      * Ensures the API always returns a consistent response structure.
-     * 
+     *
      * REFACTOR: Enhanced with comprehensive TSDoc documentation
-     * 
+     *
      * @returns {AgentMetrics} Default metrics indicating workflow unavailability
      * @example
      * const fallback = this.createFallbackAgentMetrics();
