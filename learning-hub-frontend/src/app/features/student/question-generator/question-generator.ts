@@ -408,7 +408,7 @@ export class QuestionGenerator implements OnInit, OnDestroy {
         topic: this.currentSession.topic,
         difficulty: this.selectedDifficulty,
         questionType: this.selectedQuestionType,
-        count: this.questionCount,
+        numQuestions: this.questionCount,
         persona: {
           userId: user?.id || '',
           grade: user?.grade || 0,

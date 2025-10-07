@@ -61,7 +61,7 @@ export class QuestionService {
     const backendRequest: Partial<QuestionGenerationRequest> = {
       subject: request.subject.toLowerCase(),
       topic: request.topic,
-      count: request.count || 5,
+      numQuestions: request.numQuestions || 5,
       difficulty: request.difficulty?.toLowerCase() || 'medium',
       questionType: request.questionType?.toLowerCase() || 'multiple_choice',
       persona: request.persona,
