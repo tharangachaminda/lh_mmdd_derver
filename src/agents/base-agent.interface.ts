@@ -12,13 +12,25 @@ export interface IEducationalAgent {
      * @param context - Current workflow context
      * @returns Updated context with agent's contributions
      */
-    process(context: AgentContext): Promise<AgentContext>;
+    process(
+        context: AgentContext | LangGraphContext
+    ): Promise<AgentContext | any>;
 
     /**
      * Agent identification
      */
     readonly name: string;
     readonly description: string;
+}
+
+/**
+ * LangGraph context for structured prompt processing
+ *
+ * @interface LangGraphContext
+ */
+export interface LangGraphContext {
+    structuredPrompt: string;
+    context: Record<string, any>;
 }
 
 /**

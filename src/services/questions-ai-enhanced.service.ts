@@ -55,6 +55,9 @@ export class AIEnhancedQuestionsService {
         Buffer.from("admin:admin").toString("base64");
     private readonly OPENSEARCH_TIMEOUT = 5000; // 5 second timeout
 
+    // Enhanced workflow (Session 3+4 features)
+    private enhancedWorkflow: any; // Will be imported when needed
+
     /**
      * Generate AI questions using REAL vector database and agentic workflows
      */
@@ -559,7 +562,16 @@ export class AIEnhancedQuestionsService {
                 };
             }
 
-            // REFACTOR: Execute optimized multi-agent workflow
+            // Session 3+4: Check if enhanced workflow should be used
+            const useEnhancedWorkflow =
+                process.env.USE_ENHANCED_WORKFLOW === "true" ||
+                request.persona.userId?.toString() === "enhanced-demo-user-id";
+
+            if (useEnhancedWorkflow) {
+                return this.executeEnhancedWorkflow(request);
+            }
+
+            // REFACTOR: Execute optimized multi-agent workflow (Sessions 1-2)
             console.log("🤖 Executing real multi-agent workflow...");
             const workflowStart = Date.now();
 
@@ -1626,5 +1638,64 @@ export class AIEnhancedQuestionsService {
                 Math.floor(Math.random() * questionStarters.length)
             ];
         return `${starter} ${topic}?`;
+    }
+
+    /**
+     * Execute enhanced workflow with LangChain prompts (Session 3+4)
+     */
+    private async executeEnhancedWorkflow(
+        request: QuestionGenerationRequest
+    ): Promise<{
+        score: number;
+        agentMetrics: any;
+    }> {
+        try {
+            console.log("🟣 Using Enhanced Workflow with LangChain Prompts...");
+
+            // Dynamic import of enhanced workflow
+            const { LangGraphAgenticWorkflow } = await import(
+                "./enhanced-agentic-workflow.service.js"
+            );
+
+            if (!this.enhancedWorkflow) {
+                this.enhancedWorkflow = new LangGraphAgenticWorkflow();
+            }
+
+            // Execute enhanced workflow
+            const result = await this.enhancedWorkflow.executeWorkflow({
+                subject: request.subject,
+                topic: request.topic,
+                difficulty: request.difficulty,
+                questionType: request.questionType,
+                count: request.count,
+                persona: {
+                    userId: request.persona.userId?.toString() || "demo-user",
+                    grade: request.persona.grade,
+                    learningStyle: request.persona.learningStyle,
+                    interests: request.persona.interests,
+                    culturalContext: request.persona.culturalContext,
+                    strengths: request.persona.strengths || [],
+                },
+            });
+
+            console.log("✅ Enhanced workflow completed successfully");
+
+            return {
+                score: result.qualityMetrics.agenticValidationScore,
+                agentMetrics: result.agentMetrics,
+            };
+        } catch (error) {
+            console.error(
+                "❌ Enhanced workflow failed, falling back to legacy:",
+                error
+            );
+
+            // Fallback to legacy workflow
+            const fallbackScore = this.calculateFallbackAgenticScore(request);
+            return {
+                score: fallbackScore,
+                agentMetrics: this.createFallbackAgentMetrics(),
+            };
+        }
     }
 }
