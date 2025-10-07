@@ -45,6 +45,10 @@ coverage/
 # TypeScript build info
 *.tsbuildinfo
 
+# Compiled JavaScript files in src (should be in dist/)
+src/**/*.js
+src/**/*.js.map
+
 # OpenSearch persistent data
 opensearch-data/
 opensearch-logs/

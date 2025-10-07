@@ -6,7 +6,7 @@
  * Tests the new StateGraph service with comprehensive validation
  */
 
-import { StateGraphAgenticWorkflow } from './src/services/services/stategraph-agentic-workflow.service.js';
+import { StateGraphAgenticWorkflow } from './dist/services/stategraph-agentic-workflow.service.js';
 
 const TEST_REQUEST = {
     subject: 'mathematics',
