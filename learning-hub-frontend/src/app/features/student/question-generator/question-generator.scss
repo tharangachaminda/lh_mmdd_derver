@@ -657,11 +657,165 @@
     background: white;
   }
 
+  // Overall Quality Card (Prominent Display)
+  .overall-quality-card {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    border: 2px solid #bae6fd;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+
+    .overall-score-badge {
+      display: inline-block;
+      margin-bottom: 1rem;
+      
+      .score-value {
+        font-size: 3rem;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 0.25rem;
+        
+        &.text-green-600 { color: #059669; }
+        &.text-blue-600 { color: #2563eb; }
+        &.text-yellow-600 { color: #d97706; }
+        &.text-red-600 { color: #dc2626; }
+      }
+      
+      .score-label {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+    }
+
+    .overall-quality-progress {
+      width: 100%;
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+
+      .overall-progress-fill {
+        height: 100%;
+        transition: width 0.5s ease;
+        border-radius: 6px;
+        
+        &.text-green-600 { background: linear-gradient(90deg, #059669 0%, #10b981 100%); }
+        &.text-blue-600 { background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%); }
+        &.text-yellow-600 { background: linear-gradient(90deg, #d97706 0%, #f59e0b 100%); }
+        &.text-red-600 { background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%); }
+      }
+    }
+
+    .overall-quality-message {
+      font-size: 1.125rem;
+      color: #1e293b;
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  // Technical Details (Collapsed by default)
+  .technical-details {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e2e8f0;
+
+    summary.details-toggle {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      color: #64748b;
+      font-weight: 500;
+      padding: 0.5rem;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: #475569;
+      }
+
+      &::marker,
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &::before {
+        content: '▼';
+        display: inline-block;
+        margin-right: 0.5rem;
+        font-size: 0.75rem;
+        transition: transform 0.2s ease;
+      }
+    }
+
+    &[open] summary.details-toggle::before {
+      transform: rotate(180deg);
+    }
+
+    .details-content {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e2e8f0;
+
+      .details-title {
+        font-size: 0.875rem;
+        color: #475569;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+      }
+    }
+  }
+
   .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .metric-item-simple {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+
+    .metric-simple-label {
+      font-size: 0.875rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .metric-simple-value {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+  }
+
+  .details-explanation {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 6px;
+    line-height: 1.6;
+    color: #475569;
+
+    small {
+      font-size: 0.8125rem;
+    }
   }
 
   .metric-item {
@@ -724,212 +878,7 @@
     }
   }
 
-  // Phase 1: Enhanced Metric Item with Progress Bar
-  .metric-item-enhanced {
-    padding: 1rem;
-    background: #f8fafc;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-
-    .metric-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.75rem;
-    }
-
-    .metric-label {
-      font-size: 0.875rem;
-      color: #475569;
-      font-weight: 600;
-    }
-
-    .metric-value-badge {
-      font-size: 1.125rem;
-      font-weight: 700;
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      
-      &.text-green-600 { 
-        color: #059669; 
-        background: #d1fae5;
-      }
-      &.text-blue-600 { 
-        color: #2563eb; 
-        background: #dbeafe;
-      }
-      &.text-yellow-600 { 
-        color: #d97706; 
-        background: #fef3c7;
-      }
-      &.text-red-600 { 
-        color: #dc2626; 
-        background: #fee2e2;
-      }
-    }
-
-    .metric-progress-bar {
-      height: 8px;
-      background: #e2e8f0;
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 0.5rem;
-    }
-
-    .metric-progress-fill {
-      height: 100%;
-      transition: width 0.5s ease;
-      border-radius: 4px;
-      
-      &.text-green-600 { 
-        background: linear-gradient(90deg, #059669, #10b981);
-      }
-      &.text-blue-600 { 
-        background: linear-gradient(90deg, #2563eb, #3b82f6);
-      }
-      &.text-yellow-600 { 
-        background: linear-gradient(90deg, #d97706, #f59e0b);
-      }
-      &.text-red-600 { 
-        background: linear-gradient(90deg, #dc2626, #ef4444);
-      }
-    }
-
-    .metric-description {
-      font-size: 0.75rem;
-      color: #64748b;
-      font-weight: 500;
-    }
-  }
-
-  // Phase 1: Agent Metrics Section
-  .metrics-section-title {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 1.5rem 0 1rem 0;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #e2e8f0;
-  }
-
-  .agent-metrics-section {
-    margin-top: 1.5rem;
-  }
-
-  .agent-info-card {
-    background: #f8fafc;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border: 1px solid #e2e8f0;
-
-    .agent-info-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-
-      .info-icon {
-        font-size: 1.25rem;
-      }
-
-      .info-label {
-        font-size: 0.875rem;
-        color: #475569;
-        font-weight: 600;
-      }
-
-      .info-value {
-        margin-left: auto;
-        font-size: 0.875rem;
-        font-weight: 700;
-        color: #4f46e5;
-      }
-    }
-
-    .agent-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .agent-badge {
-      display: inline-block;
-      padding: 0.375rem 0.75rem;
-      background: white;
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      color: #374151;
-      font-weight: 500;
-    }
-  }
-
-  .quality-checks-card {
-    background: #f8fafc;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border: 1px solid #e2e8f0;
-
-    .check-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #e2e8f0;
-
-      &:last-child {
-        border-bottom: none;
-      }
-
-      .check-icon {
-        font-size: 1.25rem;
-
-        &.check-pass {
-          color: #059669;
-        }
-      }
-
-      .check-label {
-        font-size: 0.875rem;
-        color: #475569;
-        font-weight: 500;
-      }
-    }
-  }
-
-  .workflow-performance-card {
-    background: #f8fafc;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border: 1px solid #e2e8f0;
-
-    .performance-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #e2e8f0;
-
-      &:last-child {
-        border-bottom: none;
-      }
-
-      .perf-label {
-        font-size: 0.875rem;
-        color: #475569;
-        font-weight: 500;
-      }
-
-      .perf-value {
-        font-size: 0.875rem;
-        font-weight: 700;
-        color: #4f46e5;
-      }
-    }
-  }
+  // Removed old Phase 1 complex styles - using simplified overall quality display instead
 }
 
 // Responsive AI Metrics

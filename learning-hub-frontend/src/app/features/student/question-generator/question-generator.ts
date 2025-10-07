@@ -566,6 +566,38 @@ export class QuestionGenerator implements OnInit, OnDestroy {
   }
 
   /**
+   * Calculate overall quality score from all metrics
+   * Returns weighted average: 30% relevance, 40% validation, 30% personalization
+   */
+  getOverallQualityScore(): number {
+    if (!this.qualityMetrics) return 0;
+
+    const weights = {
+      relevance: 0.3,
+      validation: 0.4,
+      personalization: 0.3,
+    };
+
+    return (
+      this.qualityMetrics.vectorRelevanceScore * weights.relevance +
+      this.qualityMetrics.agenticValidationScore * weights.validation +
+      this.qualityMetrics.personalizationScore * weights.personalization
+    );
+  }
+
+  /**
+   * Get student-friendly description of overall quality
+   */
+  getOverallQualityDescription(): string {
+    const score = this.getOverallQualityScore();
+    if (score >= 0.9) return 'Outstanding! These questions are perfect for you.';
+    if (score >= 0.8) return 'Excellent! High quality questions matched to your level.';
+    if (score >= 0.7) return 'Very Good! These questions suit your learning needs.';
+    if (score >= 0.6) return 'Good! Solid questions for your practice.';
+    return 'Fair. Questions generated successfully.';
+  }
+
+  /**
    * Get quality score description
    */
   getQualityDescription(score: number): string {
