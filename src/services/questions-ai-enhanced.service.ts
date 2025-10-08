@@ -384,13 +384,17 @@ export class AIEnhancedQuestionsService {
 
             // Basic HTTP client for OpenSearch connection
             // Force HTTP for local development to avoid SSL issues
-            let opensearchUrl = process.env.OPENSEARCH_NODE || "http://localhost:9200";
-            
+            let opensearchUrl =
+                process.env.OPENSEARCH_NODE || "http://localhost:9200";
+
             // Ensure we're using HTTP (not HTTPS) for localhost
-            if (opensearchUrl.includes("localhost") || opensearchUrl.includes("127.0.0.1")) {
+            if (
+                opensearchUrl.includes("localhost") ||
+                opensearchUrl.includes("127.0.0.1")
+            ) {
                 opensearchUrl = opensearchUrl.replace("https://", "http://");
             }
-            
+
             const auth = Buffer.from("admin:admin").toString("base64");
 
             console.log(`🔍 Connecting to OpenSearch at: ${opensearchUrl}`);
@@ -463,14 +467,25 @@ export class AIEnhancedQuestionsService {
             }
         } catch (error: any) {
             // Handle SSL/TLS errors specifically
-            if (error.code === 'ERR_SSL_WRONG_VERSION_NUMBER' || 
-                error.cause?.code === 'ERR_SSL_WRONG_VERSION_NUMBER') {
-                console.warn("⚠️  SSL Error: OpenSearch appears to be running on HTTP, not HTTPS.");
-                console.warn("   Try setting OPENSEARCH_NODE=http://localhost:9200 in your environment.");
-            } else if (error.code === 'ECONNREFUSED') {
-                console.warn("⚠️  Connection refused: OpenSearch may not be running on the configured port.");
+            if (
+                error.code === "ERR_SSL_WRONG_VERSION_NUMBER" ||
+                error.cause?.code === "ERR_SSL_WRONG_VERSION_NUMBER"
+            ) {
+                console.warn(
+                    "⚠️  SSL Error: OpenSearch appears to be running on HTTP, not HTTPS."
+                );
+                console.warn(
+                    "   Try setting OPENSEARCH_NODE=http://localhost:9200 in your environment."
+                );
+            } else if (error.code === "ECONNREFUSED") {
+                console.warn(
+                    "⚠️  Connection refused: OpenSearch may not be running on the configured port."
+                );
             } else {
-                console.warn("⚠️  Vector search error:", error.message || error);
+                console.warn(
+                    "⚠️  Vector search error:",
+                    error.message || error
+                );
             }
             return 0.65; // Error fallback score
         }

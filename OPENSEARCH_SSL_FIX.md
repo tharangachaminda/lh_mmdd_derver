@@ -20,29 +20,35 @@ Vector search error: TypeError: fetch failed
 ## 🔍 Root Cause
 
 ### Configuration Mismatch
-- **`.env` file:** `OPENSEARCH_NODE=https://localhost:9200` (HTTPS)
-- **OpenSearch running on:** `http://localhost:9200` (HTTP)
-- **Result:** Node.js fetch trying to establish SSL/TLS connection to non-SSL server
+
+-   **`.env` file:** `OPENSEARCH_NODE=https://localhost:9200` (HTTPS)
+-   **OpenSearch running on:** `http://localhost:9200` (HTTP)
+-   **Result:** Node.js fetch trying to establish SSL/TLS connection to non-SSL server
 
 ### Why This Happens
+
 OpenSearch can run in two modes:
+
 1. **HTTP mode** (development) - No SSL certificates
 2. **HTTPS mode** (production) - With SSL certificates
 
 The error `ssl3_get_record:wrong version number` occurs when:
-- Client expects HTTPS but server responds with HTTP
-- SSL handshake fails because server sends HTTP headers instead of SSL handshake
+
+-   Client expects HTTPS but server responds with HTTP
+-   SSL handshake fails because server sends HTTP headers instead of SSL handshake
 
 ## ✅ Solution Implemented
 
 ### 1. **Fixed `.env` Configuration**
 
 **Before:**
+
 ```properties
 OPENSEARCH_NODE=https://localhost:9200  # ❌ HTTPS
 ```
 
 **After:**
+
 ```properties
 OPENSEARCH_NODE=http://localhost:9200   # ✅ HTTP
 ```
@@ -54,22 +60,26 @@ OPENSEARCH_NODE=http://localhost:9200   # ✅ HTTP
 let opensearchUrl = process.env.OPENSEARCH_NODE || "http://localhost:9200";
 
 // Ensure we're using HTTP (not HTTPS) for localhost
-if (opensearchUrl.includes("localhost") || opensearchUrl.includes("127.0.0.1")) {
+if (
+    opensearchUrl.includes("localhost") ||
+    opensearchUrl.includes("127.0.0.1")
+) {
     opensearchUrl = opensearchUrl.replace("https://", "http://");
 }
 ```
 
 **Benefits:**
-- ✅ Automatically corrects HTTPS → HTTP for localhost
-- ✅ Prevents user configuration errors
-- ✅ Works even if `.env` has HTTPS by mistake
+
+-   ✅ Automatically corrects HTTPS → HTTP for localhost
+-   ✅ Prevents user configuration errors
+-   ✅ Works even if `.env` has HTTPS by mistake
 
 ### 3. **Enhanced Error Handling**
 
 ```typescript
 catch (error: any) {
     // Handle SSL/TLS errors specifically
-    if (error.code === 'ERR_SSL_WRONG_VERSION_NUMBER' || 
+    if (error.code === 'ERR_SSL_WRONG_VERSION_NUMBER' ||
         error.cause?.code === 'ERR_SSL_WRONG_VERSION_NUMBER') {
         console.warn("⚠️  SSL Error: OpenSearch appears to be running on HTTP, not HTTPS.");
         console.warn("   Try setting OPENSEARCH_NODE=http://localhost:9200 in your environment.");
@@ -83,9 +93,10 @@ catch (error: any) {
 ```
 
 **Benefits:**
-- ✅ Clear error messages for SSL issues
-- ✅ Helpful guidance for users
-- ✅ Graceful fallback (doesn't crash)
+
+-   ✅ Clear error messages for SSL issues
+-   ✅ Helpful guidance for users
+-   ✅ Graceful fallback (doesn't crash)
 
 ### 4. **Added Debug Logging**
 
@@ -94,12 +105,14 @@ console.log(`🔍 Connecting to OpenSearch at: ${opensearchUrl}`);
 ```
 
 **Benefits:**
-- ✅ Confirms which URL is being used
-- ✅ Helps debug configuration issues
+
+-   ✅ Confirms which URL is being used
+-   ✅ Helps debug configuration issues
 
 ## 📊 Impact
 
 ### Before Fix
+
 ```
 ❌ Vector search fails with SSL error
 ❌ Application continues but with degraded quality scores
@@ -107,6 +120,7 @@ console.log(`🔍 Connecting to OpenSearch at: ${opensearchUrl}`);
 ```
 
 ### After Fix
+
 ```
 ✅ Vector search succeeds
 ✅ Correct quality metrics calculated
@@ -117,6 +131,7 @@ console.log(`🔍 Connecting to OpenSearch at: ${opensearchUrl}`);
 ## 🧪 Testing
 
 ### Test 1: OpenSearch Connection
+
 ```bash
 # Check OpenSearch is accessible on HTTP
 curl http://localhost:9200/_cluster/health
@@ -126,6 +141,7 @@ curl http://localhost:9200/_cluster/health
 ```
 
 ### Test 2: Application Startup
+
 ```bash
 npm run build
 node dist/index.js
@@ -136,6 +152,7 @@ node dist/index.js
 ```
 
 ### Test 3: Question Generation
+
 ```bash
 # Generate questions via API
 # Should see:
@@ -145,27 +162,34 @@ node dist/index.js
 ## 🚀 Production Considerations
 
 ### Local Development (Current)
-- ✅ Use HTTP: `OPENSEARCH_NODE=http://localhost:9200`
-- ✅ No SSL certificates needed
-- ✅ Faster setup
+
+-   ✅ Use HTTP: `OPENSEARCH_NODE=http://localhost:9200`
+-   ✅ No SSL certificates needed
+-   ✅ Faster setup
 
 ### Production Deployment
+
 If deploying to production with HTTPS:
 
 1. **Update `.env` for production:**
+
 ```properties
 OPENSEARCH_NODE=https://your-domain.com:9200
 ```
 
 2. **Ensure valid SSL certificate:**
-- Use Let's Encrypt or proper CA-signed cert
-- OpenSearch must be configured with SSL
+
+-   Use Let's Encrypt or proper CA-signed cert
+-   OpenSearch must be configured with SSL
 
 3. **Remove auto-HTTP conversion:**
+
 ```typescript
 // In production, respect HTTPS URLs
-if (process.env.NODE_ENV !== 'production' && 
-    (opensearchUrl.includes("localhost") || opensearchUrl.includes("127.0.0.1"))) {
+if (
+    process.env.NODE_ENV !== "production" &&
+    (opensearchUrl.includes("localhost") || opensearchUrl.includes("127.0.0.1"))
+) {
     opensearchUrl = opensearchUrl.replace("https://", "http://");
 }
 ```
@@ -173,23 +197,24 @@ if (process.env.NODE_ENV !== 'production' &&
 ## 📝 Files Modified
 
 1. **`.env`**
-   - Changed: `https://localhost:9200` → `http://localhost:9200`
-   - Added comment explaining HTTP vs HTTPS
+
+    - Changed: `https://localhost:9200` → `http://localhost:9200`
+    - Added comment explaining HTTP vs HTTPS
 
 2. **`src/services/questions-ai-enhanced.service.ts`**
-   - Added auto-correction for localhost URLs
-   - Enhanced error handling with specific SSL error detection
-   - Added debug logging for connection URL
+    - Added auto-correction for localhost URLs
+    - Enhanced error handling with specific SSL error detection
+    - Added debug logging for connection URL
 
 ## ✅ Verification Checklist
 
-- [x] `.env` uses `http://localhost:9200`
-- [x] Code auto-corrects https→http for localhost
-- [x] Error handling catches SSL errors specifically
-- [x] Debug logging shows connection URL
-- [x] TypeScript compiles without errors
-- [x] OpenSearch health check succeeds
-- [x] Vector search returns valid scores
+-   [x] `.env` uses `http://localhost:9200`
+-   [x] Code auto-corrects https→http for localhost
+-   [x] Error handling catches SSL errors specifically
+-   [x] Debug logging shows connection URL
+-   [x] TypeScript compiles without errors
+-   [x] OpenSearch health check succeeds
+-   [x] Vector search returns valid scores
 
 ## 🎯 Resolution
 
