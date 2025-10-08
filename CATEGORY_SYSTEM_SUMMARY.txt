@@ -1,0 +1,388 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║           MATHEMATICS QUESTION CATEGORIES - EDUCATIONAL TAXONOMY           ║
+║                        Implementation Guide - Oct 8, 2025                  ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ CATEGORY OVERVIEW                                                         │
+├──────────────────────────────────────────────────────────────────────────┤
+│ Total Categories: 8                                                       │
+│ Total Question Types: 53                                                  │
+│ Grade Coverage: 3-8 (6 grades)                                           │
+│ Purpose: Educational organization with learning objectives               │
+└──────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════
+CATEGORY 1: 🔢 NUMBER OPERATIONS & ARITHMETIC
+═══════════════════════════════════════════════════════════════════════════
+
+What is this about?
+Fundamental computational skills with whole numbers, fractions, decimals,
+and integers. This forms the foundation of mathematical literacy.
+
+Skills Students Will Improve:
+✓ Computational accuracy and speed
+✓ Number sense and magnitude understanding
+✓ Mental math strategies
+✓ Place value comprehension
+✓ Fraction/decimal/percentage conversions
+✓ Working with negative numbers
+✓ Understanding number properties (prime, composite)
+
+Question Types (15 total):
+┌─────────────────────────────────┬─────────┬──────────────────────┐
+│ Display Name                    │ Grades  │ Focus                │
+├─────────────────────────────────┼─────────┼──────────────────────┤
+│ Addition                        │ 3-4     │ Basic & multi-digit  │
+│ Subtraction                     │ 3-4     │ Basic & multi-digit  │
+│ Multiplication                  │ 3-5     │ Tables & algorithms  │
+│ Division                        │ 3-5     │ Remainders & long    │
+│ Decimals (Basic)                │ 4       │ Introduction         │
+│ Decimal Operations              │ 5       │ All operations       │
+│ Fractions (Basic)               │ 4       │ Equivalence          │
+│ Fraction Operations             │ 5       │ Add/subtract         │
+│ Fractions, Decimals & %         │ 6-8     │ Conversions          │
+│ Place Value                     │ 4       │ Digit positions      │
+│ Large Number Calculations       │ 6, 8    │ Thousands/millions   │
+│ Negative Numbers                │ 7-8     │ Integer operations   │
+│ Prime & Composite Numbers       │ 8       │ Number theory        │
+│ Advanced Arithmetic             │ 5-7     │ Multi-step           │
+│ Advanced Fractions & Decimals   │ 6-8     │ Complex operations   │
+└─────────────────────────────────┴─────────┴──────────────────────┘
+
+NZ Curriculum Alignment: Number and Algebra (Strand 1)
+
+═══════════════════════════════════════════════════════════════════════════
+CATEGORY 2: 🧮 ALGEBRA & PATTERNS
+═══════════════════════════════════════════════════════════════════════════
+
+What is this about?
+Algebraic thinking, pattern recognition, and abstract reasoning. Students
+learn to generalize mathematical relationships and work with variables.
+
+Skills Students Will Improve:
+✓ Pattern recognition and prediction
+✓ Abstract and symbolic thinking
+✓ Equation solving techniques
+✓ Variable manipulation
+✓ Understanding mathematical relationships
+✓ Generalizing from specific cases
+✓ Developing algebraic proof strategies
+
+Question Types (8 total):
+┌─────────────────────────────────┬─────────┬──────────────────────┐
+│ Display Name                    │ Grades  │ Focus                │
+├─────────────────────────────────┼─────────┼──────────────────────┤
+│ Pattern Recognition             │ 3-5     │ Number/shape patterns│
+│ Number Patterns & Sequences     │ 6-8     │ Arithmetic/geometric │
+│ Advanced Patterns               │ 6-7     │ Complex sequences    │
+│ Algebraic Thinking              │ 5-6     │ Pre-algebra          │
+│ Algebraic Equations             │ 6-8     │ Solving equations    │
+│ Algebra Foundations             │ 7-8     │ Expressions          │
+│ Algebraic Expressions           │ 8       │ Expand/factor        │
+│ Linear Equations                │ 8       │ Linear solving       │
+└─────────────────────────────────┴─────────┴──────────────────────┘
+
+NZ Curriculum Alignment: Number and Algebra (Strand 1 - Patterns)
+
+═══════════════════════════════════════════════════════════════════════════
+CATEGORY 3: 📐 GEOMETRY & MEASUREMENT
+═══════════════════════════════════════════════════════════════════════════
+
+What is this about?
+Spatial reasoning, shapes, measurements, coordinates, and geometric
+transformations in 2D and 3D space.
+
+Skills Students Will Improve:
+✓ Spatial visualization and reasoning
+✓ Measurement accuracy and estimation
+✓ Understanding geometric properties
+✓ Coordinate system navigation
+✓ Shape transformation (rotation, reflection, translation)
+✓ Unit conversion proficiency
+✓ Time and calendar calculations
+✓ Real-world measurement applications
+
+Question Types (11 total):
+┌─────────────────────────────────┬─────────┬──────────────────────┐
+│ Display Name                    │ Grades  │ Focus                │
+├─────────────────────────────────┼─────────┼──────────────────────┤
+│ Shape Properties                │ 3-6     │ 2D/3D shapes         │
+│ Area & Volume                   │ 5-6     │ Standard shapes      │
+│ Perimeter, Area & Volume        │ 6-8     │ Comprehensive        │
+│ Coordinate Geometry             │ 5-8     │ Cartesian plane      │
+│ Spatial Reasoning               │ 7-8     │ 3D visualization     │
+│ Transformations & Symmetry      │ 6-8     │ Rotate/reflect       │
+│ Measurement & Units             │ 4-6     │ Length/mass/volume   │
+│ Unit Conversions                │ 6-8     │ Metric/time          │
+│ Multi-Unit Conversions          │ 7-8     │ Complex conversions  │
+│ Time Calculations               │ 4       │ Clocks/elapsed       │
+│ Time Problems                   │ 5-8     │ Word problems        │
+└─────────────────────────────────┴─────────┴──────────────────────┘
+
+NZ Curriculum Alignment: Measurement and Geometry (Strand 2)
+
+═══════════════════════════════════════════════════════════════════════════
+CATEGORY 4: 📊 STATISTICS & PROBABILITY
+═══════════════════════════════════════════════════════════════════════════
+
+What is this about?
+Data handling, statistical analysis, and probability concepts. Understanding
+chance, likelihood, and data interpretation.
+
+Skills Students Will Improve:
+✓ Data collection and organization
+✓ Graph and chart interpretation
+✓ Statistical measure calculation (mean, median, mode, range)
+✓ Probability reasoning and calculation
+✓ Critical analysis of data
+✓ Making predictions based on data
+✓ Understanding experimental vs theoretical probability
+✓ Real-world data application
+
+Question Types (3 total):
+┌─────────────────────────────────┬─────────┬──────────────────────┐
+│ Display Name                    │ Grades  │ Focus                │
+├─────────────────────────────────┼─────────┼──────────────────────┤
+│ Data Analysis                   │ 5-8     │ Mean/median/mode     │
+│ Data & Probability              │ 7-8     │ Combined stats       │
+│ Basic Probability               │ 5-7     │ Simple probability   │
+└─────────────────────────────────┴─────────┴──────────────────────┘
+
+NZ Curriculum Alignment: Statistics and Probability (Strand 3)
+
+═══════════════════════════════════════════════════════════════════════════
+CATEGORY 5: ⚖️ RATIOS, RATES & PROPORTIONS
+═══════════════════════════════════════════════════════════════════════════
+
+What is this about?
+Proportional relationships, ratios, rates, and scaling. Comparing quantities
+and understanding equivalent relationships.
+
+Skills Students Will Improve:
+✓ Proportional reasoning
+✓ Ratio comparison and simplification
+✓ Rate calculations (speed, unit rates)
+✓ Scale factor applications
+✓ Equivalent ratio identification
+✓ Real-world proportion problems
+✓ Cross-multiplication techniques
+✓ Understanding direct relationships
+
+Question Types (7 total):
+┌─────────────────────────────────┬─────────┬──────────────────────┐
+│ Display Name                    │ Grades  │ Focus                │
+├─────────────────────────────────┼─────────┼──────────────────────┤
+│ Ratios & Proportions            │ 5-8     │ Basic concepts       │
+│ Simple Ratios                   │ 6       │ Part-to-part         │
+│ Equivalent Ratios               │ 7       │ Scaling              │
+│ Ratio Simplification            │ 8       │ Lowest terms         │
+│ Proportions                     │ 6       │ Solving equations    │
+│ Scale & Proportion              │ 8       │ Maps/models          │
+│ Unit Rates                      │ 7       │ Price per item       │
+└─────────────────────────────────┴─────────┴──────────────────────┘
+
+NZ Curriculum Alignment: Number and Algebra (Strand 1 - Ratios)
+
+═══════════════════════════════════════════════════════════════════════════
+CATEGORY 6: 🚀 MOTION & DISTANCE
+═══════════════════════════════════════════════════════════════════════════
+
+What is this about?
+Speed, distance, time problems applying mathematics to real-world travel
+and movement scenarios.
+
+Skills Students Will Improve:
+✓ Speed-distance-time relationship understanding
+✓ Formula application (speed = distance/time)
+✓ Unit conversion for motion problems
+✓ Average speed calculations
+✓ Multi-stage journey planning
+✓ Graph interpretation for motion
+✓ Real-world transportation problem solving
+✓ Time management and scheduling
+
+Question Types (5 total):
+┌─────────────────────────────────┬─────────┬──────────────────────┐
+│ Display Name                    │ Grades  │ Focus                │
+├─────────────────────────────────┼─────────┼──────────────────────┤
+│ Speed, Distance & Time          │ 7-8     │ Basic formula        │
+│ Average Speed                   │ 8       │ Multiple segments    │
+│ Distance Problems               │ 8       │ Meeting problems     │
+│ Multi-Stage Journeys            │ 8       │ Complex trips        │
+│ Speed & Distance Conversions    │ 8       │ km/h to m/s          │
+└─────────────────────────────────┴─────────┴──────────────────────┘
+
+NZ Curriculum Alignment: Measurement (Strand 2 - Applied Problems)
+
+═══════════════════════════════════════════════════════════════════════════
+CATEGORY 7: 💰 FINANCIAL LITERACY
+═══════════════════════════════════════════════════════════════════════════
+
+What is this about?
+Practical money management, budgeting, and financial decision-making.
+Applying mathematics to real financial situations.
+
+Skills Students Will Improve:
+✓ Money calculation and budgeting
+✓ Interest calculation (simple interest)
+✓ Percentage applications (discounts, tax, tips)
+✓ Financial planning and decision-making
+✓ Cost comparison and best value analysis
+✓ Savings and investment basics
+✓ Understanding financial terminology
+✓ Critical consumer mathematics
+
+Question Types (1 total):
+┌─────────────────────────────────┬─────────┬──────────────────────┐
+│ Display Name                    │ Grades  │ Focus                │
+├─────────────────────────────────┼─────────┼──────────────────────┤
+│ Money & Financial Literacy      │ 8       │ Comprehensive        │
+└─────────────────────────────────┴─────────┴──────────────────────┘
+
+NZ Curriculum Alignment: Number and Algebra (Strand 1 - Year 8 Specific)
+
+NOTE: Specialized Grade 8 category per NZ Ministry of Education guidelines
+
+═══════════════════════════════════════════════════════════════════════════
+CATEGORY 8: 🧠 PROBLEM SOLVING & REASONING
+═══════════════════════════════════════════════════════════════════════════
+
+What is this about?
+Multi-step problems and mathematical reasoning integrating multiple concepts.
+Critical thinking and real-world applications.
+
+Skills Students Will Improve:
+✓ Multi-step problem solving strategies
+✓ Logical reasoning and deduction
+✓ Mathematical communication
+✓ Integration of multiple concepts
+✓ Real-world application of mathematics
+✓ Critical thinking and analysis
+✓ Problem decomposition
+✓ Solution verification
+
+Question Types (3 total):
+┌─────────────────────────────────┬─────────┬──────────────────────┐
+│ Display Name                    │ Grades  │ Focus                │
+├─────────────────────────────────┼─────────┼──────────────────────┤
+│ Real-World Math Problems        │ 5-6     │ Practical scenarios  │
+│ Problem Solving                 │ 6-8     │ Multi-step           │
+│ Mathematical Reasoning          │ 6-8     │ Logic & proof        │
+└─────────────────────────────────┴─────────┴──────────────────────┘
+
+NZ Curriculum Alignment: All Strands (Cross-Curricular)
+
+═══════════════════════════════════════════════════════════════════════════
+CATEGORY DISTRIBUTION BY GRADE
+═══════════════════════════════════════════════════════════════════════════
+
+Grade 3 (6 topics, 2 categories):
+  🔢 Number Operations (4)
+  🧮 Algebra & Patterns (1)
+  📐 Geometry & Measurement (1)
+
+Grade 4 (11 topics, 3 categories):
+  🔢 Number Operations (7)
+  🧮 Algebra & Patterns (1)
+  📐 Geometry & Measurement (3)
+
+Grade 5 (16 topics, 6 categories):
+  🔢 Number Operations (5)
+  🧮 Algebra & Patterns (2)
+  📐 Geometry & Measurement (5)
+  📊 Statistics & Probability (2)
+  ⚖️ Ratios, Rates & Proportions (1)
+  🧠 Problem Solving & Reasoning (1)
+
+Grade 6 (22 topics, 7 categories):
+  🔢 Number Operations (4)
+  🧮 Algebra & Patterns (4)
+  📐 Geometry & Measurement (7)
+  📊 Statistics & Probability (2)
+  ⚖️ Ratios, Rates & Proportions (3)
+  🧠 Problem Solving & Reasoning (2)
+
+Grade 7 (24 topics, 7 categories):
+  🔢 Number Operations (4)
+  🧮 Algebra & Patterns (4)
+  📐 Geometry & Measurement (7)
+  📊 Statistics & Probability (3)
+  ⚖️ Ratios, Rates & Proportions (3)
+  🚀 Motion & Distance (1)
+  🧠 Problem Solving & Reasoning (2)
+
+Grade 8 (30 topics, 8 categories - ALL):
+  🔢 Number Operations (6)
+  🧮 Algebra & Patterns (5)
+  📐 Geometry & Measurement (8)
+  📊 Statistics & Probability (2)
+  ⚖️ Ratios, Rates & Proportions (3)
+  🚀 Motion & Distance (5)
+  💰 Financial Literacy (1)
+  🧠 Problem Solving & Reasoning (2)
+
+═══════════════════════════════════════════════════════════════════════════
+IMPLEMENTATION BENEFITS
+═══════════════════════════════════════════════════════════════════════════
+
+UI/UX Benefits:
+  ✓ Category tabs for organized navigation
+  ✓ Grouped dropdowns by educational domain
+  ✓ Icons for visual identification
+  ✓ Tooltips with "What is this?" descriptions
+  ✓ Skills focus shown on hover/click
+
+Educational Benefits:
+  ✓ Clear learning progression paths
+  ✓ Category-based practice recommendations
+  ✓ Parent/teacher educational context
+  ✓ Curriculum alignment visibility
+
+Technical Benefits:
+  ✓ Category-based filtering in queries
+  ✓ Analytics per category
+  ✓ Progress tracking by domain
+  ✓ Recommendation engine optimization
+
+Future Features:
+  ✓ "Master this category" challenges
+  ✓ Category strength indicators
+  ✓ Personalized category recommendations
+  ✓ Category completion badges
+
+═══════════════════════════════════════════════════════════════════════════
+TYPESCRIPT IMPLEMENTATION
+═══════════════════════════════════════════════════════════════════════════
+
+Key Constants:
+  - QUESTION_TYPE_DISPLAY_NAMES (53 mappings)
+  - QUESTION_CATEGORIES (8 category definitions)
+  - QUESTION_TYPE_TO_CATEGORY (53 type-to-category mappings)
+
+Helper Functions:
+  - getCategoryForQuestionType(dbType: string): string
+  - getCategoryInfo(categoryKey: string): CategoryInfo | null
+  - getQuestionTypesInCategory(categoryKey: string): string[]
+  - getDisplayNameForQuestionType(dbType: string): string
+  - getQuestionTypeFromDisplayName(displayName: string): string
+
+Interface:
+  interface CategoryInfo {
+    name: string;
+    description: string;
+    skillsFocus: string[];
+    icon: string;
+    curriculumStrand: string;
+  }
+
+═══════════════════════════════════════════════════════════════════════════
+
+For complete implementation details, see:
+  - MATH_QUESTION_TYPES_CATEGORIZED.md (Full documentation)
+  - INVESTIGATION_SUMMARY_QUESTION_TYPES.md (Overview)
+  - dev_mmdd_logs/feature-proper-question-types-for-math_01_investigation.md
+
+═══════════════════════════════════════════════════════════════════════════
+Status: ✅ Complete and Ready for Implementation
+Date: October 8, 2025
