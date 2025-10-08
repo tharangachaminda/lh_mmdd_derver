@@ -1,7 +1,7 @@
 import { QuestionService } from './question.service';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-import { LearningStyle } from '../models/question.model';
+import { LearningStyle, QuestionGenerationRequest } from '../models/question.model';
 import { NgZone, ɵNoopNgZone } from '@angular/core'; // Note: ɵNoopNgZone is a private Angular API
 import { provideHttpClient } from '@angular/common/http';
 
@@ -52,12 +52,12 @@ describe('QuestionService', () => {
    */
   it('should send persona data in backend question generation payload', () => {
     // Arrange: Create a sample request with persona
-    const request = {
+    const request: QuestionGenerationRequest = {
       subject: 'mathematics',
       topic: 'Addition',
       difficulty: 'beginner',
       questionType: 'multiple_choice',
-      count: 5,
+      numQuestions: 5,
       persona: {
         userId: 'user1',
         grade: 5,

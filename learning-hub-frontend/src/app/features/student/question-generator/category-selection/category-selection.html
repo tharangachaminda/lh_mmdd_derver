@@ -1,0 +1,76 @@
+<div class="category-selection-container" role="main">
+  <!-- Header Section -->
+  <div class="header">
+    <h2>{{ title }}</h2>
+    <p class="subtitle">{{ subtitle }}</p>
+    <p class="subject-context" *ngIf="selectedSubject">
+      Subject: <strong>{{ selectedSubject | titlecase }}</strong>
+    </p>
+  </div>
+
+  <!-- Categories Grid -->
+  <div class="categories-grid" role="list">
+    <mat-card
+      *ngFor="let category of categories"
+      class="category-card"
+      [attr.data-category]="category.key"
+      matRipple
+      [matRippleColor]="'rgba(25, 118, 210, 0.1)'"
+      (click)="onCategorySelect(category.key)"
+      (keydown.enter)="onCategorySelect(category.key)"
+      (keydown.space)="onCategorySelect(category.key); $event.preventDefault()"
+      tabindex="0"
+      role="listitem"
+      [attr.aria-label]="
+        'Select ' + category.name + ' category. ' + getProgressPercentage(category) + '% complete'
+      "
+    >
+      <mat-card-content>
+        <!-- Category Icon -->
+        <div class="category-icon">
+          <mat-icon [attr.aria-label]="category.name + ' icon'">{{ category.icon }}</mat-icon>
+        </div>
+
+        <!-- Category Content -->
+        <div class="category-content">
+          <h3 class="category-name">{{ category.name }}</h3>
+          <p class="category-description">{{ category.description }}</p>
+
+          <!-- Skills Focus as Chips -->
+          <div
+            class="skills-container"
+            *ngIf="category.skillsFocus && category.skillsFocus.length > 0"
+          >
+            <mat-chip-set aria-label="Skills focus">
+              <mat-chip
+                *ngFor="let skill of category.skillsFocus"
+                class="skill-chip"
+                [attr.aria-label]="skill"
+              >
+                {{ skill }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+
+          <!-- Progress Indicator with Material Progress Bar -->
+          <div class="progress-indicator" *ngIf="category.progress">
+            <mat-progress-bar
+              mode="determinate"
+              [value]="getProgressPercentage(category)"
+              [attr.aria-label]="getProgressPercentage(category) + '% progress'"
+            ></mat-progress-bar>
+            <span class="progress-text" aria-live="polite">
+              {{ getProgressPercentage(category) }}% complete
+            </span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="categories.length === 0" role="status">
+    <mat-icon class="empty-icon">category</mat-icon>
+    <p>No categories available at this time.</p>
+  </div>
+</div>

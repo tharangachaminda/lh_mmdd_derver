@@ -39,6 +39,29 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/student/dashboard/dashboard').then((m) => m.Dashboard),
       },
+      // Phase 5: Question Generator - New multi-step flow
+      {
+        path: 'question-generator/select-subject',
+        loadComponent: () =>
+          import('./features/student/question-generator/subject-selection/subject-selection').then(
+            (m) => m.SubjectSelectionComponent
+          ),
+      },
+      {
+        path: 'question-generator/categories',
+        loadComponent: () =>
+          import(
+            './features/student/question-generator/category-selection/category-selection'
+          ).then((m) => m.CategorySelectionComponent),
+      },
+      {
+        path: 'question-generator/types',
+        loadComponent: () =>
+          import('./features/student/question-generator/type-selection/type-selection').then(
+            (m) => m.TypeSelectionComponent
+          ),
+      },
+      // Existing question generator (persona, generating, questions, results steps)
       {
         path: 'question-generator',
         loadComponent: () =>

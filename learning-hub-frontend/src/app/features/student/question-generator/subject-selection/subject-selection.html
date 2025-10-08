@@ -1,0 +1,30 @@
+<div class="subject-selection-container" role="main">
+  <header class="header">
+    <h1 class="title">{{ title }}</h1>
+    <p class="subtitle">Choose a subject to start generating personalized questions</p>
+  </header>
+
+  <div class="subjects-grid" role="list">
+    <mat-card
+      *ngFor="let subject of subjects"
+      class="subject-card"
+      [attr.data-subject]="subject.key"
+      [attr.aria-label]="'Select ' + subject.name + ' subject'"
+      role="listitem"
+      tabindex="0"
+      matRipple
+      [matRippleColor]="'rgba(25, 118, 210, 0.1)'"
+      (click)="onSubjectSelect(subject.key)"
+      (keydown.enter)="onSubjectSelect(subject.key)"
+      (keydown.space)="onSubjectSelect(subject.key); $event.preventDefault()"
+    >
+      <mat-card-content class="card-content">
+        <div class="subject-icon" [style.color]="subject.color">
+          <mat-icon [fontIcon]="subject.icon" aria-hidden="true"></mat-icon>
+        </div>
+        <h2 class="subject-name">{{ subject.name }}</h2>
+        <p class="subject-description">{{ subject.description }}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
