@@ -172,7 +172,7 @@ export class TypeSelectionComponent implements OnInit {
    * @example
    * ```typescript
    * proceedToPersonaForm();
-   * // Navigates to: /student/question-generator/persona
+   * // Navigates to: /student/question-generator
    * // Query params: ?subject=mathematics&category=number-operations&types=ADDITION,SUBTRACTION
    * // Emits: ['ADDITION', 'SUBTRACTION'] via typesSelected EventEmitter
    * ```
@@ -181,8 +181,8 @@ export class TypeSelectionComponent implements OnInit {
     // Emit selection event
     this.typesSelected.emit(this.selectedTypes);
 
-    // Navigate to persona form with all context
-    this.router.navigate(['/student/question-generator/persona'], {
+    // Navigate to main question generator (persona step) with all context
+    this.router.navigate(['/student/question-generator'], {
       queryParams: {
         subject: this.selectedSubject,
         category: this.selectedCategory,

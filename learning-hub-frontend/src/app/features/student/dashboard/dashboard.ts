@@ -55,9 +55,10 @@ export class Dashboard implements OnInit {
   }
 
   /**
-   * Navigate to AI Question Generator
+   * Navigate to AI Question Generator (Phase 5: Updated to new multi-step flow)
+   * Starts at subject selection view
    */
   startQuestionGenerator(): void {
-    this.router.navigate(['/student/question-generator']);
+    this.router.navigate(['/student/question-generator/select-subject']);
   }
 }
