@@ -383,9 +383,17 @@ export class AIEnhancedQuestionsService {
             // This replaces the simulated vector relevance calculation
 
             // Basic HTTP client for OpenSearch connection
-            const opensearchUrl =
-                process.env.OPENSEARCH_NODE || "http://localhost:9200";
+            // Force HTTP for local development to avoid SSL issues
+            let opensearchUrl = process.env.OPENSEARCH_NODE || "http://localhost:9200";
+            
+            // Ensure we're using HTTP (not HTTPS) for localhost
+            if (opensearchUrl.includes("localhost") || opensearchUrl.includes("127.0.0.1")) {
+                opensearchUrl = opensearchUrl.replace("https://", "http://");
+            }
+            
             const auth = Buffer.from("admin:admin").toString("base64");
+
+            console.log(`🔍 Connecting to OpenSearch at: ${opensearchUrl}`);
 
             // Test connection to OpenSearch
             const healthResponse = await fetch(
@@ -453,8 +461,17 @@ export class AIEnhancedQuestionsService {
                 console.warn("⚠️  Vector search failed, using fallback score");
                 return 0.75;
             }
-        } catch (error) {
-            console.warn("⚠️  Vector search error:", error);
+        } catch (error: any) {
+            // Handle SSL/TLS errors specifically
+            if (error.code === 'ERR_SSL_WRONG_VERSION_NUMBER' || 
+                error.cause?.code === 'ERR_SSL_WRONG_VERSION_NUMBER') {
+                console.warn("⚠️  SSL Error: OpenSearch appears to be running on HTTP, not HTTPS.");
+                console.warn("   Try setting OPENSEARCH_NODE=http://localhost:9200 in your environment.");
+            } else if (error.code === 'ECONNREFUSED') {
+                console.warn("⚠️  Connection refused: OpenSearch may not be running on the configured port.");
+            } else {
+                console.warn("⚠️  Vector search error:", error.message || error);
+            }
             return 0.65; // Error fallback score
         }
     }
@@ -973,7 +990,10 @@ export class AIEnhancedQuestionsService {
                 (correctAnswer - 2).toString(), // Subtracted too much
                 (correctAnswer + 1).toString(), // Off by one
             ];
-        } else if (topicLower.includes("multiplication") || topicLower.includes("multiply")) {
+        } else if (
+            topicLower.includes("multiplication") ||
+            topicLower.includes("multiply")
+        ) {
             // Multiplication: common misconceptions
             const factor = correctAnswer > 20 ? 5 : 2;
             options = [
@@ -982,7 +1002,7 @@ export class AIEnhancedQuestionsService {
                 (correctAnswer + factor).toString(), // Off by one factor (other direction)
                 (correctAnswer * 2).toString().substring(0, 2), // Used addition instead of multiplication (if small)
             ];
-            
+
             // Ensure distinct options
             if (new Set(options).size < 4) {
                 options = [
@@ -992,7 +1012,10 @@ export class AIEnhancedQuestionsService {
                     (correctAnswer + 2).toString(),
                 ];
             }
-        } else if (topicLower.includes("division") || topicLower.includes("divide")) {
+        } else if (
+            topicLower.includes("division") ||
+            topicLower.includes("divide")
+        ) {
             // Division: common error patterns
             options = [
                 correctAnswer.toString(),
@@ -1012,7 +1035,7 @@ export class AIEnhancedQuestionsService {
 
         // Ensure no negative options for young learners (grade < 6)
         if (persona.grade < 6) {
-            options = options.map(opt => {
+            options = options.map((opt) => {
                 const num = parseInt(opt, 10);
                 return num < 0 ? "0" : opt;
             });
@@ -1028,7 +1051,11 @@ export class AIEnhancedQuestionsService {
             }
         }
 
-        console.log(`🔢 Generated options for ${topic}: ${uniqueOptions.join(', ')} (correct: ${correctAnswer})`);
+        console.log(
+            `🔢 Generated options for ${topic}: ${uniqueOptions.join(
+                ", "
+            )} (correct: ${correctAnswer})`
+        );
 
         // Shuffle and return first 4
         return this.shuffleArray(uniqueOptions.slice(0, 4));
@@ -1300,7 +1327,9 @@ export class AIEnhancedQuestionsService {
             }
 
             // Handle "product of X and Y"
-            const productMatch = text.match(/product\s+of\s+(\d+)\s+and\s+(\d+)/);
+            const productMatch = text.match(
+                /product\s+of\s+(\d+)\s+and\s+(\d+)/
+            );
             if (productMatch) {
                 const result =
                     parseInt(productMatch[1], 10) *
@@ -1754,16 +1783,22 @@ export class AIEnhancedQuestionsService {
     ): string {
         if (subject === "mathematics") {
             const topicLower = topic.toLowerCase();
-            
+
             // Common names and items for word problems
             const names = ["Alex", "Emma", "Liam", "Maya", "Sam", "Ruby"];
             const name = names[Math.floor(Math.random() * names.length)];
-            
+
             // ADDITION
             if (topicLower.includes("addition")) {
                 const num1 = Math.floor(Math.random() * 12) + 1; // 1-12
                 const num2 = Math.floor(Math.random() * 8) + 1; // 1-8
-                const items = ["stickers", "books", "marbles", "cards", "coins"];
+                const items = [
+                    "stickers",
+                    "books",
+                    "marbles",
+                    "cards",
+                    "coins",
+                ];
                 const item = items[Math.floor(Math.random() * items.length)];
 
                 const templates = [
@@ -1771,7 +1806,7 @@ export class AIEnhancedQuestionsService {
                     `Calculate ${num1} + ${num2}`,
                     `Find the sum of ${num1} and ${num2}`,
                     `${name} has ${num1} ${item}. A friend gives ${name} ${num2} more. How many ${item} does ${name} have now?`,
-                    `If you have ${num1} ${item} and get ${num2} more, how many ${item} do you have?`
+                    `If you have ${num1} ${item} and get ${num2} more, how many ${item} do you have?`,
                 ];
 
                 // Add persona-based word problems
@@ -1788,12 +1823,18 @@ export class AIEnhancedQuestionsService {
 
                 return templates[Math.floor(Math.random() * templates.length)];
             }
-            
+
             // SUBTRACTION
             if (topicLower.includes("subtraction")) {
                 const num1 = Math.floor(Math.random() * 15) + 10; // 10-24 (larger number)
                 const num2 = Math.floor(Math.random() * 8) + 1; // 1-8 (smaller number)
-                const items = ["apples", "cookies", "toys", "pencils", "balloons"];
+                const items = [
+                    "apples",
+                    "cookies",
+                    "toys",
+                    "pencils",
+                    "balloons",
+                ];
                 const item = items[Math.floor(Math.random() * items.length)];
 
                 const templates = [
@@ -1802,7 +1843,7 @@ export class AIEnhancedQuestionsService {
                     `Find the difference between ${num1} and ${num2}`,
                     `${name} has ${num1} ${item}. ${name} gives away ${num2} ${item}. How many ${item} does ${name} have left?`,
                     `If you have ${num1} ${item} and lose ${num2}, how many ${item} do you have?`,
-                    `There were ${num1} ${item} in a box. ${num2} ${item} were taken out. How many ${item} are left in the box?`
+                    `There were ${num1} ${item} in a box. ${num2} ${item} were taken out. How many ${item} are left in the box?`,
                 ];
 
                 if (persona.interests.includes("Sports")) {
@@ -1813,14 +1854,23 @@ export class AIEnhancedQuestionsService {
 
                 return templates[Math.floor(Math.random() * templates.length)];
             }
-            
+
             // MULTIPLICATION
-            if (topicLower.includes("multiplication") || topicLower.includes("multiply")) {
+            if (
+                topicLower.includes("multiplication") ||
+                topicLower.includes("multiply")
+            ) {
                 const num1 = Math.floor(Math.random() * 10) + 2; // 2-11
                 const num2 = Math.floor(Math.random() * 8) + 2; // 2-9
                 const items = ["boxes", "bags", "packs", "groups", "rows"];
                 const item = items[Math.floor(Math.random() * items.length)];
-                const things = ["apples", "cookies", "books", "toys", "stickers"];
+                const things = [
+                    "apples",
+                    "cookies",
+                    "books",
+                    "toys",
+                    "stickers",
+                ];
                 const thing = things[Math.floor(Math.random() * things.length)];
 
                 const templates = [
@@ -1828,8 +1878,14 @@ export class AIEnhancedQuestionsService {
                     `Calculate ${num1} × ${num2}`,
                     `What is ${num1} times ${num2}?`,
                     `Find the product of ${num1} and ${num2}`,
-                    `There are ${num1} ${item} with ${num2} ${thing} in each ${item.slice(0, -1)}. How many ${thing} are there in total?`,
-                    `${name} has ${num1} ${item} of ${thing}. Each ${item.slice(0, -1)} contains ${num2} ${thing}. How many ${thing} does ${name} have altogether?`
+                    `There are ${num1} ${item} with ${num2} ${thing} in each ${item.slice(
+                        0,
+                        -1
+                    )}. How many ${thing} are there in total?`,
+                    `${name} has ${num1} ${item} of ${thing}. Each ${item.slice(
+                        0,
+                        -1
+                    )} contains ${num2} ${thing}. How many ${thing} does ${name} have altogether?`,
                 ];
 
                 if (persona.interests.includes("Sports")) {
@@ -1840,9 +1896,12 @@ export class AIEnhancedQuestionsService {
 
                 return templates[Math.floor(Math.random() * templates.length)];
             }
-            
+
             // DIVISION
-            if (topicLower.includes("division") || topicLower.includes("divide")) {
+            if (
+                topicLower.includes("division") ||
+                topicLower.includes("divide")
+            ) {
                 const num2 = Math.floor(Math.random() * 6) + 2; // 2-7 (divisor)
                 const num1 = num2 * (Math.floor(Math.random() * 8) + 2); // Ensure even division
                 const items = ["cookies", "apples", "pencils", "toys", "cards"];
@@ -1854,7 +1913,7 @@ export class AIEnhancedQuestionsService {
                     `What is ${num1} divided by ${num2}?`,
                     `${name} has ${num1} ${item}. ${name} wants to share them equally among ${num2} friends. How many ${item} does each friend get?`,
                     `If you divide ${num1} ${item} into ${num2} equal groups, how many ${item} are in each group?`,
-                    `There are ${num1} ${item}. If ${num2} people share them equally, how many ${item} does each person get?`
+                    `There are ${num1} ${item}. If ${num2} people share them equally, how many ${item} does each person get?`,
                 ];
 
                 return templates[Math.floor(Math.random() * templates.length)];
