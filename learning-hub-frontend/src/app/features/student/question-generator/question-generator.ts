@@ -27,6 +27,8 @@ import {
   GeneratedQuestion,
   StudentPersona,
   QuestionSession,
+  QualityMetrics, // Phase 1: Import quality metrics
+  AgentMetrics, // Phase 1: Import agent metrics
 } from '../../../core/models/question.model';
 
 export { LearningStyle };
@@ -150,13 +152,10 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     'Recognition',
   ];
 
-  // AI Quality Metrics
-  qualityMetrics: {
-    vectorRelevanceScore: number;
-    agenticValidationScore: number;
-    personalizationScore: number;
-  } | null = null;
-  showAIMetrics = false;
+  // Phase 1: AI Quality Metrics Integration
+  qualityMetrics: QualityMetrics | null = null;
+  agentMetrics: AgentMetrics | null = null;
+  showAIMetrics = false; // Toggle for showing/hiding AI metrics section
 
   // Available options
   subjects: string[] = []; // Will be loaded from backend
@@ -430,6 +429,16 @@ export class QuestionGenerator implements OnInit, OnDestroy {
           this.currentSession.questions = response.data.questions;
           this.currentStep = QuestionGeneratorStep.QUESTIONS;
           // ...existing code...
+
+          // Phase 1: Capture AI quality metrics and agent metrics
+          this.qualityMetrics = response.metrics || null;
+          this.agentMetrics = response.agentMetrics || null;
+
+          console.log('✅ Phase 1: AI Metrics captured:', {
+            qualityMetrics: this.qualityMetrics,
+            agentMetrics: this.agentMetrics,
+          });
+
           // Minimal fix: ensure first question is displayed
           this.currentQuestionIndex = 0;
           this.currentQuestion = this.currentSession.questions[0] || null;
@@ -554,6 +563,38 @@ export class QuestionGenerator implements OnInit, OnDestroy {
    */
   toggleAIMetrics(): void {
     this.showAIMetrics = !this.showAIMetrics;
+  }
+
+  /**
+   * Calculate overall quality score from all metrics
+   * Returns weighted average: 30% relevance, 40% validation, 30% personalization
+   */
+  getOverallQualityScore(): number {
+    if (!this.qualityMetrics) return 0;
+
+    const weights = {
+      relevance: 0.3,
+      validation: 0.4,
+      personalization: 0.3,
+    };
+
+    return (
+      this.qualityMetrics.vectorRelevanceScore * weights.relevance +
+      this.qualityMetrics.agenticValidationScore * weights.validation +
+      this.qualityMetrics.personalizationScore * weights.personalization
+    );
+  }
+
+  /**
+   * Get student-friendly description of overall quality
+   */
+  getOverallQualityDescription(): string {
+    const score = this.getOverallQualityScore();
+    if (score >= 0.9) return 'Outstanding! These questions are perfect for you.';
+    if (score >= 0.8) return 'Excellent! High quality questions matched to your level.';
+    if (score >= 0.7) return 'Very Good! These questions suit your learning needs.';
+    if (score >= 0.6) return 'Good! Solid questions for your practice.';
+    return 'Fair. Questions generated successfully.';
   }
 
   /**

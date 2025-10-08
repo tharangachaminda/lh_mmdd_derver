@@ -212,71 +212,70 @@
         (click)="toggleAIMetrics()"
         [class.expanded]="showAIMetrics"
       >
-        <span class="ai-icon">🤖</span>
-        <span>AI Enhancement Metrics</span>
+        <span class="ai-icon">✨</span>
+        <span>Question Quality</span>
         <span class="toggle-icon" [class.rotated]="showAIMetrics">▼</span>
       </button>
 
       @if (showAIMetrics) {
       <div class="ai-metrics-content">
-        <div class="metrics-grid">
-          <div class="metric-item">
-            <div class="metric-label">Vector Database Relevance</div>
-            <div
-              class="metric-value"
-              [class]="getQualityColorClass(qualityMetrics.vectorRelevanceScore)"
-            >
-              {{ (qualityMetrics.vectorRelevanceScore * 100).toFixed(1) }}%
-            </div>
-            <div class="metric-description">
-              {{ getQualityDescription(qualityMetrics.vectorRelevanceScore) }}
-            </div>
+        <!-- Overall Quality Score (Prominent Display) -->
+        <div class="overall-quality-card">
+          <div class="overall-score-badge" [class]="getQualityColorClass(getOverallQualityScore())">
+            <div class="score-value">{{ (getOverallQualityScore() * 100).toFixed(0) }}%</div>
+            <div class="score-label">Overall Quality</div>
           </div>
-
-          <div class="metric-item">
-            <div class="metric-label">Multi-Agent Validation</div>
+          <div class="overall-quality-progress">
             <div
-              class="metric-value"
-              [class]="getQualityColorClass(qualityMetrics.agenticValidationScore)"
-            >
-              {{ (qualityMetrics.agenticValidationScore * 100).toFixed(1) }}%
-            </div>
-            <div class="metric-description">
-              {{ getQualityDescription(qualityMetrics.agenticValidationScore) }}
-            </div>
+              class="overall-progress-fill"
+              [style.width.%]="getOverallQualityScore() * 100"
+              [class]="getQualityColorClass(getOverallQualityScore())"
+            ></div>
           </div>
-
-          <div class="metric-item">
-            <div class="metric-label">Personalization Score</div>
-            <div
-              class="metric-value"
-              [class]="getQualityColorClass(qualityMetrics.personalizationScore)"
-            >
-              {{ (qualityMetrics.personalizationScore * 100).toFixed(1) }}%
-            </div>
-            <div class="metric-description">
-              {{ getQualityDescription(qualityMetrics.personalizationScore) }}
-            </div>
-          </div>
+          <p class="overall-quality-message">{{ getOverallQualityDescription() }}</p>
         </div>
 
-        <div class="ai-explanation">
-          <p><strong>🧠 How AI Enhanced Your Questions:</strong></p>
-          <ul>
-            <li>
-              <strong>Vector Database:</strong> Found similar high-quality questions for context and
-              variety
-            </li>
-            <li>
-              <strong>Multi-Agent System:</strong> Validated mathematical accuracy and pedagogical
-              soundness
-            </li>
-            <li>
-              <strong>Personalization Engine:</strong> Adapted content to your learning style and
-              interests
-            </li>
-          </ul>
-        </div>
+        <!-- Technical Details (Collapsed by default) -->
+        <details class="technical-details">
+          <summary class="details-toggle">
+            <span>View detailed scores</span>
+          </summary>
+
+          <div class="details-content">
+            <h4 class="details-title">How we calculated this:</h4>
+            <div class="metrics-grid">
+              <div class="metric-item-simple">
+                <span class="metric-simple-label">📚 Content Match:</span>
+                <span class="metric-simple-value"
+                  >{{ (qualityMetrics.vectorRelevanceScore * 100).toFixed(0) }}%</span
+                >
+              </div>
+              <div class="metric-item-simple">
+                <span class="metric-simple-label">✅ Accuracy:</span>
+                <span class="metric-simple-value"
+                  >{{ (qualityMetrics.agenticValidationScore * 100).toFixed(0) }}%</span
+                >
+              </div>
+              <div class="metric-item-simple">
+                <span class="metric-simple-label">🎯 Personalization:</span>
+                <span class="metric-simple-value"
+                  >{{ (qualityMetrics.personalizationScore * 100).toFixed(0) }}%</span
+                >
+              </div>
+            </div>
+
+            <p class="details-explanation">
+              <small>
+                <strong>Content Match:</strong> How well the questions align with your learning
+                level.<br />
+                <strong>Accuracy:</strong> Questions are mathematically correct and
+                age-appropriate.<br />
+                <strong>Personalization:</strong> Questions are tailored to your interests and
+                learning style.
+              </small>
+            </p>
+          </div>
+        </details>
       </div>
       }
     </div>

@@ -383,9 +383,21 @@ export class AIEnhancedQuestionsService {
             // This replaces the simulated vector relevance calculation
 
             // Basic HTTP client for OpenSearch connection
-            const opensearchUrl =
+            // Force HTTP for local development to avoid SSL issues
+            let opensearchUrl =
                 process.env.OPENSEARCH_NODE || "http://localhost:9200";
+
+            // Ensure we're using HTTP (not HTTPS) for localhost
+            if (
+                opensearchUrl.includes("localhost") ||
+                opensearchUrl.includes("127.0.0.1")
+            ) {
+                opensearchUrl = opensearchUrl.replace("https://", "http://");
+            }
+
             const auth = Buffer.from("admin:admin").toString("base64");
+
+            console.log(`🔍 Connecting to OpenSearch at: ${opensearchUrl}`);
 
             // Test connection to OpenSearch
             const healthResponse = await fetch(
@@ -453,8 +465,28 @@ export class AIEnhancedQuestionsService {
                 console.warn("⚠️  Vector search failed, using fallback score");
                 return 0.75;
             }
-        } catch (error) {
-            console.warn("⚠️  Vector search error:", error);
+        } catch (error: any) {
+            // Handle SSL/TLS errors specifically
+            if (
+                error.code === "ERR_SSL_WRONG_VERSION_NUMBER" ||
+                error.cause?.code === "ERR_SSL_WRONG_VERSION_NUMBER"
+            ) {
+                console.warn(
+                    "⚠️  SSL Error: OpenSearch appears to be running on HTTP, not HTTPS."
+                );
+                console.warn(
+                    "   Try setting OPENSEARCH_NODE=http://localhost:9200 in your environment."
+                );
+            } else if (error.code === "ECONNREFUSED") {
+                console.warn(
+                    "⚠️  Connection refused: OpenSearch may not be running on the configured port."
+                );
+            } else {
+                console.warn(
+                    "⚠️  Vector search error:",
+                    error.message || error
+                );
+            }
             return 0.65; // Error fallback score
         }
     }
@@ -934,7 +966,7 @@ export class AIEnhancedQuestionsService {
 
     /**
      * Generate smart multiple choice options that include the calculated correct answer.
-     * Simple logic: Add correct answer + 3 close numbers, then shuffle.
+     * Creates plausible distractors based on operation type and correct answer magnitude.
      *
      * @param {string} subject - Academic subject
      * @param {string} topic - Specific topic within the subject
@@ -948,25 +980,100 @@ export class AIEnhancedQuestionsService {
         persona: IStudentPersona,
         correctAnswer: number | null
     ): string[] {
-        if (
-            subject === "mathematics" &&
-            topic.toLowerCase().includes("addition") &&
-            correctAnswer !== null
-        ) {
-            // Simple logic: correct answer + 3 close numbers
-            const options = [
-                correctAnswer.toString(), // Correct answer
-                (correctAnswer - 2).toString(), // 2 less
-                (correctAnswer + 2).toString(), // 2 more
-                (correctAnswer + 4).toString(), // 4 more
-            ];
-
-            // Shuffle and return
-            return this.shuffleArray(options);
+        // If no correct answer calculated, return fallback
+        if (correctAnswer === null || subject !== "mathematics") {
+            return ["Option A", "Option B", "Option C", "Option D"];
         }
 
-        // Fallback for non-math questions
-        return ["Option A", "Option B", "Option C", "Option D"];
+        const topicLower = topic.toLowerCase();
+        let options: string[] = [];
+
+        // Generate appropriate distractors based on operation type
+        if (topicLower.includes("addition")) {
+            // Addition: off by small amounts
+            options = [
+                correctAnswer.toString(),
+                (correctAnswer - 2).toString(),
+                (correctAnswer + 2).toString(),
+                (correctAnswer + 4).toString(),
+            ];
+        } else if (topicLower.includes("subtraction")) {
+            // Subtraction: common error patterns
+            options = [
+                correctAnswer.toString(),
+                (correctAnswer + 2).toString(), // Forgot to subtract
+                (correctAnswer - 2).toString(), // Subtracted too much
+                (correctAnswer + 1).toString(), // Off by one
+            ];
+        } else if (
+            topicLower.includes("multiplication") ||
+            topicLower.includes("multiply")
+        ) {
+            // Multiplication: common misconceptions
+            const factor = correctAnswer > 20 ? 5 : 2;
+            options = [
+                correctAnswer.toString(),
+                (correctAnswer - factor).toString(), // Off by one factor
+                (correctAnswer + factor).toString(), // Off by one factor (other direction)
+                (correctAnswer * 2).toString().substring(0, 2), // Used addition instead of multiplication (if small)
+            ];
+
+            // Ensure distinct options
+            if (new Set(options).size < 4) {
+                options = [
+                    correctAnswer.toString(),
+                    (correctAnswer - 1).toString(),
+                    (correctAnswer + 1).toString(),
+                    (correctAnswer + 2).toString(),
+                ];
+            }
+        } else if (
+            topicLower.includes("division") ||
+            topicLower.includes("divide")
+        ) {
+            // Division: common error patterns
+            options = [
+                correctAnswer.toString(),
+                (correctAnswer + 1).toString(), // Off by one
+                (correctAnswer * 2).toString(), // Multiplied instead of divided
+                (correctAnswer - 1).toString(), // Off by one (other direction)
+            ];
+        } else {
+            // Generic mathematics: small variations
+            options = [
+                correctAnswer.toString(),
+                (correctAnswer - 2).toString(),
+                (correctAnswer + 2).toString(),
+                (correctAnswer + 4).toString(),
+            ];
+        }
+
+        // Ensure no negative options for young learners (grade < 6)
+        if (persona.grade < 6) {
+            options = options.map((opt) => {
+                const num = parseInt(opt, 10);
+                return num < 0 ? "0" : opt;
+            });
+        }
+
+        // Ensure all options are unique
+        const uniqueOptions = Array.from(new Set(options));
+        while (uniqueOptions.length < 4) {
+            const randomOffset = Math.floor(Math.random() * 5) + 1;
+            const newOption = (correctAnswer + randomOffset).toString();
+            if (!uniqueOptions.includes(newOption)) {
+                uniqueOptions.push(newOption);
+            }
+        }
+
+        console.log(
+            `🔢 Generated options for ${topic}: ${uniqueOptions.join(
+                ", "
+            )} (correct: ${correctAnswer})`
+        );
+
+        // Shuffle and return first 4
+        return this.shuffleArray(uniqueOptions.slice(0, 4));
     }
 
     /**
@@ -1211,58 +1318,175 @@ export class AIEnhancedQuestionsService {
 
             const text = questionText.toLowerCase();
 
-            // 1. Handle direct addition (5 + 3, 15+7, etc.) and "Calculate X + Y"
+            // 1. MULTIPLICATION: Handle × symbol, times, product
+            const multiplicationMatch = text.match(/(\d+)\s*[×x*]\s*(\d+)/);
+            if (multiplicationMatch) {
+                const result =
+                    parseInt(multiplicationMatch[1], 10) *
+                    parseInt(multiplicationMatch[2], 10);
+                console.log(
+                    `🔢 Parsed multiplication: ${multiplicationMatch[1]} × ${multiplicationMatch[2]} = ${result}`
+                );
+                return result;
+            }
+
+            // Handle "X times Y" format
+            const timesMatch = text.match(/(\d+)\s+times\s+(\d+)/);
+            if (timesMatch) {
+                const result =
+                    parseInt(timesMatch[1], 10) * parseInt(timesMatch[2], 10);
+                console.log(
+                    `🔢 Parsed times: ${timesMatch[1]} times ${timesMatch[2]} = ${result}`
+                );
+                return result;
+            }
+
+            // Handle "product of X and Y"
+            const productMatch = text.match(
+                /product\s+of\s+(\d+)\s+and\s+(\d+)/
+            );
+            if (productMatch) {
+                const result =
+                    parseInt(productMatch[1], 10) *
+                    parseInt(productMatch[2], 10);
+                console.log(
+                    `🔢 Parsed product: product of ${productMatch[1]} and ${productMatch[2]} = ${result}`
+                );
+                return result;
+            }
+
+            // Handle multiplication word problems (groups, each, total)
+            const multiplyWordMatch = text.match(
+                /(\d+)\s+(?:boxes|bags|packs|groups|rows).*?(\d+)\s+(?:apples|cookies|books|toys|stickers|things|items).*?(?:in each|per|in total|altogether)/
+            );
+            if (multiplyWordMatch) {
+                const result =
+                    parseInt(multiplyWordMatch[1], 10) *
+                    parseInt(multiplyWordMatch[2], 10);
+                console.log(
+                    `🔢 Parsed multiplication word problem: ${multiplyWordMatch[1]} × ${multiplyWordMatch[2]} = ${result}`
+                );
+                return result;
+            }
+
+            // 2. DIVISION: Handle ÷ symbol, divided by
+            const divisionMatch = text.match(/(\d+)\s*[÷/]\s*(\d+)/);
+            if (divisionMatch) {
+                const result =
+                    parseInt(divisionMatch[1], 10) /
+                    parseInt(divisionMatch[2], 10);
+                console.log(
+                    `🔢 Parsed division: ${divisionMatch[1]} ÷ ${divisionMatch[2]} = ${result}`
+                );
+                return result;
+            }
+
+            // Handle "X divided by Y"
+            const dividedByMatch = text.match(/(\d+)\s+divided\s+by\s+(\d+)/);
+            if (dividedByMatch) {
+                const result =
+                    parseInt(dividedByMatch[1], 10) /
+                    parseInt(dividedByMatch[2], 10);
+                console.log(
+                    `🔢 Parsed divided by: ${dividedByMatch[1]} divided by ${dividedByMatch[2]} = ${result}`
+                );
+                return result;
+            }
+
+            // Handle division word problems (share, equally, each)
+            const divisionWordMatch = text.match(
+                /(\d+)\s+(?:cookies|apples|pencils|toys|cards|items).*?(?:share|divide|split).*?(?:among|between|into)\s+(\d+)/
+            );
+            if (divisionWordMatch) {
+                const result =
+                    parseInt(divisionWordMatch[1], 10) /
+                    parseInt(divisionWordMatch[2], 10);
+                console.log(
+                    `🔢 Parsed division word problem: ${divisionWordMatch[1]} ÷ ${divisionWordMatch[2]} = ${result}`
+                );
+                return result;
+            }
+
+            // 3. SUBTRACTION: Handle - symbol, difference
+            const subtractionMatch = text.match(/(\d+)\s*[-−–]\s*(\d+)/);
+            if (subtractionMatch) {
+                const result =
+                    parseInt(subtractionMatch[1], 10) -
+                    parseInt(subtractionMatch[2], 10);
+                console.log(
+                    `🔢 Parsed subtraction: ${subtractionMatch[1]} - ${subtractionMatch[2]} = ${result}`
+                );
+                return result;
+            }
+
+            // Handle "difference between X and Y"
+            const differenceMatch = text.match(
+                /difference\s+between\s+(\d+)\s+and\s+(\d+)/
+            );
+            if (differenceMatch) {
+                const result =
+                    parseInt(differenceMatch[1], 10) -
+                    parseInt(differenceMatch[2], 10);
+                console.log(
+                    `🔢 Parsed difference: difference between ${differenceMatch[1]} and ${differenceMatch[2]} = ${result}`
+                );
+                return result;
+            }
+
+            // Handle subtraction word problems (gives away, loses, left)
+            const subtractionWordMatch = text.match(
+                /(?:has|have|had|were)\s+(\d+).*?(?:gives away|gives|lose|loses|taken out|left with).*?(\d+)/
+            );
+            if (subtractionWordMatch) {
+                const result =
+                    parseInt(subtractionWordMatch[1], 10) -
+                    parseInt(subtractionWordMatch[2], 10);
+                console.log(
+                    `🔢 Parsed subtraction word problem: ${subtractionWordMatch[1]} - ${subtractionWordMatch[2]} = ${result}`
+                );
+                return result;
+            }
+
+            // 4. ADDITION: Handle + symbol, sum
             const additionMatch = text.match(/(\d+)\s*\+\s*(\d+)/);
             if (additionMatch) {
                 const result =
                     parseInt(additionMatch[1], 10) +
                     parseInt(additionMatch[2], 10);
                 console.log(
-                    `Parsed addition: ${additionMatch[1]} + ${additionMatch[2]} = ${result}`
+                    `🔢 Parsed addition: ${additionMatch[1]} + ${additionMatch[2]} = ${result}`
                 );
                 return result;
             }
 
-            // 2. Handle "Find the sum of X and Y" expressions
+            // Handle "Find the sum of X and Y"
             const sumMatch = text.match(/sum\s+of\s+(\d+)\s+and\s+(\d+)/);
             if (sumMatch) {
                 const result =
                     parseInt(sumMatch[1], 10) + parseInt(sumMatch[2], 10);
                 console.log(
-                    `Parsed sum expression: sum of ${sumMatch[1]} and ${sumMatch[2]} = ${result}`
+                    `🔢 Parsed sum: sum of ${sumMatch[1]} and ${sumMatch[2]} = ${result}`
                 );
                 return result;
             }
 
-            // 3. Handle word problems with addition context
+            // Handle addition word problems (more, additional, altogether)
             const additionWordMatch = text.match(
-                /(?:have|has|scored|got|received|earned)\s+(\d+).*?(?:get|gets|give|gives|more|additional|extra|then|scored|received|earned).*?(\d+)/
+                /(?:have|has|scored|got|received|earned)\s+(\d+).*?(?:get|gets|give|gives|more|additional|extra|then|scored|received|earned|join).*?(\d+)/
             );
             if (additionWordMatch) {
                 const result =
                     parseInt(additionWordMatch[1], 10) +
                     parseInt(additionWordMatch[2], 10);
                 console.log(
-                    `Parsed word problem (addition): ${additionWordMatch[1]} + ${additionWordMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // 4. Handle direct subtraction (20 - 8, 15-3, etc.)
-            const subtractionMatch = text.match(/(\\d+)\\s*[-−]\\s*(\\d+)/);
-            if (subtractionMatch) {
-                const result =
-                    parseInt(subtractionMatch[1], 10) -
-                    parseInt(subtractionMatch[2], 10);
-                console.log(
-                    `Parsed subtraction: ${subtractionMatch[1]} - ${subtractionMatch[2]} = ${result}`
+                    `🔢 Parsed addition word problem: ${additionWordMatch[1]} + ${additionWordMatch[2]} = ${result}`
                 );
                 return result;
             }
 
             // No mathematical expression found
             console.log(
-                "calculateMathematicalAnswer: No recognized mathematical pattern found in:",
+                "🔧 DEBUG: No recognized mathematical pattern found in:",
                 questionText
             );
             return null;
@@ -1564,6 +1788,7 @@ export class AIEnhancedQuestionsService {
     /**
      * Generate dynamic questions with randomized content and templates
      * GREEN PHASE: Solves question set duplication by creating unique questions per request
+     * REFACTOR: Added support for multiplication, subtraction, and division
      */
     private generateDynamicQuestion(
         subject: string,
@@ -1571,59 +1796,146 @@ export class AIEnhancedQuestionsService {
         difficulty: string,
         persona: IStudentPersona
     ): string {
-        if (
-            subject === "mathematics" &&
-            topic.toLowerCase().includes("addition")
-        ) {
-            // Generate random numbers for math problems
-            const num1 = Math.floor(Math.random() * 12) + 1; // 1-12
-            const num2 = Math.floor(Math.random() * 8) + 1; // 1-8
+        if (subject === "mathematics") {
+            const topicLower = topic.toLowerCase();
 
-            // Random question templates with persona-based contexts
-            const templates = [
-                `What is ${num1} + ${num2}?`,
-                `Calculate ${num1} + ${num2}`,
-                `Find the sum of ${num1} and ${num2}`,
-            ];
-
-            // Add persona-based word problem templates
-            if (persona.interests.includes("Sports")) {
-                templates.push(
-                    `A rugby team scored ${num1} tries in the first half and ${num2} tries in the second half. What was their total score?`,
-                    `In a cricket match, the home team scored ${num1} runs in the first over and ${num2} runs in the second over. How many runs did they score altogether?`
-                );
-            }
-
-            if (persona.interests.includes("Animals")) {
-                templates.push(
-                    `If you have ${num1} kiwi birds and ${num2} more join them, how many kiwi birds are there?`,
-                    `A farmer has ${num1} sheep in one field and ${num2} sheep in another field. How many sheep does the farmer have in total?`
-                );
-            }
-
-            if (persona.interests.includes("Nature")) {
-                templates.push(
-                    `Sarah collected ${num1} shells on the beach and found ${num2} more. How many shells does she have now?`,
-                    `There are ${num1} trees in the park and ${num2} more are planted. How many trees are there altogether?`
-                );
-            }
-
-            // Add variety with different names and contexts
+            // Common names and items for word problems
             const names = ["Alex", "Emma", "Liam", "Maya", "Sam", "Ruby"];
             const name = names[Math.floor(Math.random() * names.length)];
-            const items = ["stickers", "books", "marbles", "cards", "coins"];
-            const item = items[Math.floor(Math.random() * items.length)];
 
-            templates.push(
-                `${name} has ${num1} ${item}. A friend gives ${name} ${num2} more. How many ${item} does ${name} have now?`,
-                `If you have ${num1} ${item} and get ${num2} more, how many ${item} do you have?`
-            );
+            // ADDITION
+            if (topicLower.includes("addition")) {
+                const num1 = Math.floor(Math.random() * 12) + 1; // 1-12
+                const num2 = Math.floor(Math.random() * 8) + 1; // 1-8
+                const items = [
+                    "stickers",
+                    "books",
+                    "marbles",
+                    "cards",
+                    "coins",
+                ];
+                const item = items[Math.floor(Math.random() * items.length)];
 
-            // Randomly select a template
-            return templates[Math.floor(Math.random() * templates.length)];
+                const templates = [
+                    `What is ${num1} + ${num2}?`,
+                    `Calculate ${num1} + ${num2}`,
+                    `Find the sum of ${num1} and ${num2}`,
+                    `${name} has ${num1} ${item}. A friend gives ${name} ${num2} more. How many ${item} does ${name} have now?`,
+                    `If you have ${num1} ${item} and get ${num2} more, how many ${item} do you have?`,
+                ];
+
+                // Add persona-based word problems
+                if (persona.interests.includes("Sports")) {
+                    templates.push(
+                        `A rugby team scored ${num1} tries in the first half and ${num2} tries in the second half. What was their total score?`
+                    );
+                }
+                if (persona.interests.includes("Animals")) {
+                    templates.push(
+                        `If you have ${num1} kiwi birds and ${num2} more join them, how many kiwi birds are there?`
+                    );
+                }
+
+                return templates[Math.floor(Math.random() * templates.length)];
+            }
+
+            // SUBTRACTION
+            if (topicLower.includes("subtraction")) {
+                const num1 = Math.floor(Math.random() * 15) + 10; // 10-24 (larger number)
+                const num2 = Math.floor(Math.random() * 8) + 1; // 1-8 (smaller number)
+                const items = [
+                    "apples",
+                    "cookies",
+                    "toys",
+                    "pencils",
+                    "balloons",
+                ];
+                const item = items[Math.floor(Math.random() * items.length)];
+
+                const templates = [
+                    `What is ${num1} - ${num2}?`,
+                    `Calculate ${num1} - ${num2}`,
+                    `Find the difference between ${num1} and ${num2}`,
+                    `${name} has ${num1} ${item}. ${name} gives away ${num2} ${item}. How many ${item} does ${name} have left?`,
+                    `If you have ${num1} ${item} and lose ${num2}, how many ${item} do you have?`,
+                    `There were ${num1} ${item} in a box. ${num2} ${item} were taken out. How many ${item} are left in the box?`,
+                ];
+
+                if (persona.interests.includes("Sports")) {
+                    templates.push(
+                        `A team had ${num1} points. They lost ${num2} points due to a penalty. What is their score now?`
+                    );
+                }
+
+                return templates[Math.floor(Math.random() * templates.length)];
+            }
+
+            // MULTIPLICATION
+            if (
+                topicLower.includes("multiplication") ||
+                topicLower.includes("multiply")
+            ) {
+                const num1 = Math.floor(Math.random() * 10) + 2; // 2-11
+                const num2 = Math.floor(Math.random() * 8) + 2; // 2-9
+                const items = ["boxes", "bags", "packs", "groups", "rows"];
+                const item = items[Math.floor(Math.random() * items.length)];
+                const things = [
+                    "apples",
+                    "cookies",
+                    "books",
+                    "toys",
+                    "stickers",
+                ];
+                const thing = things[Math.floor(Math.random() * things.length)];
+
+                const templates = [
+                    `What is ${num1} × ${num2}?`,
+                    `Calculate ${num1} × ${num2}`,
+                    `What is ${num1} times ${num2}?`,
+                    `Find the product of ${num1} and ${num2}`,
+                    `There are ${num1} ${item} with ${num2} ${thing} in each ${item.slice(
+                        0,
+                        -1
+                    )}. How many ${thing} are there in total?`,
+                    `${name} has ${num1} ${item} of ${thing}. Each ${item.slice(
+                        0,
+                        -1
+                    )} contains ${num2} ${thing}. How many ${thing} does ${name} have altogether?`,
+                ];
+
+                if (persona.interests.includes("Sports")) {
+                    templates.push(
+                        `A team has ${num1} players. Each player scored ${num2} points. What is the team's total score?`
+                    );
+                }
+
+                return templates[Math.floor(Math.random() * templates.length)];
+            }
+
+            // DIVISION
+            if (
+                topicLower.includes("division") ||
+                topicLower.includes("divide")
+            ) {
+                const num2 = Math.floor(Math.random() * 6) + 2; // 2-7 (divisor)
+                const num1 = num2 * (Math.floor(Math.random() * 8) + 2); // Ensure even division
+                const items = ["cookies", "apples", "pencils", "toys", "cards"];
+                const item = items[Math.floor(Math.random() * items.length)];
+
+                const templates = [
+                    `What is ${num1} ÷ ${num2}?`,
+                    `Calculate ${num1} ÷ ${num2}`,
+                    `What is ${num1} divided by ${num2}?`,
+                    `${name} has ${num1} ${item}. ${name} wants to share them equally among ${num2} friends. How many ${item} does each friend get?`,
+                    `If you divide ${num1} ${item} into ${num2} equal groups, how many ${item} are in each group?`,
+                    `There are ${num1} ${item}. If ${num2} people share them equally, how many ${item} does each person get?`,
+                ];
+
+                return templates[Math.floor(Math.random() * templates.length)];
+            }
         }
 
-        // For other subjects, return generic questions with some variation
+        // For non-math or unrecognized math topics, return generic questions
         const questionStarters = [
             "What is an important concept in",
             "Can you explain how",

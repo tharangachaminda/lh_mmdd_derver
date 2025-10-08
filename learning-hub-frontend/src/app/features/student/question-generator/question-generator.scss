@@ -657,11 +657,165 @@
     background: white;
   }
 
+  // Overall Quality Card (Prominent Display)
+  .overall-quality-card {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    border: 2px solid #bae6fd;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+
+    .overall-score-badge {
+      display: inline-block;
+      margin-bottom: 1rem;
+      
+      .score-value {
+        font-size: 3rem;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 0.25rem;
+        
+        &.text-green-600 { color: #059669; }
+        &.text-blue-600 { color: #2563eb; }
+        &.text-yellow-600 { color: #d97706; }
+        &.text-red-600 { color: #dc2626; }
+      }
+      
+      .score-label {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+    }
+
+    .overall-quality-progress {
+      width: 100%;
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+
+      .overall-progress-fill {
+        height: 100%;
+        transition: width 0.5s ease;
+        border-radius: 6px;
+        
+        &.text-green-600 { background: linear-gradient(90deg, #059669 0%, #10b981 100%); }
+        &.text-blue-600 { background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%); }
+        &.text-yellow-600 { background: linear-gradient(90deg, #d97706 0%, #f59e0b 100%); }
+        &.text-red-600 { background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%); }
+      }
+    }
+
+    .overall-quality-message {
+      font-size: 1.125rem;
+      color: #1e293b;
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  // Technical Details (Collapsed by default)
+  .technical-details {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e2e8f0;
+
+    summary.details-toggle {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      color: #64748b;
+      font-weight: 500;
+      padding: 0.5rem;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: #475569;
+      }
+
+      &::marker,
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &::before {
+        content: '▼';
+        display: inline-block;
+        margin-right: 0.5rem;
+        font-size: 0.75rem;
+        transition: transform 0.2s ease;
+      }
+    }
+
+    &[open] summary.details-toggle::before {
+      transform: rotate(180deg);
+    }
+
+    .details-content {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e2e8f0;
+
+      .details-title {
+        font-size: 0.875rem;
+        color: #475569;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+      }
+    }
+  }
+
   .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .metric-item-simple {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+
+    .metric-simple-label {
+      font-size: 0.875rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .metric-simple-value {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+  }
+
+  .details-explanation {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 6px;
+    line-height: 1.6;
+    color: #475569;
+
+    small {
+      font-size: 0.8125rem;
+    }
   }
 
   .metric-item {
@@ -723,6 +877,8 @@
       }
     }
   }
+
+  // Removed old Phase 1 complex styles - using simplified overall quality display instead
 }
 
 // Responsive AI Metrics
@@ -737,12 +893,23 @@
       gap: 1rem;
     }
 
-    .metric-item {
+    .metric-item,
+    .metric-item-enhanced {
       padding: 0.75rem;
     }
 
     .ai-explanation {
       padding: 0.75rem;
+    }
+
+    .agent-info-card,
+    .quality-checks-card,
+    .workflow-performance-card {
+      padding: 0.75rem;
+    }
+
+    .agent-list {
+      gap: 0.375rem;
     }
   }
 }
