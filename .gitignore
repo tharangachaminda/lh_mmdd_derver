@@ -53,3 +53,4 @@ src/**/*.js.map
 opensearch-data/
 opensearch-logs/
 backups/
+.codei-core
