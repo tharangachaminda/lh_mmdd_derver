@@ -52,7 +52,8 @@ export interface StudentPersona {
 }
 
 /**
- * Question Generation Request
+ * Question Generation Request (Legacy)
+ * @deprecated Use EnhancedQuestionGenerationRequest for new implementations
  */
 export interface QuestionGenerationRequest {
   subject: string; // Changed to string to match backend
@@ -62,6 +63,134 @@ export interface QuestionGenerationRequest {
   numQuestions: number;
   persona: StudentPersona;
 }
+
+/**
+ * Question Format Options
+ */
+export enum QuestionFormat {
+  MULTIPLE_CHOICE = 'multiple_choice',
+  SHORT_ANSWER = 'short_answer',
+  TRUE_FALSE = 'true_false',
+  FILL_IN_BLANK = 'fill_in_blank',
+}
+
+/**
+ * Difficulty Level for Enhanced System
+ */
+export enum EnhancedDifficultyLevel {
+  EASY = 'easy',
+  MEDIUM = 'medium',
+  HARD = 'hard',
+}
+
+/**
+ * Enhanced Question Generation Request
+ *
+ * Supports unified generator with multi-type selection, category context,
+ * and complete persona fields for AI personalization.
+ *
+ * @example
+ * ```typescript
+ * const request: EnhancedQuestionGenerationRequest = {
+ *   subject: 'mathematics',
+ *   category: 'number-operations',
+ *   gradeLevel: 5,
+ *   questionTypes: ['ADDITION', 'SUBTRACTION'],
+ *   questionFormat: QuestionFormat.MULTIPLE_CHOICE,
+ *   difficultyLevel: EnhancedDifficultyLevel.MEDIUM,
+ *   numberOfQuestions: 10,
+ *   learningStyle: LearningStyle.VISUAL,
+ *   interests: ['Sports', 'Gaming', 'Science'],
+ *   motivators: ['Competition', 'Achievement'],
+ *   includeExplanations: true
+ * };
+ * ```
+ */
+export interface EnhancedQuestionGenerationRequest {
+  // Context from navigation
+  subject: string;
+  category: string;
+  gradeLevel: number;
+
+  // Multi-type selection (NEW)
+  questionTypes: string[];
+
+  // Question configuration (NEW)
+  questionFormat: QuestionFormat;
+  difficultyLevel: EnhancedDifficultyLevel;
+  numberOfQuestions: number;
+
+  // Complete Persona Fields for AI Personalization
+  learningStyle: LearningStyle;
+  interests: string[]; // 1-5 interests
+  motivators: string[]; // 1-3 motivators
+
+  // Optional enhancement fields
+  focusAreas?: string[];
+  includeExplanations?: boolean;
+}
+
+/**
+ * Validation constraints for enhanced requests
+ */
+export const ENHANCED_REQUEST_CONSTRAINTS = {
+  QUESTION_TYPES: { MIN: 1, MAX: 5 },
+  INTERESTS: { MIN: 1, MAX: 5 },
+  MOTIVATORS: { MIN: 0, MAX: 3 },
+  NUMBER_OF_QUESTIONS: [5, 10, 15, 20, 25, 30] as const,
+  GRADE_LEVEL: { MIN: 1, MAX: 12 },
+} as const;
+
+/**
+ * Available interest options
+ */
+export const INTEREST_OPTIONS = [
+  'Sports',
+  'Technology',
+  'Arts',
+  'Music',
+  'Nature',
+  'Animals',
+  'Space',
+  'History',
+  'Science',
+  'Reading',
+  'Gaming',
+  'Cooking',
+  'Travel',
+  'Movies',
+  'Fashion',
+  'Cars',
+  'Photography',
+] as const;
+
+/**
+ * Available motivator options
+ */
+export const MOTIVATOR_OPTIONS = [
+  'Competition',
+  'Achievement',
+  'Exploration',
+  'Creativity',
+  'Social Learning',
+  'Personal Growth',
+  'Problem Solving',
+  'Recognition',
+] as const;
+
+/**
+ * Available category options
+ */
+export const CATEGORY_OPTIONS = [
+  'number-operations',
+  'algebraic-thinking',
+  'geometry-spatial',
+  'measurement-data',
+  'fractions-decimals',
+  'problem-solving',
+  'patterns-relationships',
+  'financial-literacy',
+] as const;
 
 /**
  * Generated Question
