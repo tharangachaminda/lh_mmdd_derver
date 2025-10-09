@@ -34,6 +34,33 @@ router.post(
 );
 
 /**
+ * POST /api/questions/generate-enhanced
+ * Generate AI questions with enhanced multi-type support
+ *
+ * Requires: Simple Bearer token authentication
+ * Body: EnhancedQuestionGenerationRequest {
+ *   subject: string,
+ *   category: string,
+ *   gradeLevel: number,
+ *   questionTypes: string[] (1-5 types),
+ *   questionFormat: QuestionFormat,
+ *   difficultyLevel: DifficultyLevel,
+ *   numberOfQuestions: number,
+ *   learningStyle: LearningStyle,
+ *   interests: string[] (1-5),
+ *   motivators: string[] (0-3),
+ *   focusAreas?: string[],
+ *   includeExplanations?: boolean
+ * }
+ */
+router.post(
+    "/generate-enhanced",
+    QuestionsController.authenticateStudent,
+    (req: any, res: any) =>
+        questionsController.generateQuestionsEnhanced(req, res)
+);
+
+/**
  * GET /api/questions/subjects
  * Get available subjects for authenticated student's grade
  *
