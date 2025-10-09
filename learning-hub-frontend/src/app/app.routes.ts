@@ -61,6 +61,14 @@ export const routes: Routes = [
             (m) => m.TypeSelectionComponent
           ),
       },
+      // Session 08: Unified Generator - Combines type selection + persona + configuration
+      {
+        path: 'question-generator/unified',
+        loadComponent: () =>
+          import('./features/student/question-generator/unified-generator/unified-generator').then(
+            (m) => m.UnifiedGeneratorComponent
+          ),
+      },
       // Existing question generator (persona, generating, questions, results steps)
       {
         path: 'question-generator',

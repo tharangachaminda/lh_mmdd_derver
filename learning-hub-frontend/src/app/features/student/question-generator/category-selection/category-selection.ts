@@ -124,20 +124,24 @@ export class CategorySelectionComponent implements OnInit {
   }
 
   /**
-   * Handle category selection and navigate to question type view
+   * Handle category selection and navigate to unified generator
    *
    * @param categoryKey - The selected category identifier (e.g., 'number-operations')
+   *
+   * @remarks
+   * Session 08: Updated to navigate to unified generator instead of separate type selection.
+   * Unified generator combines type selection, persona form, and configuration in one view.
    *
    * @example
    * ```typescript
    * onCategorySelect('number-operations');
-   * // Navigates to: /student/question-generator/types?subject=mathematics&category=number-operations
+   * // Navigates to: /student/question-generator/unified?subject=mathematics&category=number-operations
    * // Emits: 'number-operations' via categorySelected EventEmitter
    * ```
    */
   onCategorySelect(categoryKey: string): void {
     this.categorySelected.emit(categoryKey);
-    this.router.navigate(['/student/question-generator/types'], {
+    this.router.navigate(['/student/question-generator/unified'], {
       queryParams: {
         subject: this.selectedSubject,
         category: categoryKey,

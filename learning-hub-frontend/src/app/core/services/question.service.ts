@@ -16,6 +16,7 @@ import {
   StudentPersona,
   Subject,
   GRADE_TOPICS,
+  EnhancedQuestionGenerationRequest,
 } from '../models/question.model';
 import { environment } from '../../../environments/environment';
 
@@ -70,6 +71,42 @@ export class QuestionService {
       `${environment.apiUrl}/questions/generate`,
       backendRequest
     );
+  }
+
+  /**
+   * Generate enhanced AI questions with multi-type support
+   *
+   * @param {EnhancedQuestionGenerationRequest} request - Enhanced request with multi-type selection and complete persona
+   * @returns {Observable<any>} Observable emitting the enhanced generation response
+   *
+   * @remarks
+   * Calls the enhanced API endpoint: POST /api/questions/generate-enhanced
+   * Supports 1-5 question types, all formats, and complete persona fields
+   *
+   * @example
+   * ```typescript
+   * const request: EnhancedQuestionGenerationRequest = {
+   *   subject: 'mathematics',
+   *   category: 'number-operations',
+   *   gradeLevel: 5,
+   *   questionTypes: ['ADDITION', 'SUBTRACTION'],
+   *   questionFormat: QuestionFormat.MULTIPLE_CHOICE,
+   *   difficultyLevel: EnhancedDifficultyLevel.MEDIUM,
+   *   numberOfQuestions: 10,
+   *   learningStyle: LearningStyle.VISUAL,
+   *   interests: ['Sports', 'Gaming'],
+   *   motivators: ['Competition', 'Achievement']
+   * };
+   * this.questionService.generateQuestionsEnhanced(request).subscribe(response => {
+   *   console.log('Generated:', response.data.questions);
+   * });
+   * ```
+   *
+   * @since Session 08 Phase B1
+   * @version 1.0.0
+   */
+  generateQuestionsEnhanced(request: EnhancedQuestionGenerationRequest): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/questions/generate-enhanced`, request);
   }
 
   /**
