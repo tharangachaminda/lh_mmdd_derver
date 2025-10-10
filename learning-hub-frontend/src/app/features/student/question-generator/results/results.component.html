@@ -1,0 +1,161 @@
+<!-- Answer Validation Results -->
+<div class="results-container">
+  <!-- No Results Message -->
+  @if (!hasValidationResult()) {
+  <mat-card class="no-results-card">
+    <mat-card-content>
+      <mat-icon class="warning-icon">warning</mat-icon>
+      <h2>No Results Available</h2>
+      <p>We couldn't find any validation results. Please try submitting your answers again.</p>
+      <button mat-raised-button color="primary" (click)="tryAgain()">
+        <span>Try Again</span>
+      </button>
+    </mat-card-content>
+  </mat-card>
+  }
+
+  <!-- Results Display -->
+  @if (hasValidationResult() && validationResult) {
+
+  <!-- Overall Score Card -->
+  <mat-card
+    class="score-card"
+    [ngClass]="'performance-' + getPerformanceColor(validationResult.percentageScore)"
+  >
+    <mat-card-header>
+      <mat-card-title>
+        <span class="emoji">{{ getPerformanceEmoji(validationResult.percentageScore) }}</span>
+        <span>Your Results</span>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="score-display">
+        <div class="percentage">
+          {{ formatPercentage(validationResult.percentageScore) }}
+        </div>
+        <div class="score-fraction">
+          {{ validationResult.totalScore }} / {{ validationResult.maxScore }} points
+        </div>
+      </div>
+
+      <mat-progress-bar
+        mode="determinate"
+        [value]="validationResult.percentageScore"
+        [ngClass]="'progress-' + getPerformanceColor(validationResult.percentageScore)"
+      ></mat-progress-bar>
+
+      <div class="overall-feedback">
+        <p>{{ validationResult.overallFeedback }}</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Strengths Card -->
+  @if (hasStrengths()) {
+  <mat-card class="strengths-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="success-icon">check_circle</mat-icon>
+        <span>Your Strengths</span>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="chips-container">
+        @for (strength of validationResult.strengths; track strength) {
+        <mat-chip-option class="strength-chip" selected>
+          <mat-icon>star</mat-icon>
+          {{ strength }}
+        </mat-chip-option>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+  }
+
+  <!-- Areas for Improvement Card -->
+  @if (hasImprovements()) {
+  <mat-card class="improvements-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="info-icon">lightbulb</mat-icon>
+        <span>Areas to Practice</span>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="chips-container">
+        @for (improvement of validationResult.areasForImprovement; track improvement) {
+        <mat-chip-option class="improvement-chip" selected>
+          <mat-icon>trending_up</mat-icon>
+          {{ improvement }}
+        </mat-chip-option>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+  }
+
+  <!-- Question-by-Question Breakdown -->
+  <mat-card class="questions-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>assignment</mat-icon>
+        <span>Question-by-Question Breakdown</span>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="questions-list">
+        @for (question of validationResult.questions; track question.questionId; let i = $index) {
+        <div class="question-item" [ngClass]="'score-' + getScoreColor(question.score)">
+          <div class="question-header">
+            <div class="question-number">Q{{ i + 1 }}</div>
+            <div class="question-score">
+              <mat-icon [ngClass]="'icon-' + getScoreColor(question.score)">
+                {{ question.isCorrect ? 'check_circle' : 'cancel' }}
+              </mat-icon>
+              <span class="score-text">{{ question.score }}/{{ question.maxScore }}</span>
+            </div>
+          </div>
+
+          <div class="question-content">
+            <div class="question-text"><strong>Question:</strong> {{ question.questionText }}</div>
+            <div class="student-answer">
+              <strong>Your Answer:</strong> {{ question.studentAnswer }}
+            </div>
+            <div class="feedback" [ngClass]="'feedback-' + getScoreColor(question.score)">
+              <mat-icon>{{ question.isCorrect ? 'thumb_up' : 'info' }}</mat-icon>
+              <span>{{ question.feedback }}</span>
+            </div>
+          </div>
+        </div>
+
+        @if (i < validationResult.questions.length - 1) {
+        <mat-divider></mat-divider>
+        } }
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Action Buttons -->
+  <div class="actions-container">
+    <button mat-stroked-button (click)="goToDashboard()">
+      <mat-icon>home</mat-icon>
+      <span>Dashboard</span>
+    </button>
+
+    <button mat-stroked-button color="primary" (click)="tryAgain()">
+      <mat-icon>refresh</mat-icon>
+      <span>Try Again</span>
+    </button>
+
+    <button mat-raised-button color="primary" (click)="generateNewQuestions()">
+      <mat-icon>add</mat-icon>
+      <span>New Questions</span>
+    </button>
+  </div>
+
+  }
+</div>

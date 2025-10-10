@@ -1,0 +1,247 @@
+<!-- 
+  Unified Generator Template
+  Phase B2 - Material Design Implementation
+  Session 08 - TN-FEATURE-NEW-QUESTION-GENERATION-UI
+-->
+
+<div class="unified-generator-container">
+  <!-- Header Section -->
+  <mat-card class="header-card">
+    <mat-card-header>
+      <mat-card-title>
+        <h1 class="page-title">
+          <mat-icon>auto_awesome</mat-icon>
+          AI Question Generator
+        </h1>
+      </mat-card-title>
+      <mat-card-subtitle>
+        {{ selectedSubject | titlecase }} - {{ selectedCategory | titlecase }}
+      </mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <!-- Main Form Container -->
+  <div class="form-sections">
+    <!-- Section 1: Question Type Selection -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>checklist</mat-icon>
+          Question Types
+        </mat-card-title>
+        <mat-card-subtitle>
+          Select 1-5 types ({{ getSelectedTypesCount() }}/5 selected)
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="types-grid">
+          <mat-chip-listbox>
+            @for (type of questionTypes; track type.dbType) {
+            <mat-chip-option
+              [selected]="isTypeSelected(type.dbType)"
+              [disabled]="!isTypeSelected(type.dbType) && !canSelectMoreTypes()"
+              (click)="toggleTypeSelection(type.dbType)"
+              [class.selected]="isTypeSelected(type.dbType)"
+            >
+              {{ type.displayName }}
+            </mat-chip-option>
+            }
+          </mat-chip-listbox>
+        </div>
+
+        @if (selectedTypes.length === 0) {
+        <p class="validation-hint error">Please select at least 1 question type</p>
+        } @if (!canSelectMoreTypes()) {
+        <p class="validation-hint warning">Maximum 5 types selected</p>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section 2: Question Configuration -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>settings</mat-icon>
+          Question Configuration
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="config-grid config-grid-two-column">
+          <!-- Note: Question Format removed - Phase A6 uses SHORT_ANSWER only -->
+
+          <!-- Difficulty Level -->
+          <mat-form-field appearance="outline">
+            <mat-label>Difficulty Level</mat-label>
+            <mat-select [(ngModel)]="difficultyLevel">
+              @for (level of availableDifficulties; track level.value) {
+              <mat-option [value]="level.value">
+                {{ level.label }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-icon matPrefix>trending_up</mat-icon>
+          </mat-form-field>
+
+          <!-- Number of Questions -->
+          <mat-form-field appearance="outline">
+            <mat-label>Number of Questions</mat-label>
+            <mat-select [(ngModel)]="numberOfQuestions">
+              @for (count of availableQuestionCounts; track count) {
+              <mat-option [value]="count"> {{ count }} Questions </mat-option>
+              }
+            </mat-select>
+            <mat-icon matPrefix>numbers</mat-icon>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section 3: Learning Style -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>psychology</mat-icon>
+          Learning Style
+        </mat-card-title>
+        <mat-card-subtitle>How do you learn best?</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Select Your Learning Style</mat-label>
+          <mat-select [(ngModel)]="learningStyle">
+            @for (style of availableLearningStyles; track style.value) {
+            <mat-option [value]="style.value">
+              {{ style.label }}
+            </mat-option>
+            }
+          </mat-select>
+          <mat-icon matPrefix>school</mat-icon>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section 4: Interests -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>favorite</mat-icon>
+          Your Interests
+        </mat-card-title>
+        <mat-card-subtitle>
+          Select 1-5 interests ({{ getSelectedInterestsCount() }}/5 selected)
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="interests-grid">
+          <mat-chip-listbox>
+            @for (interest of availableInterests; track interest) {
+            <mat-chip-option
+              [selected]="isInterestSelected(interest)"
+              [disabled]="!isInterestSelected(interest) && !canSelectMoreInterests()"
+              (click)="toggleInterest(interest)"
+              [class.selected]="isInterestSelected(interest)"
+            >
+              {{ interest }}
+            </mat-chip-option>
+            }
+          </mat-chip-listbox>
+        </div>
+
+        @if (!hasMinimumInterests()) {
+        <p class="validation-hint error">Please select at least 1 interest</p>
+        } @if (!canSelectMoreInterests()) {
+        <p class="validation-hint warning">Maximum 5 interests selected</p>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section 5: Motivators (Optional) -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>emoji_events</mat-icon>
+          What Motivates You?
+        </mat-card-title>
+        <mat-card-subtitle>
+          Optional - Select up to 3 ({{ getSelectedMotivatorsCount() }}/3 selected)
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="motivators-grid">
+          <mat-chip-listbox>
+            @for (motivator of availableMotivators; track motivator) {
+            <mat-chip-option
+              [selected]="isMotivatorSelected(motivator)"
+              [disabled]="!isMotivatorSelected(motivator) && !canSelectMoreMotivators()"
+              (click)="toggleMotivator(motivator)"
+              [class.selected]="isMotivatorSelected(motivator)"
+            >
+              {{ motivator }}
+            </mat-chip-option>
+            }
+          </mat-chip-listbox>
+        </div>
+
+        @if (!canSelectMoreMotivators()) {
+        <p class="validation-hint warning">Maximum 3 motivators selected</p>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button mat-stroked-button color="accent" (click)="goBack()" [disabled]="isGenerating">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Categories
+    </button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="generateQuestions()"
+      [disabled]="!isFormValid() || isGenerating"
+      class="generate-button"
+    >
+      @if (isGenerating) {
+      <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+      <span>Generating...</span>
+      } @else {
+      <ng-container>
+        <mat-icon>auto_awesome</mat-icon>
+        <span>Generate Questions</span>
+      </ng-container>
+      }
+    </button>
+  </div>
+
+  <!-- Form Validation Summary -->
+  @if (!isFormValid() && !isGenerating) {
+  <mat-card class="validation-summary error">
+    <mat-card-content>
+      <mat-icon>error_outline</mat-icon>
+      <div class="validation-messages">
+        <p><strong>Please complete the following:</strong></p>
+        <ul>
+          @if (selectedTypes.length === 0) {
+          <li>Select at least 1 question type</li>
+          } @if (!hasMinimumInterests()) {
+          <li>Select at least 1 interest</li>
+          } @if (selectedTypes.length > 5) {
+          <li>Select no more than 5 question types</li>
+          } @if (selectedInterests.length > 5) {
+          <li>Select no more than 5 interests</li>
+          } @if (selectedMotivators.length > 3) {
+          <li>Select no more than 3 motivators</li>
+          }
+        </ul>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  }
+</div>

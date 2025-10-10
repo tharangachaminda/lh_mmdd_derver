@@ -321,14 +321,20 @@
         }
 
         <!-- Text Answer Input -->
-        @if (currentQuestion.questionType !== 'multiple_choice') {
+        @if (currentQuestion.questionType !== 'multiple_choice' || isShortAnswerMode) {
         <div class="answer-input">
           <textarea
             [(ngModel)]="userAnswer"
+            (ngModelChange)="onAnswerChange()"
             placeholder="Type your answer here..."
             class="answer-textarea"
           >
           </textarea>
+          @if (isShortAnswerMode) {
+          <p class="answer-hint">
+            <small>✏️ Your answer is saved automatically. You can review it later.</small>
+          </p>
+          }
         </div>
         }
 
@@ -362,6 +368,65 @@
         </div>
       </div>
 
+      <!-- PHASE A6.2: Submit All Answers (Short-Answer Mode) -->
+      @if (isShortAnswerMode) {
+      <div
+        class="submit-all-section"
+        style="
+          margin: 2rem 0;
+          padding: 1.5rem;
+          border: 2px solid #4caf50;
+          border-radius: 8px;
+          background: #f1f8e9;
+        "
+      >
+        <div class="submission-progress" style="margin-bottom: 1rem">
+          <p class="progress-label" style="font-size: 1.1rem; margin-bottom: 0.5rem">
+            <strong>Progress:</strong> {{ getAnsweredCount() }} /
+            {{ currentSession?.questions?.length || 0 }} questions answered
+          </p>
+          <div
+            class="progress-bar"
+            style="height: 12px; background: #e0e0e0; border-radius: 6px; overflow: hidden"
+          >
+            <div
+              class="progress-fill"
+              style="
+                height: 100%;
+                background: linear-gradient(90deg, #4caf50, #66bb6a);
+                transition: width 0.3s ease;
+              "
+              [style.width.%]="
+                (getAnsweredCount() / (currentSession?.questions?.length || 1)) * 100
+              "
+            ></div>
+          </div>
+        </div>
+
+        <button
+          mat-raised-button
+          color="primary"
+          class="submit-all-btn"
+          style="width: 100%; padding: 1rem; font-size: 1.1rem"
+          (click)="submitAllAnswers()"
+          [disabled]="!allQuestionsAnswered() || isSubmittingAnswers"
+        >
+          @if (isSubmittingAnswers) { ⏳ Validating Answers... } @else if (allQuestionsAnswered()) {
+          ✅ Submit All Answers for Review } @else { ✏️ Answer All Questions First ({{
+            getAnsweredCount()
+          }}/{{ currentSession?.questions?.length || 0 }}) }
+        </button>
+
+        @if (!allQuestionsAnswered()) {
+        <p class="validation-hint" style="margin-top: 1rem; color: #f57c00; text-align: center">
+          <small>⚠️ Please answer all questions before submitting for AI validation.</small>
+        </p>
+        }
+      </div>
+      }
+
+      <!-- Original Question Actions (Legacy Mode or Individual Submit) -->
+      @if (!isShortAnswerMode) {
       <div class="question-actions">
         @if (currentQuestion.hints.length > 0) {
         <button
@@ -381,6 +446,7 @@
           {{ loading ? 'Submitting...' : 'Submit Answer' }}
         </button>
       </div>
+      }
 
       <!-- Hint Display -->
       @if (showHint && currentQuestion.hints.length > 0) {

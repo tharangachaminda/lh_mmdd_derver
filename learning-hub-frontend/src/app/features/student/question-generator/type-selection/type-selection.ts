@@ -166,14 +166,18 @@ export class TypeSelectionComponent implements OnInit {
   }
 
   /**
-   * Navigate to persona form with selected types
-   * Passes subject, category, and selected types as query params
+   * Navigate to unified generator with selected types
+   * Passes subject and category as query params (Session 08 integration)
+   *
+   * @remarks
+   * Updated in Session 08 to navigate to unified generator instead of old question generator.
+   * Unified generator combines type selection + persona + configuration in single view.
    *
    * @example
    * ```typescript
    * proceedToPersonaForm();
-   * // Navigates to: /student/question-generator
-   * // Query params: ?subject=mathematics&category=number-operations&types=ADDITION,SUBTRACTION
+   * // Navigates to: /student/question-generator/unified
+   * // Query params: ?subject=mathematics&category=number-operations
    * // Emits: ['ADDITION', 'SUBTRACTION'] via typesSelected EventEmitter
    * ```
    */
@@ -181,12 +185,12 @@ export class TypeSelectionComponent implements OnInit {
     // Emit selection event
     this.typesSelected.emit(this.selectedTypes);
 
-    // Navigate to main question generator (persona step) with all context
-    this.router.navigate(['/student/question-generator'], {
+    // Session 08: Navigate to unified generator (combines type selection + persona + config)
+    // The unified generator will handle type selection, format, difficulty, and persona in one view
+    this.router.navigate(['/student/question-generator/unified'], {
       queryParams: {
         subject: this.selectedSubject,
         category: this.selectedCategory,
-        types: this.selectedTypes.join(','),
       },
     });
   }

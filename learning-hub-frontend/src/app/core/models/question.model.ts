@@ -52,7 +52,8 @@ export interface StudentPersona {
 }
 
 /**
- * Question Generation Request
+ * Question Generation Request (Legacy)
+ * @deprecated Use EnhancedQuestionGenerationRequest for new implementations
  */
 export interface QuestionGenerationRequest {
   subject: string; // Changed to string to match backend
@@ -62,6 +63,158 @@ export interface QuestionGenerationRequest {
   numQuestions: number;
   persona: StudentPersona;
 }
+
+/**
+ * Question Format Options
+ */
+export enum QuestionFormat {
+  MULTIPLE_CHOICE = 'multiple_choice',
+  SHORT_ANSWER = 'short_answer',
+  TRUE_FALSE = 'true_false',
+  FILL_IN_BLANK = 'fill_in_blank',
+}
+
+/**
+ * Difficulty Level for Enhanced System
+ */
+export enum EnhancedDifficultyLevel {
+  EASY = 'easy',
+  MEDIUM = 'medium',
+  HARD = 'hard',
+}
+
+/**
+ * Enhanced Question Generation Request
+ *
+ * Supports unified generator with multi-type selection, category context,
+ * and complete persona fields for AI personalization.
+ *
+ * @example
+ * ```typescript
+ * const request: EnhancedQuestionGenerationRequest = {
+ *   subject: 'mathematics',
+ *   category: 'number-operations',
+ *   gradeLevel: 5,
+ *   questionTypes: ['ADDITION', 'SUBTRACTION'],
+ *   questionFormat: QuestionFormat.MULTIPLE_CHOICE,
+ *   difficultyLevel: EnhancedDifficultyLevel.MEDIUM,
+ *   numberOfQuestions: 10,
+ *   learningStyle: LearningStyle.VISUAL,
+ *   interests: ['Sports', 'Gaming', 'Science'],
+ *   motivators: ['Competition', 'Achievement'],
+ *   includeExplanations: true
+ * };
+ * ```
+ */
+
+/**
+ * Category Metadata Interface
+ *
+ * Rich educational context for question generation. Helps AI generate contextually
+ * appropriate questions by providing the category's educational purpose and learning objectives.
+ *
+ * @interface
+ * @since Phase A4 (E2E Fix)
+ */
+export interface CategoryMetadata {
+  /** Human-readable category name (e.g., 'Number Operations & Arithmetic') */
+  name: string;
+
+  /** Educational purpose of the category */
+  description: string;
+
+  /** Key skills and learning objectives */
+  skillsFocus: string[];
+}
+
+export interface EnhancedQuestionGenerationRequest {
+  // Context from navigation
+  subject: string;
+  category: string;
+  gradeLevel: number;
+
+  // Multi-type selection (NEW)
+  questionTypes: string[];
+
+  // Question configuration (NEW)
+  questionFormat: QuestionFormat;
+  difficultyLevel: EnhancedDifficultyLevel;
+  numberOfQuestions: number;
+
+  // Complete Persona Fields for AI Personalization
+  learningStyle: LearningStyle;
+  interests: string[]; // 1-5 interests
+  motivators: string[]; // 1-3 motivators
+
+  // Optional enhancement fields
+  focusAreas?: string[];
+  includeExplanations?: boolean;
+
+  // E2E Fix (Phase A4): Rich category context for better AI generation
+  categoryMetadata?: CategoryMetadata;
+}
+
+/**
+ * Validation constraints for enhanced requests
+ */
+export const ENHANCED_REQUEST_CONSTRAINTS = {
+  QUESTION_TYPES: { MIN: 1, MAX: 5 },
+  INTERESTS: { MIN: 1, MAX: 5 },
+  MOTIVATORS: { MIN: 0, MAX: 3 },
+  NUMBER_OF_QUESTIONS: [5, 10, 15, 20, 25, 30] as const,
+  GRADE_LEVEL: { MIN: 1, MAX: 12 },
+} as const;
+
+/**
+ * Available interest options
+ */
+export const INTEREST_OPTIONS = [
+  'Sports',
+  'Technology',
+  'Arts',
+  'Music',
+  'Nature',
+  'Animals',
+  'Space',
+  'History',
+  'Science',
+  'Reading',
+  'Gaming',
+  'Cooking',
+  'Travel',
+  'Movies',
+  'Fashion',
+  'Cars',
+  'Photography',
+] as const;
+
+/**
+ * Available motivator options
+ */
+export const MOTIVATOR_OPTIONS = [
+  'Competition',
+  'Achievement',
+  'Exploration',
+  'Creativity',
+  'Social Learning',
+  'Personal Growth',
+  'Problem Solving',
+  'Recognition',
+] as const;
+
+/**
+ * Available category options
+ */
+export const CATEGORY_OPTIONS = [
+  'number-operations',
+  'algebraic-thinking',
+  'geometry-spatial',
+  'measurement-data',
+  'fractions-decimals',
+  'problem-solving',
+  'patterns-relationships',
+  'financial-literacy',
+] as const;
 
 /**
  * Generated Question
@@ -118,6 +271,124 @@ export interface StudentAnswer {
   hintsUsed: number;
   attemptCount: number;
   submittedAt: Date;
+}
+
+/**
+ * Phase A6.2: Answer Submission for Batch Validation
+ *
+ * Represents a batch submission of student answers for AI validation.
+ * Used in short-answer mode where students complete all questions before submitting.
+ *
+ * @interface AnswerSubmission
+ * @since Phase A6.2 (Session 08)
+ *
+ * @example
+ * ```typescript
+ * const submission: AnswerSubmission = {
+ *   sessionId: 'session-123',
+ *   studentId: 'user-456',
+ *   studentEmail: 'student@example.com',
+ *   answers: [
+ *     { questionId: 'q1', questionText: 'What is 5 + 3?', studentAnswer: '8' },
+ *     { questionId: 'q2', questionText: 'What is 10 - 4?', studentAnswer: '6' }
+ *   ],
+ *   submittedAt: new Date()
+ * };
+ * ```
+ */
+export interface AnswerSubmission {
+  /** Session ID from question generation */
+  sessionId: string;
+
+  /** Student's user ID */
+  studentId: string;
+
+  /** Student's email address */
+  studentEmail: string;
+
+  /** Array of question-answer pairs to validate */
+  answers: {
+    questionId: string;
+    questionText: string;
+    studentAnswer: string;
+  }[];
+
+  /** Timestamp when answers were submitted */
+  submittedAt: Date;
+}
+
+/**
+ * Phase A6.2: Validation Result from AI
+ *
+ * Response from AI validation endpoint with detailed feedback for each question.
+ * Includes partial credit scoring (0-10 scale) and constructive feedback.
+ *
+ * @interface ValidationResult
+ * @since Phase A6.2 (Session 08)
+ *
+ * @example
+ * ```typescript
+ * const result: ValidationResult = {
+ *   success: true,
+ *   sessionId: 'session-123',
+ *   totalScore: 85,
+ *   maxScore: 100,
+ *   percentageScore: 85,
+ *   questions: [
+ *     {
+ *       questionId: 'q1',
+ *       questionText: 'What is 5 + 3?',
+ *       studentAnswer: '8',
+ *       score: 10,
+ *       maxScore: 10,
+ *       feedback: 'Correct! Excellent work.',
+ *       isCorrect: true
+ *     }
+ *   ],
+ *   overallFeedback: 'Great job! You demonstrated strong understanding.',
+ *   strengths: ['Accurate calculations', 'Clear explanations'],
+ *   areasForImprovement: ['Try to show your work']
+ * };
+ * ```
+ */
+export interface ValidationResult {
+  /** Indicates if validation was successful */
+  success: boolean;
+
+  /** Session ID for tracking */
+  sessionId: string;
+
+  /** Total score earned (sum of individual question scores) */
+  totalScore: number;
+
+  /** Maximum possible score */
+  maxScore: number;
+
+  /** Percentage score (0-100) */
+  percentageScore: number;
+
+  /** Detailed results for each question */
+  questions: {
+    questionId: string;
+    questionText: string;
+    studentAnswer: string;
+    score: number; // 0-10 scale with partial credit
+    maxScore: number; // Usually 10
+    feedback: string; // Constructive feedback from AI
+    isCorrect: boolean; // True if score >= 8
+  }[];
+
+  /** Overall feedback on performance */
+  overallFeedback: string;
+
+  /** List of strengths identified by AI */
+  strengths: string[];
+
+  /** Areas where student can improve */
+  areasForImprovement: string[];
+
+  /** Optional error message if validation failed */
+  errorMessage?: string;
 }
 
 /**
