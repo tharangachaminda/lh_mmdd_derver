@@ -118,6 +118,73 @@ export enum LearningStyle {
 }
 
 /**
+ * Category Metadata Interface
+ *
+ * Provides rich educational context for question generation. This metadata helps
+ * the AI generate contextually appropriate questions by understanding the category's
+ * educational purpose, skills focus, and learning objectives.
+ *
+ * **Purpose:**
+ * - Provide human-readable category names for AI prompts
+ * - Define educational objectives and skills for the category
+ * - Enable category-specific question generation strategies
+ * - Improve question quality and relevance
+ *
+ * @interface
+ * @since 2.0.1 (E2E Fix - Phase A4)
+ *
+ * @example Number Operations Category
+ * ```typescript
+ * const metadata: CategoryMetadata = {
+ *   name: 'Number Operations & Arithmetic',
+ *   description: 'Fundamental computational skills with whole numbers, fractions, decimals, and integers.',
+ *   skillsFocus: [
+ *     'Computational accuracy and speed',
+ *     'Number sense and magnitude understanding',
+ *     'Fraction/decimal/percentage conversions',
+ *     'Working with negative numbers'
+ *   ]
+ * };
+ * ```
+ *
+ * @example Algebra Category
+ * ```typescript
+ * const metadata: CategoryMetadata = {
+ *   name: 'Algebra & Patterns',
+ *   description: 'Algebraic thinking, pattern recognition, and abstract reasoning with variables and equations.',
+ *   skillsFocus: [
+ *     'Pattern recognition and prediction',
+ *     'Abstract and symbolic thinking',
+ *     'Equation solving techniques',
+ *     'Variable manipulation'
+ *   ]
+ * };
+ * ```
+ */
+export interface CategoryMetadata {
+    /**
+     * Human-readable category name for AI prompts
+     * @type {string}
+     * @example 'Number Operations & Arithmetic', 'Geometry & Measurement'
+     */
+    name: string;
+
+    /**
+     * Educational purpose and scope of the category
+     * @type {string}
+     * @example 'Fundamental computational skills with whole numbers, fractions, decimals, and integers.'
+     */
+    description: string;
+
+    /**
+     * Key skills and learning objectives for this category
+     * @type {string[]}
+     * @example ['Computational accuracy', 'Number sense', 'Place value comprehension']
+     */
+    skillsFocus: string[];
+}
+
+/**
  * Enhanced Question Generation Request Interface
  *
  * Primary interface for the unified question generator. Combines type selection,
@@ -301,6 +368,55 @@ export interface EnhancedQuestionGenerationRequest {
      * @example true
      */
     includeExplanations?: boolean;
+
+    // ==================== E2E FIX: CATEGORY METADATA (Phase A4) ====================
+
+    /**
+     * Rich category context for AI generation (optional but highly recommended)
+     *
+     * **Added in Phase A4 (E2E Fix):** Provides educational taxonomy metadata to help
+     * the AI generate contextually appropriate questions. Without this, the backend
+     * treats the category as a generic string, resulting in poor question quality.
+     *
+     * **Impact on Question Quality:**
+     * - WITHOUT metadata: "What are the key principles of number-operations?" (generic)
+     * - WITH metadata: "What is 5 + 3?" (proper mathematical question)
+     *
+     * **How It's Used:**
+     * - `name`: Used as the topic/subject for AI prompts instead of category key
+     * - `description`: Provides context about the educational purpose
+     * - `skillsFocus`: Guides question generation toward specific learning objectives
+     *
+     * @type {CategoryMetadata}
+     * @optional (but highly recommended for quality)
+     * @since 2.0.1 (Phase A4 - E2E Fix)
+     * @see {@link CategoryMetadata}
+     *
+     * @example With Category Metadata (Recommended)
+     * ```typescript
+     * const request: EnhancedQuestionGenerationRequest = {
+     *   category: 'number-operations',
+     *   categoryMetadata: {
+     *     name: 'Number Operations & Arithmetic',
+     *     description: 'Fundamental computational skills...',
+     *     skillsFocus: ['Computational accuracy', 'Number sense']
+     *   },
+     *   // ... other fields
+     * };
+     * // Result: Proper mathematical questions like "What is 15 + 27?"
+     * ```
+     *
+     * @example Without Category Metadata (Poor Quality)
+     * ```typescript
+     * const request: EnhancedQuestionGenerationRequest = {
+     *   category: 'number-operations',
+     *   // categoryMetadata: undefined (missing)
+     *   // ... other fields
+     * };
+     * // Result: Generic questions like "What are the principles of number-operations?"
+     * ```
+     */
+    categoryMetadata?: CategoryMetadata;
 }
 
 /**

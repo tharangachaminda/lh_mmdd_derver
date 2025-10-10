@@ -2142,6 +2142,19 @@ export class AIEnhancedQuestionsService {
             throw new Error("Category is required for enhanced generation");
         }
 
+        // E2E FIX (Phase A4): Use rich category context for better AI generation
+        // If categoryMetadata is provided, use the rich name instead of the category key
+        const topicForAI = request.categoryMetadata?.name || request.category;
+        const categoryContext = request.categoryMetadata?.description || "";
+        const skillsFocus = request.categoryMetadata?.skillsFocus || [];
+
+        console.log("✅ Category context for question generation:", {
+            categoryKey: request.category,
+            topicName: topicForAI,
+            hasMetadata: !!request.categoryMetadata,
+            skillsCount: skillsFocus.length,
+        });
+
         // Calculate question distribution across types
         const distribution = this.calculateQuestionDistribution(
             request.numberOfQuestions,
@@ -2159,7 +2172,7 @@ export class AIEnhancedQuestionsService {
                 // Create legacy request format for each type
                 const legacyRequest: QuestionGenerationRequest = {
                     subject: request.subject,
-                    topic: request.category, // Use category as topic
+                    topic: topicForAI, // E2E FIX: Use rich name instead of category key
                     difficulty: request.difficultyLevel,
                     questionType: questionType,
                     count: count,

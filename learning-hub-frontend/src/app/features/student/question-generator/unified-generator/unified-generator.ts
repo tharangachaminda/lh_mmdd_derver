@@ -43,6 +43,7 @@ import {
   INTEREST_OPTIONS,
   MOTIVATOR_OPTIONS,
   ENHANCED_REQUEST_CONSTRAINTS,
+  QUESTION_CATEGORIES,
   getQuestionTypesForCategory,
   getDisplayNameForQuestionType,
 } from '../../../../core/models/question.model';
@@ -426,6 +427,9 @@ export class UnifiedGeneratorComponent implements OnInit {
 
     this.isGenerating = true;
 
+    // E2E FIX (Phase A4): Include rich category metadata for better question generation
+    const categoryInfo = QUESTION_CATEGORIES[this.selectedCategory];
+
     const request: EnhancedQuestionGenerationRequest = {
       subject: this.selectedSubject,
       category: this.selectedCategory,
@@ -438,7 +442,21 @@ export class UnifiedGeneratorComponent implements OnInit {
       interests: this.selectedInterests,
       motivators: this.selectedMotivators,
       includeExplanations: true,
+      // E2E FIX: Pass category metadata to backend for contextual question generation
+      categoryMetadata: categoryInfo
+        ? {
+            name: categoryInfo.name,
+            description: categoryInfo.description,
+            skillsFocus: categoryInfo.skillsFocus,
+          }
+        : undefined,
     };
+
+    console.log('📤 Sending enhanced request with category metadata:', {
+      category: request.category,
+      categoryName: request.categoryMetadata?.name,
+      hasMetadata: !!request.categoryMetadata,
+    });
 
     this.questionService.generateQuestionsEnhanced(request).subscribe({
       next: (response: any) => {

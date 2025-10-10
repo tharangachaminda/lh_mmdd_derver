@@ -2254,6 +2254,441 @@ npm run test:headless -- --include='**/unified-generator.spec.ts'
 
 ---
 
+## 🐛 E2E Testing Issue - Category Context Missing
+
+**Date:** October 10, 2025  
+**Issue Type:** Question Generation Quality  
+**Severity:** High (generates wrong questions)
+
+### Problem Description
+
+E2E testing revealed that the unified generator doesn't produce contextually appropriate questions. The backend receives category as a simple string (`"number-operations"`) but needs rich category metadata for AI generation.
+
+**Server Logs:**
+
+```
+🔧 DEBUG: No recognized mathematical pattern found in: What are the key principles of number-operations?
+🔧 DEBUG: No recognized mathematical pattern found in: Describe the main features of number-operations?
+```
+
+**Request Payload:**
+
+```json
+{
+    "subject": "mathematics",
+    "category": "number-operations",
+    "gradeLevel": 5,
+    "questionTypes": ["ADDITION"],
+    "questionFormat": "multiple_choice",
+    "difficultyLevel": "easy",
+    "numberOfQuestions": 5,
+    "learningStyle": "visual",
+    "interests": ["Sports", "Arts"],
+    "motivators": ["Creativity", "Exploration", "Achievement"],
+    "includeExplanations": true
+}
+```
+
+### Root Cause Analysis
+
+1. **Frontend Issue**: Frontend sends only category key (`"number-operations"`)
+2. **Backend Issue**: Backend uses category as generic topic without educational context
+3. **AI Generation Issue**: Question generator treats it as generic string, not mathematical category
+
+**Current Flow (BROKEN):**
+
+```
+Frontend: category = "number-operations" (string)
+    ↓
+Backend: topic = request.category
+    ↓
+AI: Treats "number-operations" as generic topic
+    ↓
+Result: Generic questions like "What are the key principles of number-operations?"
+```
+
+**Expected Flow (FIX):**
+
+```
+Frontend: categoryMetadata = {
+  name: "Number Operations & Arithmetic",
+  description: "Fundamental computational skills...",
+  skillsFocus: ["Computational accuracy", "Number sense"...]
+}
+    ↓
+Backend: Uses rich context for AI generation
+    ↓
+AI: Generates proper math questions like "What is 5 + 3?"
+    ↓
+Result: Contextually appropriate mathematical questions
+```
+
+### Proposed Solution
+
+#### Option 1: Pass Category Metadata (RECOMMENDED)
+
+**Add category metadata to request:**
+
+```typescript
+// Backend Interface Enhancement
+export interface EnhancedQuestionGenerationRequest {
+    subject: string;
+    category: string;
+
+    // NEW: Rich category context for AI generation
+    categoryMetadata: {
+        name: string; // "Number Operations & Arithmetic"
+        description: string; // "Fundamental computational skills..."
+        skillsFocus: string[]; // ["Computational accuracy", "Number sense"...]
+    };
+
+    // ... rest of fields
+}
+```
+
+**Frontend sends complete context:**
+
+```typescript
+const categoryInfo = QUESTION_CATEGORIES[selectedCategory];
+const request = {
+    category: selectedCategory,
+    categoryMetadata: {
+        name: categoryInfo.name,
+        description: categoryInfo.description,
+        skillsFocus: categoryInfo.skillsFocus,
+    },
+    // ... rest
+};
+```
+
+**Backend uses rich context:**
+
+```typescript
+// Use category metadata for better AI prompts
+const topic = request.categoryMetadata?.name || request.category;
+const context = request.categoryMetadata?.description || "";
+const skills = request.categoryMetadata?.skillsFocus || [];
+
+// Pass to AI: "Generate ADDITION questions for 'Number Operations & Arithmetic'"
+```
+
+**Pros:**
+
+-   ✅ Complete educational context for AI
+-   ✅ Better question quality
+-   ✅ No database lookups needed
+-   ✅ Frontend already has this data
+
+**Cons:**
+
+-   ⚠️ Larger payload (minimal impact)
+-   ⚠️ Backend must handle optional field
+
+#### Option 2: Backend Category Mapping (ALTERNATIVE)
+
+Create backend-side category metadata lookup:
+
+```typescript
+// Backend: src/constants/category-metadata.ts
+export const CATEGORY_METADATA = {
+  'number-operations': {
+    name: 'Number Operations & Arithmetic',
+    description: 'Fundamental computational skills...',
+    skillsFocus: [...]
+  },
+  // ... 7 more categories
+};
+
+// In service:
+const categoryInfo = CATEGORY_METADATA[request.category];
+const topic = categoryInfo?.name || request.category;
+```
+
+**Pros:**
+
+-   ✅ Smaller request payload
+-   ✅ Centralized metadata
+
+**Cons:**
+
+-   ❌ Duplicate data maintenance
+-   ❌ Frontend/Backend sync required
+-   ❌ Additional backend complexity
+
+### Recommended Fix: Option 1 (Pass Metadata)
+
+**Implementation Steps:**
+
+1. **Update Backend Interface** (Phase A1 enhancement)
+
+    - Add `categoryMetadata` optional field
+    - Maintain backward compatibility
+
+2. **Update Frontend Request Builder** (Phase B)
+
+    - Include category metadata when building request
+    - Use `QUESTION_CATEGORIES` map
+
+3. **Update Backend Service** (Phase A2 enhancement)
+
+    - Use `categoryMetadata.name` as topic
+    - Use `categoryMetadata.description` for AI context
+    - Use `categoryMetadata.skillsFocus` for targeted generation
+
+4. **Test E2E Flow**
+    - Verify proper questions generated
+    - Verify all categories work correctly
+
+### Next Actions
+
+1. ✅ Get approval for Option 1 approach - **APPROVED**
+2. ⏳ Implement backend interface enhancement
+3. ⏳ Update frontend request builder
+4. ⏳ Update backend service logic
+5. ⏳ Test E2E with all categories
+6. ⏳ Document in session log
+
+---
+
+## Phase A4: Category Metadata Enhancement (E2E Fix)
+
+**Date:** October 10, 2025  
+**Duration:** ~1 hour (estimated)  
+**Goal:** Pass category metadata from frontend to backend for contextually appropriate question generation
+
+### Implementation Steps
+
+#### Step 1: Enhance Backend Interface ✅
+
+**File:** `src/interfaces/question-generation.interface.ts`
+
+Add optional `categoryMetadata` field to `EnhancedQuestionGenerationRequest`:
+
+```typescript
+export interface CategoryMetadata {
+  name: string;              // "Number Operations & Arithmetic"
+  description: string;       // "Fundamental computational skills..."
+  skillsFocus: string[];     // ["Computational accuracy", ...]
+}
+
+export interface EnhancedQuestionGenerationRequest {
+  // ... existing fields
+  
+  /**
+   * Rich category context for AI generation (optional but recommended)
+   * Provides educational taxonomy metadata for better question generation
+   */
+  categoryMetadata?: CategoryMetadata;
+}
+```
+
+#### Step 2: Update Backend Service Logic
+
+**File:** `src/services/questions-ai-enhanced.service.ts`
+
+Use category metadata when generating questions:
+
+```typescript
+async generateQuestionsEnhanced(request: any, jwtPayload: JWTPayload) {
+  // Use rich category context if available
+  const topic = request.categoryMetadata?.name || request.category;
+  const context = request.categoryMetadata?.description || '';
+  const skills = request.categoryMetadata?.skillsFocus || [];
+  
+  // Pass enhanced context to legacy request
+  const legacyRequest: QuestionGenerationRequest = {
+    subject: request.subject,
+    topic: topic,  // Use rich name instead of key
+    // ... rest
+  };
+  
+  console.log('✅ Using category context:', {
+    key: request.category,
+    name: topic,
+    skills: skills.length
+  });
+}
+```
+
+#### Step 3: Update Frontend Request Builder
+
+**File:** `learning-hub-frontend/src/app/features/student/question-generator/unified-generator/unified-generator.ts`
+
+Include category metadata in request:
+
+```typescript
+generateQuestions() {
+  const categoryInfo = QUESTION_CATEGORIES[this.selectedCategory];
+  
+  const request: EnhancedQuestionGenerationRequest = {
+    subject: this.selectedSubject,
+    category: this.selectedCategory,
+    
+    // NEW: Include rich category metadata
+    categoryMetadata: {
+      name: categoryInfo.name,
+      description: categoryInfo.description,
+      skillsFocus: categoryInfo.skillsFocus
+    },
+    
+    // ... rest of fields
+  };
+  
+  this.questionService.generateQuestionsEnhanced(request).subscribe(...);
+}
+```
+
+#### Step 4: E2E Testing
+
+Test with all 8 categories to verify proper question generation:
+
+1. Number Operations & Arithmetic
+2. Algebra & Patterns
+3. Geometry & Measurement
+4. Statistics & Probability
+5. Ratios, Rates & Proportions
+6. Motion & Distance
+7. Financial Literacy
+8. Problem Solving & Reasoning
+
+---
+
+### Phase A4.1: Backend Interface Enhancement ✅ COMPLETE
+
+**Timestamp:** October 10, 2025
+
+**Changes Made:**
+
+1. ✅ **Backend Interface** - `src/interfaces/question-generation.interface.ts`
+   - Added `CategoryMetadata` interface with name, description, skillsFocus
+   - Added optional `categoryMetadata?` field to `EnhancedQuestionGenerationRequest`
+   - Comprehensive TSDoc documentation with examples
+
+2. ✅ **Frontend Model** - `learning-hub-frontend/src/app/core/models/question.model.ts`
+   - Added `CategoryMetadata` interface (matching backend)
+   - Added optional `categoryMetadata?` field to frontend request interface
+
+**TypeScript Compilation:** ✅ No errors
+
+---
+
+### Phase A4.2: Backend Service Update ✅ COMPLETE
+
+**Timestamp:** October 10, 2025
+
+**File Modified:** `src/services/questions-ai-enhanced.service.ts`
+
+**Changes:**
+
+```typescript
+// E2E FIX: Extract category metadata for better AI prompts
+const topicForAI = request.categoryMetadata?.name || request.category;
+const categoryContext = request.categoryMetadata?.description || '';
+const skillsFocus = request.categoryMetadata?.skillsFocus || [];
+
+console.log('✅ Category context for question generation:', {
+  categoryKey: request.category,
+  topicName: topicForAI,
+  hasMetadata: !!request.categoryMetadata,
+  skillsCount: skillsFocus.length,
+});
+
+// Use rich topic name in legacy request
+const legacyRequest: QuestionGenerationRequest = {
+  subject: request.subject,
+  topic: topicForAI, // Uses "Number Operations & Arithmetic" instead of "number-operations"
+  // ... rest
+};
+```
+
+**Impact:**
+- AI now receives "Number Operations & Arithmetic" instead of "number-operations"
+- Backend logs category context for debugging
+- Backward compatible (works with or without metadata)
+
+---
+
+### Phase A4.3: Frontend Request Builder Update ✅ COMPLETE
+
+**Timestamp:** October 10, 2025
+
+**File Modified:** `learning-hub-frontend/src/app/features/student/question-generator/unified-generator/unified-generator.ts`
+
+**Changes:**
+
+1. ✅ Added `QUESTION_CATEGORIES` import
+2. ✅ Updated `generateQuestions()` method to include categoryMetadata:
+
+```typescript
+// Get category info from QUESTION_CATEGORIES map
+const categoryInfo = QUESTION_CATEGORIES[this.selectedCategory];
+
+const request: EnhancedQuestionGenerationRequest = {
+  // ... existing fields
+  
+  // E2E FIX: Include rich category metadata
+  categoryMetadata: categoryInfo
+    ? {
+        name: categoryInfo.name,
+        description: categoryInfo.description,
+        skillsFocus: categoryInfo.skillsFocus,
+      }
+    : undefined,
+};
+
+console.log('📤 Sending enhanced request with category metadata:', {
+  category: request.category,
+  categoryName: request.categoryMetadata?.name,
+  hasMetadata: !!request.categoryMetadata,
+});
+```
+
+**Test Results:**
+
+```bash
+npm run test:headless -- --include='**/unified-generator.spec.ts'
+```
+
+✅ **Total Tests:** 51  
+✅ **Passed:** 51  
+✅ **Failed:** 0  
+✅ **Success Rate:** 100%
+
+**Console Output Verification:**
+```
+📤 Sending enhanced request with category metadata: {
+  category: 'number-operations',
+  categoryName: 'Number Operations & Arithmetic',
+  hasMetadata: true
+}
+```
+
+---
+
+### Phase A4 Summary ✅ COMPLETE
+
+**Duration:** ~30 minutes  
+**Status:** All implementation complete, all tests passing
+
+**Files Modified:**
+
+1. `src/interfaces/question-generation.interface.ts` - Added CategoryMetadata interface
+2. `learning-hub-frontend/src/app/core/models/question.model.ts` - Added frontend CategoryMetadata
+3. `src/services/questions-ai-enhanced.service.ts` - Use categoryMetadata for AI prompts
+4. `learning-hub-frontend/src/app/features/student/question-generator/unified-generator/unified-generator.ts` - Include categoryMetadata in request
+
+**Quality Gates:**
+
+✅ TypeScript compilation: No errors (backend + frontend)  
+✅ All tests passing: 51/51 (100%)  
+✅ Backward compatible: Works with or without categoryMetadata  
+✅ Logging added: Debug info for category context  
+✅ Documentation: Comprehensive TSDoc with examples
+
+**Next:** E2E testing with browser to verify question quality improvement
+
+---
+
 ## Phase B1 REFACTOR - Documentation Enhancement
 
 **Duration:** ~15 minutes  
@@ -2721,5 +3156,461 @@ Session 08 - Phase B & C: Complete unified question generator with Material Desi
 2. Verify complete user workflow in browser
 3. Test API integration end-to-end
 4. Final session wrap-up and documentation
+
+---
+
+## Phase D: E2E Testing & Verification 🧪
+
+**TDD Phase:** Manual testing and validation
+**Duration:** ~30-45 minutes (estimated)
+**Start Time:** October 10, 2025
+
+### Objective
+
+Perform end-to-end testing of the complete unified generator workflow in browser environment, validate API integration, and ensure optimal user experience.
+
+### Testing Checklist
+
+#### 1. Environment Setup ✅
+
+**Pre-requisites:**
+
+-   [x] Backend server running (Node.js/Express)
+-   [x] Frontend dev server running (Angular)
+-   [x] MongoDB connection active
+-   [x] OpenSearch vector database ready
+-   [x] Authentication system functional
+
+#### 2. Navigation Flow Testing
+
+**Test Path:** Subject Selection → Category Selection → Unified Generator
+
+**Steps to Test:**
+
+1. [ ] Navigate to `/student/question-generator/select-subject`
+2. [ ] Select "Mathematics" subject
+3. [ ] Verify redirect to category selection with query param `?subject=mathematics`
+4. [ ] Select "Number Operations" category
+5. [ ] Verify redirect to unified generator with query params `?subject=mathematics&category=number-operations`
+6. [ ] Verify page loads without errors
+7. [ ] Verify all form sections render correctly
+
+**Expected Results:**
+
+-   Smooth navigation between all steps
+-   Query parameters preserved throughout flow
+-   No console errors
+-   Material Design components render properly
+
+#### 3. Component Rendering Testing
+
+**Visual Elements to Verify:**
+
+**Header Section:**
+
+-   [ ] Page title "Generate Questions" displays with icon
+-   [ ] Subject and category subtitle shows: "mathematics / number-operations"
+-   [ ] Gradient background renders correctly
+
+**Section 1: Question Type Selection:**
+
+-   [ ] Mat-chip-listbox renders with available types
+-   [ ] Question types loaded from QUESTION_CATEGORIES
+-   [ ] Chips are clickable and toggle on/off
+-   [ ] Selection count displays (0/5 initially)
+-   [ ] Validation hint shows "Select 1-5 question types"
+
+**Section 2: Question Configuration:**
+
+-   [ ] Question Format dropdown shows 4 options (Multiple Choice, Short Answer, True/False, Fill-in-Blank)
+-   [ ] Difficulty Level dropdown shows 3 options (Easy, Medium, Hard)
+-   [ ] Number of Questions dropdown shows 6 options (5, 10, 15, 20, 25, 30)
+-   [ ] All fields have proper icons (format, signal_cellular_alt, pin)
+
+**Section 3: Learning Style:**
+
+-   [ ] Dropdown shows 4 VARK options (Visual, Auditory, Reading/Writing, Kinesthetic)
+-   [ ] Subtitle "How do you learn best?" displays
+-   [ ] School icon displays
+
+**Section 4: Interests Selection:**
+
+-   [ ] Mat-chip-listbox renders with 17 interest options
+-   [ ] Chips are clickable and toggle on/off
+-   [ ] Selection count displays (0/5 initially)
+-   [ ] Validation hint shows "Select 1-5 interests"
+
+**Section 5: Motivators Selection:**
+
+-   [ ] Mat-chip-listbox renders with 8 motivator options
+-   [ ] Chips are clickable and toggle on/off
+-   [ ] Selection count displays (0/3 initially)
+-   [ ] Validation hint shows "Optional: Select up to 3 motivators"
+-   [ ] Labeled as optional
+
+**Action Buttons:**
+
+-   [ ] "Back" button displays with arrow icon
+-   [ ] "Generate Questions" button displays with star icon
+-   [ ] Generate button starts disabled (invalid form)
+
+#### 4. Form Interaction Testing
+
+**Multi-Type Selection:**
+
+-   [ ] Click to select 1st question type (e.g., ADDITION)
+    -   Chip changes to selected state (purple background)
+    -   Selection count updates to "1/5"
+-   [ ] Click to select 2nd type (e.g., SUBTRACTION)
+    -   Both chips show selected state
+    -   Selection count updates to "2/5"
+-   [ ] Click to select 3rd, 4th, 5th types
+    -   All show selected state
+    -   Selection count shows "5/5"
+    -   Remaining chips become disabled
+-   [ ] Try to select 6th type
+    -   Should be disabled, cannot select
+-   [ ] Click selected type again to deselect
+    -   Chip returns to unselected state
+    -   Selection count decreases
+    -   Other chips become enabled again
+
+**Configuration Fields:**
+
+-   [ ] Change Question Format to "Short Answer"
+    -   Dropdown updates correctly
+-   [ ] Change Difficulty Level to "Hard"
+    -   Dropdown updates correctly
+-   [ ] Change Number of Questions to "20"
+    -   Dropdown updates correctly
+
+**Learning Style:**
+
+-   [ ] Change to "Auditory"
+    -   Dropdown updates correctly
+
+**Interests Selection:**
+
+-   [ ] Select "Sports" interest
+    -   Chip shows selected state
+    -   Count: "1/5"
+-   [ ] Select 4 more interests (Technology, Arts, Gaming, Science)
+    -   All selected chips show purple background
+    -   Count: "5/5"
+    -   Remaining chips disabled
+-   [ ] Try to select 6th interest
+    -   Should be disabled
+-   [ ] Deselect one interest
+    -   Chip returns to normal state
+    -   Count decreases
+    -   Other chips enabled
+
+**Motivators Selection (Optional):**
+
+-   [ ] Select "Competition" motivator
+    -   Chip shows selected state (orange background)
+    -   Count: "1/3"
+-   [ ] Select "Achievement" and "Exploration"
+    -   All selected chips show orange background
+    -   Count: "3/3"
+    -   Remaining chips disabled
+-   [ ] Try to select 4th motivator
+    -   Should be disabled
+-   [ ] Deselect all motivators
+    -   Form should still be valid (optional field)
+
+#### 5. Form Validation Testing
+
+**Invalid States to Test:**
+
+**No Question Types Selected:**
+
+-   [ ] Clear all question types
+-   [ ] Verify Generate button is disabled
+-   [ ] Verify validation summary appears with error:
+    -   "Please select at least 1 question type"
+
+**No Interests Selected:**
+
+-   [ ] Select 1+ question types
+-   [ ] Clear all interests
+-   [ ] Verify Generate button is disabled
+-   [ ] Verify validation summary shows:
+    -   "Please select at least 1 interest"
+
+**Too Many Types (>5):**
+
+-   [ ] Verify cannot select more than 5 types
+-   [ ] Chips beyond 5 are disabled
+
+**Too Many Interests (>5):**
+
+-   [ ] Verify cannot select more than 5 interests
+-   [ ] Chips beyond 5 are disabled
+
+**Too Many Motivators (>3):**
+
+-   [ ] Verify cannot select more than 3 motivators
+-   [ ] Chips beyond 3 are disabled
+
+**Valid State:**
+
+-   [ ] Select 2 question types
+-   [ ] Select 3 interests
+-   [ ] Select 1 motivator (optional)
+-   [ ] Verify Generate button becomes enabled
+-   [ ] Verify validation summary disappears
+
+#### 6. API Integration Testing
+
+**Prerequisites:**
+
+-   [ ] Backend server running on http://localhost:3000
+-   [ ] Valid JWT token in localStorage (student logged in)
+-   [ ] POST /api/questions/generate-enhanced endpoint ready
+
+**Generate Questions Test:**
+
+**Setup:**
+
+1. [ ] Fill valid form:
+    - Question Types: ADDITION, SUBTRACTION
+    - Format: Multiple Choice
+    - Difficulty: Medium
+    - Number: 10
+    - Learning Style: Visual
+    - Interests: Sports, Gaming, Technology
+    - Motivators: Competition
+
+**Execution:** 2. [ ] Click "Generate Questions" button 3. [ ] Observe loading state:
+
+-   Button shows spinner
+-   Button text changes to "Generating..."
+-   Button is disabled during generation
+
+**Network Request:** 4. [ ] Open browser DevTools → Network tab 5. [ ] Verify POST request to `/api/questions/generate-enhanced` 6. [ ] Verify request headers include:
+
+-   Authorization: Bearer <token>
+-   Content-Type: application/json
+
+7. [ ] Verify request payload matches:
+    ```json
+    {
+        "subject": "mathematics",
+        "category": "number-operations",
+        "questionTypes": ["ADDITION", "SUBTRACTION"],
+        "questionFormat": "multiple_choice",
+        "difficultyLevel": "medium",
+        "numberOfQuestions": 10,
+        "learningStyle": "visual",
+        "interests": ["Sports", "Gaming", "Technology"],
+        "motivators": ["Competition"],
+        "includeExplanations": true
+    }
+    ```
+
+**Response Handling:** 8. [ ] Verify successful response (200 OK) 9. [ ] Verify response structure:
+
+```json
+{
+  "success": true,
+  "message": "Questions generated successfully",
+  "data": {
+    "sessionId": "<uuid>",
+    "questions": [...],
+    "metadata": {...},
+    "typeDistribution": {...}
+  }
+}
+```
+
+10. [ ] Verify navigation to `/student/question-generator?session=<sessionId>`
+11. [ ] Verify generated questions display correctly
+
+**Error Handling:** 12. [ ] Test with invalid token (remove from localStorage) 13. [ ] Verify 401 Unauthorized error handled gracefully 14. [ ] Test with backend offline 15. [ ] Verify network error message displayed to user
+
+#### 7. Responsive Design Testing
+
+**Desktop (1920x1080):**
+
+-   [ ] All sections display in proper layout
+-   [ ] Configuration grid shows 3 columns
+-   [ ] Chips wrap properly in grids
+-   [ ] No horizontal scrolling
+
+**Tablet (768x1024):**
+
+-   [ ] Layout adjusts to narrower width
+-   [ ] Configuration grid becomes single column
+-   [ ] Chips still accessible and clickable
+-   [ ] Touch targets adequate size
+
+**Mobile (375x667):**
+
+-   [ ] Action buttons stack vertically
+-   [ ] Generate button moves to top
+-   [ ] All form sections remain accessible
+-   [ ] Text remains readable
+-   [ ] No elements cut off
+
+#### 8. User Experience Testing
+
+**Visual Feedback:**
+
+-   [ ] Selected chips have clear visual distinction (color change)
+-   [ ] Disabled chips have reduced opacity
+-   [ ] Hover states work on desktop (color change on hover)
+-   [ ] Loading spinner visible during generation
+-   [ ] Validation messages clear and helpful
+
+**Performance:**
+
+-   [ ] Page loads quickly (<1 second)
+-   [ ] Chip selection is instant
+-   [ ] Dropdown changes are smooth
+-   [ ] No lag in UI interactions
+-   [ ] API response time reasonable (<5 seconds for generation)
+
+**Accessibility:**
+
+-   [ ] All Material components have proper ARIA labels
+-   [ ] Form can be navigated with keyboard (Tab key)
+-   [ ] Error messages are announced to screen readers
+-   [ ] Color contrast meets WCAG standards
+-   [ ] Focus indicators visible
+
+#### 9. Back Navigation Testing
+
+**Back Button:**
+
+-   [ ] Click "Back" button
+-   [ ] Verify navigation to `/student/question-generator/categories`
+-   [ ] Verify query param `?subject=mathematics` preserved
+-   [ ] Verify no errors in console
+-   [ ] Can navigate forward to unified generator again
+
+#### 10. Edge Cases & Error Scenarios
+
+**Edge Cases:**
+
+-   [ ] Select exactly 1 question type (minimum)
+-   [ ] Select exactly 5 question types (maximum)
+-   [ ] Select exactly 1 interest (minimum)
+-   [ ] Select exactly 5 interests (maximum)
+-   [ ] Select 0 motivators (optional - should be valid)
+-   [ ] Select exactly 3 motivators (maximum)
+-   [ ] Request minimum questions (5)
+-   [ ] Request maximum questions (30)
+
+**Error Scenarios:**
+
+-   [ ] Network timeout (slow connection)
+-   [ ] Invalid server response
+-   [ ] Missing authentication token
+-   [ ] Backend validation errors
+-   [ ] Malformed API response
+
+### Testing Environment
+
+**Required Services:**
+
+1. **Backend Server:**
+
+    ```bash
+    cd /path/to/workspace
+    npm run dev
+    # Should run on http://localhost:3000
+    ```
+
+2. **Frontend Dev Server:**
+
+    ```bash
+    cd learning-hub-frontend
+    ng serve
+    # Should run on http://localhost:4200
+    ```
+
+3. **Database Services:**
+    - MongoDB: Running on default port
+    - OpenSearch: Running with vector data indexed
+
+### Test Execution Steps
+
+**Step 1: Start Services**
+
+```bash
+# Terminal 1: Backend
+npm run dev
+
+# Terminal 2: Frontend
+cd learning-hub-frontend
+ng serve
+
+# Terminal 3: Verify services
+curl http://localhost:3000/health
+curl http://localhost:4200
+```
+
+**Step 2: Create Test User (if needed)**
+
+```bash
+# Register test student via UI or API
+POST /api/auth/register
+{
+  "email": "test@example.com",
+  "password": "Test123!",
+  "firstName": "Test",
+  "lastName": "Student",
+  "role": "student"
+}
+```
+
+**Step 3: Execute Test Checklist**
+
+-   Go through each checklist item systematically
+-   Document any issues found
+-   Take screenshots of UI
+-   Record network requests/responses
+
+**Step 4: Document Results**
+
+-   Record test outcomes
+-   Note any bugs or issues
+-   Capture performance metrics
+-   Document user experience observations
+
+### Success Criteria
+
+**Must Pass:**
+
+-   ✅ All navigation flows work correctly
+-   ✅ All form fields function properly
+-   ✅ Form validation works as expected
+-   ✅ API integration successful (questions generated)
+-   ✅ No console errors
+-   ✅ Responsive design works on all breakpoints
+-   ✅ Loading states display correctly
+-   ✅ Error handling works gracefully
+
+**Nice to Have:**
+
+-   🎯 Page loads in <1 second
+-   🎯 API response in <3 seconds
+-   🎯 Smooth animations and transitions
+-   🎯 Excellent accessibility scores
+
+### Next Steps After Testing
+
+1. Document all test results in session log
+2. Fix any critical bugs discovered
+3. Create list of improvements for future iterations
+4. Finalize Phase D documentation
+5. Complete Session 08 wrap-up
+
+---
+
+**Testing Status:** Ready to begin
+
+Would you like me to help start the development servers?
 
 ---

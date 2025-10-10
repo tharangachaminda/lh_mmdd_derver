@@ -106,6 +106,27 @@ export enum EnhancedDifficultyLevel {
  * };
  * ```
  */
+
+/**
+ * Category Metadata Interface
+ *
+ * Rich educational context for question generation. Helps AI generate contextually
+ * appropriate questions by providing the category's educational purpose and learning objectives.
+ *
+ * @interface
+ * @since Phase A4 (E2E Fix)
+ */
+export interface CategoryMetadata {
+  /** Human-readable category name (e.g., 'Number Operations & Arithmetic') */
+  name: string;
+
+  /** Educational purpose of the category */
+  description: string;
+
+  /** Key skills and learning objectives */
+  skillsFocus: string[];
+}
+
 export interface EnhancedQuestionGenerationRequest {
   // Context from navigation
   subject: string;
@@ -128,6 +149,9 @@ export interface EnhancedQuestionGenerationRequest {
   // Optional enhancement fields
   focusAreas?: string[];
   includeExplanations?: boolean;
+
+  // E2E Fix (Phase A4): Rich category context for better AI generation
+  categoryMetadata?: CategoryMetadata;
 }
 
 /**
