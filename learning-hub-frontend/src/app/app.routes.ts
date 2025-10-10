@@ -69,6 +69,14 @@ export const routes: Routes = [
             (m) => m.UnifiedGeneratorComponent
           ),
       },
+      // Phase A6.5: Results display for AI-validated answers
+      {
+        path: 'question-generator/results',
+        loadComponent: () =>
+          import('./features/student/question-generator/results/results.component').then(
+            (m) => m.ResultsComponent
+          ),
+      },
       // Existing question generator (persona, generating, questions, results steps)
       {
         path: 'question-generator',

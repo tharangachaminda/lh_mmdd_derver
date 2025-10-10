@@ -17,6 +17,8 @@ import {
   Subject,
   GRADE_TOPICS,
   EnhancedQuestionGenerationRequest,
+  AnswerSubmission,
+  ValidationResult,
 } from '../models/question.model';
 import { environment } from '../../../environments/environment';
 
@@ -107,6 +109,121 @@ export class QuestionService {
    */
   generateQuestionsEnhanced(request: EnhancedQuestionGenerationRequest): Observable<any> {
     return this.http.post<any>(`${environment.apiUrl}/questions/generate-enhanced`, request);
+  }
+
+  /**
+   * Validate student answers using AI (Phase A6.2 - Short Answer Mode)
+   *
+   * Submits a batch of student answers to the AI validation endpoint for grading.
+   * The AI provides partial credit scoring (0-10 scale) and detailed constructive feedback.
+   * Results are stored in MongoDB with student tracking.
+   *
+   * @param {AnswerSubmission} submission - Batch of student answers to validate
+   * @returns {Observable<ValidationResult>} Observable emitting validation results with scores and feedback
+   * @throws {Error} If submission is missing required fields (sessionId, studentId, answers)
+   * @throws {Error} If answers array is empty
+   * @throws {Error} If network request fails
+   *
+   * @example
+   * ```typescript
+   * // Collect answers from student
+   * const submission: AnswerSubmission = {
+   *   sessionId: 'session-123',
+   *   studentId: this.currentUser.id,
+   *   studentEmail: this.currentUser.email,
+   *   answers: [
+   *     {
+   *       questionId: 'q1',
+   *       questionText: 'What is 5 + 3?',
+   *       studentAnswer: '8'
+   *     },
+   *     {
+   *       questionId: 'q2',
+   *       questionText: 'Solve: 2x + 5 = 13',
+   *       studentAnswer: 'x = 4'
+   *     }
+   *   ],
+   *   submittedAt: new Date()
+   * };
+   *
+   * // Submit for AI validation
+   * this.questionService.validateAnswers(submission).subscribe({
+   *   next: (result: ValidationResult) => {
+   *     console.log('Total Score:', result.totalScore);
+   *     console.log('Percentage:', result.percentageScore + '%');
+   *
+   *     result.questions.forEach(q => {
+   *       console.log(`Q: ${q.questionText}`);
+   *       console.log(`A: ${q.studentAnswer}`);
+   *       console.log(`Score: ${q.score}/10 - ${q.feedback}`);
+   *     });
+   *
+   *     console.log('Strengths:', result.strengths);
+   *     console.log('Areas to Improve:', result.areasForImprovement);
+   *   },
+   *   error: (err) => {
+   *     console.error('Validation failed:', err);
+   *   }
+   * });
+   * ```
+   *
+   * @remarks
+   * **Validation Process:**
+   * 1. Frontend collects all student answers in short-answer mode
+   * 2. Submits batch to POST /api/questions/validate-answers
+   * 3. Backend AnswerValidationAgent uses LLM (qwen2.5:14b) for grading
+   * 4. AI provides:
+   *    - Partial credit scoring (0-10 per question)
+   *    - Detailed constructive feedback
+   *    - Overall performance analysis
+   *    - Strengths and improvement areas
+   * 5. Results stored in MongoDB (AnswerSubmissionResult model)
+   * 6. Frontend displays results with color-coded scores
+   *
+   * **Scoring Scale:**
+   * - 10: Perfect answer
+   * - 8-9: Mostly correct with minor issues
+   * - 5-7: Partially correct
+   * - 2-4: Significant errors but shows understanding
+   * - 0-1: Incorrect or no understanding
+   *
+   * **Error Handling:**
+   * - Returns `success: false` with `errorMessage` on validation failure
+   * - Network errors propagated through Observable error channel
+   * - Invalid submission data returns 400 Bad Request
+   * - Authentication failures return 401 Unauthorized
+   *
+   * **MongoDB Storage:**
+   * Results stored in `answer_submission_results` collection with:
+   * - Session ID and student ID for tracking
+   * - Complete question-answer-feedback mapping
+   * - Timestamp and quality metrics
+   * - Searchable for progress tracking
+   *
+   * @see AnswerSubmission - Input data structure
+   * @see ValidationResult - Response data structure
+   * @see AnswerValidationAgent - Backend AI validation logic (Phase A6.3)
+   * @see AnswerSubmissionResult - MongoDB model (Phase A6.1)
+   *
+   * @since Phase A6.2 (Session 08)
+   * @version 1.0.0
+   */
+  validateAnswers(submission: AnswerSubmission): Observable<ValidationResult> {
+    // Input validation
+    if (
+      !submission.sessionId ||
+      !submission.studentId ||
+      !submission.answers ||
+      submission.answers.length === 0
+    ) {
+      throw new Error('Invalid submission: sessionId, studentId, and answers are required');
+    }
+
+    // Submit to AI validation endpoint (Phase A6.3 will implement backend)
+    return this.http.post<ValidationResult>(
+      `${environment.apiUrl}/questions/validate-answers`,
+      submission
+    );
   }
 
   /**

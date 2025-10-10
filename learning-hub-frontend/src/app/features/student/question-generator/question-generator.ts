@@ -29,6 +29,8 @@ import {
   QuestionSession,
   QualityMetrics, // Phase 1: Import quality metrics
   AgentMetrics, // Phase 1: Import agent metrics
+  AnswerSubmission, // Phase A6.2: Batch answer submission
+  ValidationResult, // Phase A6.2: AI validation response
 } from '../../../core/models/question.model';
 
 export { LearningStyle };
@@ -55,9 +57,21 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     if (!this.currentSession || !Array.isArray(this.currentSession.questions)) {
       throw new Error('No session or questions available for navigation.');
     }
+
+    // PHASE A6.4: Save current answer before navigating
+    if (this.isShortAnswerMode && this.currentQuestion) {
+      this.studentAnswers.set(this.currentQuestion.id, this.userAnswer);
+    }
+
     if (this.currentQuestionIndex < this.currentSession.questions.length - 1) {
       this.currentQuestionIndex++;
       this.currentQuestion = this.currentSession.questions[this.currentQuestionIndex];
+
+      // PHASE A6.4: Load stored answer for new question
+      if (this.isShortAnswerMode && this.currentQuestion) {
+        this.userAnswer = this.studentAnswers.get(this.currentQuestion.id) || '';
+      }
+
       this.cdr.detectChanges();
     }
     // Optionally: else do nothing (already at last question)
@@ -77,9 +91,21 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     if (!this.currentSession || !Array.isArray(this.currentSession.questions)) {
       throw new Error('No session or questions available for navigation.');
     }
+
+    // PHASE A6.4: Save current answer before navigating
+    if (this.isShortAnswerMode && this.currentQuestion) {
+      this.studentAnswers.set(this.currentQuestion.id, this.userAnswer);
+    }
+
     if (this.currentQuestionIndex > 0) {
       this.currentQuestionIndex--;
       this.currentQuestion = this.currentSession.questions[this.currentQuestionIndex];
+
+      // PHASE A6.4: Load stored answer for new question
+      if (this.isShortAnswerMode && this.currentQuestion) {
+        this.userAnswer = this.studentAnswers.get(this.currentQuestion.id) || '';
+      }
+
       this.cdr.detectChanges();
     }
     // Optionally: else do nothing (already at first question)
@@ -174,6 +200,14 @@ export class QuestionGenerator implements OnInit, OnDestroy {
   questionStartTime = Date.now();
   sessionResults: any = null;
 
+  // PHASE A6.2: Answer collection for short-answer mode
+  /** Flag indicating if in short-answer mode (all questions use text input) */
+  isShortAnswerMode: boolean = false;
+  /** Map of question IDs to student answers */
+  studentAnswers: Map<string, string> = new Map();
+  /** Loading state for answer submission */
+  isSubmittingAnswers: boolean = false;
+
   ngOnInit(): void {
     // ...existing code...
 
@@ -182,6 +216,68 @@ export class QuestionGenerator implements OnInit, OnDestroy {
       console.log('❌ User not authenticated, redirecting to login');
       this.router.navigate(['/auth/login']);
       return;
+    }
+
+    // PHASE A6.3: Check for session in service first (persists across refresh)
+    const existingSession = this.questionService.getCurrentSession();
+    if (existingSession && existingSession.questions.length > 0) {
+      this.isShortAnswerMode = true;
+      this.currentSession = existingSession;
+      this.currentStep = QuestionGeneratorStep.QUESTIONS;
+      this.currentQuestionIndex = 0;
+      this.currentQuestion = this.currentSession.questions[0];
+
+      // PHASE A6.4: Initialize userAnswer from stored answers for first question
+      if (this.currentQuestion) {
+        this.userAnswer = this.studentAnswers.get(this.currentQuestion.id) || '';
+      }
+
+      console.log(
+        '✅ Loaded session from service:',
+        this.currentSession.id,
+        'with',
+        this.currentSession.questions.length,
+        'questions'
+      );
+    }
+    // PHASE A6.2: Fallback to router state (short-answer mode from unified generator)
+    else {
+      const navigation = this.router.getCurrentNavigation();
+      if (navigation?.extras?.state) {
+        const state = navigation.extras.state;
+        if (state['isShortAnswerMode'] && state['questions'] && this.currentUser) {
+          this.isShortAnswerMode = true;
+          const questions = state['questions'] as GeneratedQuestion[];
+          this.currentSession = {
+            id: state['sessionId'] || `session-${Date.now()}`,
+            userId: this.currentUser.id || '',
+            questions: questions,
+            answers: [],
+            startedAt: new Date(),
+            totalScore: 0,
+            maxScore: questions.length * 10, // 10 points per question
+            timeSpentMinutes: 0,
+            subject: this.selectedSubject || 'mathematics',
+            topic: this.selectedTopic || '',
+          };
+          this.currentStep = QuestionGeneratorStep.QUESTIONS;
+          this.currentQuestionIndex = 0;
+          if (this.currentSession && this.currentSession.questions.length > 0) {
+            this.currentQuestion = this.currentSession.questions[0];
+
+            // PHASE A6.4: Initialize userAnswer for first question
+            if (this.currentQuestion) {
+              this.userAnswer = this.studentAnswers.get(this.currentQuestion.id) || '';
+            }
+
+            console.log(
+              '✅ Short-answer mode activated from router state with',
+              this.currentSession.questions.length,
+              'questions'
+            );
+          }
+        }
+      }
     }
 
     this.loadUserData();
@@ -595,6 +691,163 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     if (score >= 0.7) return 'Very Good! These questions suit your learning needs.';
     if (score >= 0.6) return 'Good! Solid questions for your practice.';
     return 'Fair. Questions generated successfully.';
+  }
+
+  // ============================================================================
+  // PHASE A6.2: SHORT-ANSWER MODE WITH ANSWER COLLECTION
+  // ============================================================================
+
+  /**
+   * Track answer change for current question in short-answer mode
+   * Saves answer to studentAnswers Map for batch submission
+   */
+  onAnswerChange(): void {
+    if (this.isShortAnswerMode && this.currentQuestion) {
+      this.studentAnswers.set(this.currentQuestion.id, this.userAnswer);
+      console.log(`📝 Answer saved for question ${this.currentQuestion.id}:`, this.userAnswer);
+    }
+  }
+
+  /**
+   * Check if all questions have been answered
+   * @returns True if all questions have non-empty answers
+   */
+  allQuestionsAnswered(): boolean {
+    if (!this.currentSession) return false;
+
+    for (const question of this.currentSession.questions) {
+      const answer = this.studentAnswers.get(question.id);
+      if (!answer || answer.trim() === '') {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Get count of answered questions
+   * @returns Number of questions with non-empty answers
+   */
+  getAnsweredCount(): number {
+    if (!this.currentSession) return 0;
+
+    let count = 0;
+    for (const question of this.currentSession.questions) {
+      const answer = this.studentAnswers.get(question.id);
+      if (answer && answer.trim() !== '') {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  /**
+   * Phase A6.2.3: Submit all answers for AI validation
+   *
+   * Collects all student answers and submits them to the AI validation endpoint.
+   * Upon successful validation, navigates to results page to display scores and feedback.
+   *
+   * @returns {void}
+   *
+   * @remarks
+   * **Process Flow:**
+   * 1. Validates all questions are answered
+   * 2. Builds AnswerSubmission payload with sessionId, studentId, and answers
+   * 3. Calls QuestionService.validateAnswers() API
+   * 4. On success: Navigate to results page with validation data
+   * 5. On error: Display user-friendly error message
+   *
+   * **Error Handling:**
+   * - Missing answers: Shows "Please answer all questions" error
+   * - Missing session/user: Shows "Session information missing" error
+   * - Network errors: Shows "Failed to submit answers" with retry option
+   * - API errors: Shows error message from server response
+   *
+   * @example
+   * ```typescript
+   * // Called when user clicks "Submit All Answers" button
+   * submitAllAnswers();
+   * // → Validates answers
+   * // → Submits to API
+   * // → Navigates to results on success
+   * ```
+   *
+   * @since Phase A6.2.3 (Session 08)
+   */
+  submitAllAnswers(): void {
+    // Validation: Check all questions answered
+    if (!this.allQuestionsAnswered()) {
+      this.error = 'Please answer all questions before submitting.';
+      return;
+    }
+
+    // Validation: Check session and user information
+    if (!this.currentSession || !this.currentUser) {
+      this.error = 'Session or user information missing. Please try again.';
+      return;
+    }
+
+    // Set loading state
+    this.isSubmittingAnswers = true;
+    this.error = null;
+
+    // Build AnswerSubmission payload
+    const submission: AnswerSubmission = {
+      sessionId: this.currentSession.id,
+      studentId: this.currentUser.id || '',
+      studentEmail: this.currentUser.email || '',
+      answers: this.currentSession.questions.map((q) => ({
+        questionId: q.id,
+        questionText: q.question,
+        studentAnswer: this.studentAnswers.get(q.id) || '',
+      })),
+      submittedAt: new Date(),
+    };
+
+    console.log('📤 Submitting answers for AI validation:', {
+      sessionId: submission.sessionId,
+      studentId: submission.studentId,
+      answersCount: submission.answers.length,
+    });
+
+    // Call AI validation service
+    this.questionService.validateAnswers(submission).subscribe({
+      next: (result: ValidationResult) => {
+        console.log('✅ Validation successful:', {
+          totalScore: result.totalScore,
+          percentage: result.percentageScore,
+          questionsValidated: result.questions.length,
+        });
+
+        // Reset loading state
+        this.isSubmittingAnswers = false;
+        this.error = null;
+
+        // Phase A6.5: Navigate to results page with validation data
+        this.router.navigate(['/student/question-generator/results'], {
+          state: {
+            validationResult: result,
+          },
+        });
+      },
+      error: (err) => {
+        console.error('❌ Validation failed:', err);
+
+        // Reset loading state
+        this.isSubmittingAnswers = false;
+
+        // Display user-friendly error message
+        if (err.status === 401) {
+          this.error = 'Authentication failed. Please log in again.';
+        } else if (err.status === 400) {
+          this.error = err.error?.errorMessage || 'Invalid submission. Please check your answers.';
+        } else if (err.status === 0) {
+          this.error = 'Network error. Please check your connection and try again.';
+        } else {
+          this.error = err.error?.errorMessage || 'Failed to submit answers. Please try again.';
+        }
+      },
+    });
   }
 
   /**

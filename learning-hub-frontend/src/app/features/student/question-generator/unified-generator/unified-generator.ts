@@ -3,16 +3,21 @@
  *
  * Phase B1 GREEN - Implementation
  * Session 08 - TN-FEATURE-NEW-QUESTION-GENERATION-UI
+ * Phase A6 Update - Short Answer Only (2025-10-11)
  *
  * Combines Type Selection + Persona Form + Question Configuration
  * into a single unified interface for multi-type AI question generation.
  *
  * Features:
  * - Multi-type selection (1-5 question types)
- * - All question formats (Multiple Choice, Short Answer, True/False, Fill-in-Blank)
+ * - Short answer format only (Phase A6 - AI validation system)
  * - Complete persona fields (interests, motivators, learning styles)
  * - Form validation with constraints
  * - Integration with enhanced API endpoint
+ *
+ * @remarks
+ * Question format is fixed to SHORT_ANSWER since Phase A6 introduced
+ * AI-validated short answer system with partial credit scoring.
  *
  * @example
  * ```typescript
@@ -35,6 +40,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { QuestionService } from '../../../../core/services/question.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import {
   EnhancedQuestionGenerationRequest,
   QuestionFormat,
@@ -46,6 +52,8 @@ import {
   QUESTION_CATEGORIES,
   getQuestionTypesForCategory,
   getDisplayNameForQuestionType,
+  QuestionSession,
+  GeneratedQuestion,
 } from '../../../../core/models/question.model';
 
 /**
@@ -115,11 +123,11 @@ export class UnifiedGeneratorComponent implements OnInit {
 
   /**
    * Question Configuration
-   * Defines output format and difficulty
+   * Defines difficulty and count (format is always SHORT_ANSWER in Phase A6)
    */
 
-  /** Question format: Multiple Choice, Short Answer, True/False, or Fill-in-Blank */
-  questionFormat: QuestionFormat = QuestionFormat.MULTIPLE_CHOICE;
+  /** Question format: Always SHORT_ANSWER (Phase A6 - AI validation system) */
+  questionFormat: QuestionFormat = QuestionFormat.SHORT_ANSWER;
 
   /** Difficulty level: Easy, Medium, or Hard */
   difficultyLevel: EnhancedDifficultyLevel = EnhancedDifficultyLevel.MEDIUM;
@@ -152,14 +160,6 @@ export class UnifiedGeneratorComponent implements OnInit {
   /** 8 motivator options for engagement (Competition, Achievement, etc.) */
   availableMotivators = Array.from(MOTIVATOR_OPTIONS);
 
-  /** Question format options with labels for dropdown (4 formats) */
-  availableFormats = [
-    { value: QuestionFormat.MULTIPLE_CHOICE, label: 'Multiple Choice' },
-    { value: QuestionFormat.SHORT_ANSWER, label: 'Short Answer' },
-    { value: QuestionFormat.TRUE_FALSE, label: 'True/False' },
-    { value: QuestionFormat.FILL_IN_BLANK, label: 'Fill in the Blank' },
-  ];
-
   /** Difficulty level options with labels for dropdown (3 levels) */
   availableDifficulties = [
     { value: EnhancedDifficultyLevel.EASY, label: 'Easy' },
@@ -188,7 +188,8 @@ export class UnifiedGeneratorComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private questionService: QuestionService
+    private questionService: QuestionService,
+    private authService: AuthService
   ) {}
 
   /**
@@ -462,10 +463,30 @@ export class UnifiedGeneratorComponent implements OnInit {
       next: (response: any) => {
         console.log('✅ Questions generated:', response);
         this.isGenerating = false;
-        // Navigate to question display with session ID
-        this.router.navigate(['/student/question-generator/questions'], {
-          queryParams: { sessionId: response.data.sessionId },
-        });
+
+        const questions = response.data.questions as GeneratedQuestion[];
+        const currentUser = this.authService.getCurrentUser();
+
+        // PHASE A6.3: Create session and store in service for persistence
+        const session: QuestionSession = {
+          id: response.data.sessionId || `session-${Date.now()}`,
+          userId: currentUser?.id || '',
+          questions: questions,
+          answers: [],
+          startedAt: new Date(),
+          totalScore: 0,
+          maxScore: questions.length * 10, // 10 points per question
+          timeSpentMinutes: 0,
+          subject: this.selectedSubject || 'mathematics',
+          topic: this.selectedCategory || '',
+        };
+
+        // Store session in service (persists across navigation)
+        this.questionService.startSession(session);
+        console.log('✅ Session stored in service:', session.id);
+
+        // Navigate to question display (no state needed - service has it)
+        this.router.navigate(['/student/question-generator']);
       },
       error: (error: any) => {
         console.error('❌ Question generation failed:', error);

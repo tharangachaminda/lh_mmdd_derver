@@ -68,19 +68,8 @@
       </mat-card-header>
 
       <mat-card-content>
-        <div class="config-grid">
-          <!-- Question Format -->
-          <mat-form-field appearance="outline">
-            <mat-label>Question Format</mat-label>
-            <mat-select [(ngModel)]="questionFormat">
-              @for (format of availableFormats; track format.value) {
-              <mat-option [value]="format.value">
-                {{ format.label }}
-              </mat-option>
-              }
-            </mat-select>
-            <mat-icon matPrefix>quiz</mat-icon>
-          </mat-form-field>
+        <div class="config-grid config-grid-two-column">
+          <!-- Note: Question Format removed - Phase A6 uses SHORT_ANSWER only -->
 
           <!-- Difficulty Level -->
           <mat-form-field appearance="outline">

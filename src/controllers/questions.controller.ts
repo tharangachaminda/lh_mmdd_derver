@@ -12,6 +12,8 @@ import {
     EnhancedQuestionGenerationRequest,
     validateEnhancedRequest,
 } from "../interfaces/question-generation.interface.js";
+import { AnswerValidationAgent } from "../agents/answer-validation.agent.js";
+import { AnswerSubmissionResult } from "../models/answer-submission.model.js";
 
 interface AuthenticatedRequest extends Request {
     user?: {
@@ -554,6 +556,215 @@ export class QuestionsController {
                 success: false,
                 message: "Demo generation failed",
                 data: null,
+                error:
+                    process.env.NODE_ENV === "development"
+                        ? error.message
+                        : undefined,
+            });
+        }
+    }
+
+    /**
+     * Validate student answers with AI grading
+     *
+     * POST /api/questions/validate-answers
+     *
+     * Accepts student answer submission, validates each answer using AI,
+     * provides partial credit scoring (0-10), generates constructive feedback,
+     * analyzes performance patterns, and saves results to MongoDB.
+     *
+     * @param req - Express request with AnswerSubmission in body
+     * @param res - Express response
+     *
+     * @returns {Promise<void>} Response with ValidationResult
+     *
+     * @throws {400} Validation errors (missing required fields)
+     * @throws {401} Authentication required
+     * @throws {500} AI validation or database errors
+     *
+     * @example
+     * ```typescript
+     * // Request body
+     * {
+     *   sessionId: "session-123",
+     *   studentId: "student-456",
+     *   studentEmail: "student@example.com",
+     *   answers: [
+     *     {
+     *       questionId: "q1",
+     *       questionText: "What is 5 + 3?",
+     *       studentAnswer: "8"
+     *     }
+     *   ],
+     *   submittedAt: "2025-10-10T10:00:00Z"
+     * }
+     *
+     * // Response
+     * {
+     *   success: true,
+     *   data: {
+     *     sessionId: "session-123",
+     *     totalScore: 10,
+     *     maxScore: 10,
+     *     percentageScore: 100,
+     *     questions: [...],
+     *     overallFeedback: "Excellent work!...",
+     *     strengths: ["Addition operations"],
+     *     areasForImprovement: []
+     *   }
+     * }
+     * ```
+     */
+    async validateAnswersController(
+        req: Request,
+        res: Response
+    ): Promise<void> {
+        const startTime = Date.now();
+
+        try {
+            const authReq = req as AuthenticatedRequest;
+            console.log(
+                "🧪 Answer validation request from:",
+                authReq.user?.email
+            );
+
+            // Extract submission from request body
+            const { sessionId, studentId, studentEmail, answers, submittedAt } =
+                req.body;
+
+            // Validate required fields
+            if (
+                !sessionId ||
+                !studentId ||
+                !studentEmail ||
+                !answers ||
+                !Array.isArray(answers)
+            ) {
+                res.status(400).json({
+                    success: false,
+                    message: "Invalid answer submission",
+                    errors: [
+                        !sessionId && "sessionId is required",
+                        !studentId && "studentId is required",
+                        !studentEmail && "studentEmail is required",
+                        !answers && "answers array is required",
+                        answers &&
+                            !Array.isArray(answers) &&
+                            "answers must be an array",
+                    ].filter(Boolean),
+                });
+                return;
+            }
+
+            // Validate answers array not empty
+            if (answers.length === 0) {
+                res.status(400).json({
+                    success: false,
+                    message: "At least one answer is required",
+                });
+                return;
+            }
+
+            // Validate each answer has required fields
+            for (let i = 0; i < answers.length; i++) {
+                const answer = answers[i];
+                if (
+                    !answer.questionId ||
+                    !answer.questionText ||
+                    !answer.studentAnswer
+                ) {
+                    res.status(400).json({
+                        success: false,
+                        message: `Answer ${i + 1} is missing required fields`,
+                        errors: [
+                            !answer.questionId && "questionId is required",
+                            !answer.questionText && "questionText is required",
+                            !answer.studentAnswer &&
+                                "studentAnswer is required",
+                        ].filter(Boolean),
+                    });
+                    return;
+                }
+            }
+
+            console.log("📝 Validating answers:", {
+                sessionId,
+                studentEmail,
+                answerCount: answers.length,
+            });
+
+            // Create agent and validate answers
+            const agent = new AnswerValidationAgent();
+            const validationResult = await agent.validateAnswers({
+                sessionId,
+                studentId,
+                studentEmail,
+                answers,
+                submittedAt: submittedAt ? new Date(submittedAt) : new Date(),
+            });
+
+            const validationTime = Date.now() - startTime;
+
+            // Save results to MongoDB
+            try {
+                const submissionResult = new AnswerSubmissionResult({
+                    sessionId,
+                    studentId,
+                    studentEmail,
+                    submittedAt: submittedAt
+                        ? new Date(submittedAt)
+                        : new Date(),
+                    validatedAt: new Date(),
+                    totalScore: validationResult.totalScore,
+                    maxScore: validationResult.maxScore,
+                    percentageScore: validationResult.percentageScore,
+                    questions: validationResult.questions.map((q) => ({
+                        id: q.questionId,
+                        questionText: q.questionText,
+                        questionType: "SHORT_ANSWER", // Default for now
+                        difficulty: "medium", // Default for now
+                        studentAnswer: q.studentAnswer,
+                        score: q.score,
+                        maxScore: q.maxScore,
+                        isCorrect: q.isCorrect,
+                        expectedAnswer: "", // AI doesn't provide this
+                        feedback: q.feedback,
+                        partialCreditReason:
+                            q.score > 0 && q.score < q.maxScore
+                                ? `Partial credit: ${q.score}/${q.maxScore} points`
+                                : undefined,
+                    })),
+                    overallFeedback: validationResult.overallFeedback,
+                    strengths: validationResult.strengths,
+                    areasForImprovement: validationResult.areasForImprovement,
+                    qualityMetrics: {
+                        modelUsed: "qwen3:14b",
+                        validationTime,
+                        confidenceScore: 0.85, // Default confidence
+                    },
+                });
+
+                await submissionResult.save();
+                console.log(
+                    "✅ Results saved to MongoDB:",
+                    submissionResult._id
+                );
+            } catch (dbError) {
+                console.error("⚠️ Failed to save to MongoDB:", dbError);
+                // Continue - validation still succeeded
+            }
+
+            // Return validation results
+            res.status(200).json({
+                success: true,
+                message: `Successfully validated ${answers.length} answers`,
+                data: validationResult,
+            });
+        } catch (error: any) {
+            console.error("❌ Answer validation failed:", error);
+            res.status(500).json({
+                success: false,
+                message: "Answer validation failed",
                 error:
                     process.env.NODE_ENV === "development"
                         ? error.message

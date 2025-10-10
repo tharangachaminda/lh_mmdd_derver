@@ -212,28 +212,15 @@ export class AIEnhancedQuestionsService {
         const questions: GeneratedQuestion[] = [];
 
         for (let i = 0; i < request.count; i++) {
-            // Generate question text first
+            // PHASE A6.1: Generate question text only (no answer calculation)
             const questionText = this.generateAIContextualQuestion(
                 request,
                 user,
                 i + 1
             );
 
-            // Calculate correct answer from question text (for mathematical questions)
-            const calculatedAnswer =
-                this.calculateMathematicalAnswer(questionText);
-
-            // Generate options that include the calculated correct answer
-            const questionOptions =
-                request.questionType === "multiple_choice"
-                    ? this.generateSmartOptionsWithAnswer(
-                          request.subject,
-                          request.topic,
-                          request.persona,
-                          calculatedAnswer
-                      )
-                    : undefined;
-
+            // PHASE A6.1: No options, no correctAnswer - pure short-answer format
+            // Answers will be validated by AI after student submission
             const question: GeneratedQuestion = {
                 id: `ai_${Date.now()}_${i}`,
                 subject: request.subject,
@@ -242,8 +229,9 @@ export class AIEnhancedQuestionsService {
                 difficulty: request.difficulty,
                 questionType: request.questionType,
                 question: questionText,
-                options: questionOptions,
-                correctAnswer: "", // Will be set after all generation is complete
+                // NO options field - all questions are short-answer format
+                // NO correctAnswer field - validated by AI after submission
+                correctAnswer: "", // Empty placeholder for interface compatibility
                 explanation: this.generateAIExplanation(
                     request.subject,
                     request.topic,
@@ -273,25 +261,18 @@ export class AIEnhancedQuestionsService {
                         request.topic,
                         request.difficulty,
                         "ai-enhanced",
-                        "vector-database-sourced", // GREEN PHASE: Real vector database integration
-                        "opensearch-context", // GREEN PHASE: Real OpenSearch usage
+                        "vector-database-sourced",
+                        "opensearch-context",
                         "dynamic-generation",
-                        "agent-generated", // GREEN PHASE: Multi-agent workflow
-                        "quality-validated", // GREEN PHASE: QualityValidatorAgent
-                        "context-enhanced", // GREEN PHASE: ContextEnhancerAgent
+                        "agent-generated",
+                        "quality-validated",
+                        "context-enhanced",
+                        "short-answer", // PHASE A6: All questions are short-answer
+                        "ai-validated", // PHASE A6: Answers validated by LLM
                     ],
                     createdAt: new Date(),
                 },
             };
-
-            // GREEN PHASE: Calculate correct answer after question and options are generated
-            question.correctAnswer = this.generateCorrectAnswer(
-                request.questionType,
-                request.subject,
-                request.topic,
-                question.question,
-                question.options
-            );
 
             questions.push(question);
         }
@@ -417,19 +398,27 @@ export class AIEnhancedQuestionsService {
                 return 0.75; // Fallback if connection fails
             }
 
-            // Query for similar mathematics questions
+            // E2E FIX #2: Query vector database using correct field names
+            // Database schema: { type: "ADDITION", grade: 4, subject: "Mathematics", ... }
+            // request.topic now contains questionType (e.g., "ADDITION") for proper matching
             const searchQuery = {
                 query: {
                     bool: {
                         must: [
                             { match: { subject: request.subject } },
-                            { match: { topic: request.topic } },
+                            { match: { type: request.topic } }, // E2E FIX #2: Use "type" field (DB schema)
                         ],
                         filter: [{ term: { grade: request.persona.grade } }],
                     },
                 },
                 size: 5,
             };
+
+            console.log(`🔍 Vector search query:`, {
+                type: request.topic,
+                grade: request.persona.grade,
+                subject: request.subject,
+            });
 
             const searchResponse = await fetch(
                 `${opensearchUrl}/enhanced-math-questions/_search`,
@@ -964,157 +953,19 @@ export class AIEnhancedQuestionsService {
         return enhanced;
     }
 
-    /**
-     * Generate smart multiple choice options that include the calculated correct answer.
-     * Creates plausible distractors based on operation type and correct answer magnitude.
-     *
-     * @param {string} subject - Academic subject
-     * @param {string} topic - Specific topic within the subject
-     * @param {IStudentPersona} persona - Student persona for cultural context
-     * @param {number | null} correctAnswer - The calculated correct answer
-     * @returns {string[]} Array of 4 multiple choice options including the correct answer
-     */
-    private generateSmartOptionsWithAnswer(
-        subject: string,
-        topic: string,
-        persona: IStudentPersona,
-        correctAnswer: number | null
-    ): string[] {
-        // If no correct answer calculated, return fallback
-        if (correctAnswer === null || subject !== "mathematics") {
-            return ["Option A", "Option B", "Option C", "Option D"];
-        }
-
-        const topicLower = topic.toLowerCase();
-        let options: string[] = [];
-
-        // Generate appropriate distractors based on operation type
-        if (topicLower.includes("addition")) {
-            // Addition: off by small amounts
-            options = [
-                correctAnswer.toString(),
-                (correctAnswer - 2).toString(),
-                (correctAnswer + 2).toString(),
-                (correctAnswer + 4).toString(),
-            ];
-        } else if (topicLower.includes("subtraction")) {
-            // Subtraction: common error patterns
-            options = [
-                correctAnswer.toString(),
-                (correctAnswer + 2).toString(), // Forgot to subtract
-                (correctAnswer - 2).toString(), // Subtracted too much
-                (correctAnswer + 1).toString(), // Off by one
-            ];
-        } else if (
-            topicLower.includes("multiplication") ||
-            topicLower.includes("multiply")
-        ) {
-            // Multiplication: common misconceptions
-            const factor = correctAnswer > 20 ? 5 : 2;
-            options = [
-                correctAnswer.toString(),
-                (correctAnswer - factor).toString(), // Off by one factor
-                (correctAnswer + factor).toString(), // Off by one factor (other direction)
-                (correctAnswer * 2).toString().substring(0, 2), // Used addition instead of multiplication (if small)
-            ];
-
-            // Ensure distinct options
-            if (new Set(options).size < 4) {
-                options = [
-                    correctAnswer.toString(),
-                    (correctAnswer - 1).toString(),
-                    (correctAnswer + 1).toString(),
-                    (correctAnswer + 2).toString(),
-                ];
-            }
-        } else if (
-            topicLower.includes("division") ||
-            topicLower.includes("divide")
-        ) {
-            // Division: common error patterns
-            options = [
-                correctAnswer.toString(),
-                (correctAnswer + 1).toString(), // Off by one
-                (correctAnswer * 2).toString(), // Multiplied instead of divided
-                (correctAnswer - 1).toString(), // Off by one (other direction)
-            ];
-        } else {
-            // Generic mathematics: small variations
-            options = [
-                correctAnswer.toString(),
-                (correctAnswer - 2).toString(),
-                (correctAnswer + 2).toString(),
-                (correctAnswer + 4).toString(),
-            ];
-        }
-
-        // Ensure no negative options for young learners (grade < 6)
-        if (persona.grade < 6) {
-            options = options.map((opt) => {
-                const num = parseInt(opt, 10);
-                return num < 0 ? "0" : opt;
-            });
-        }
-
-        // Ensure all options are unique
-        const uniqueOptions = Array.from(new Set(options));
-        while (uniqueOptions.length < 4) {
-            const randomOffset = Math.floor(Math.random() * 5) + 1;
-            const newOption = (correctAnswer + randomOffset).toString();
-            if (!uniqueOptions.includes(newOption)) {
-                uniqueOptions.push(newOption);
-            }
-        }
-
-        console.log(
-            `🔢 Generated options for ${topic}: ${uniqueOptions.join(
-                ", "
-            )} (correct: ${correctAnswer})`
-        );
-
-        // Shuffle and return first 4
-        return this.shuffleArray(uniqueOptions.slice(0, 4));
-    }
-
-    /**
-     * Generate smart multiple choice options using AI (legacy method for non-calculated questions)
-     */
-    private generateSmartOptions(
-        subject: string,
-        topic: string,
-        persona: IStudentPersona
-    ): string[] {
-        let options: string[] = [];
-
-        if (
-            subject === "mathematics" &&
-            topic.toLowerCase().includes("addition")
-        ) {
-            options = ["5", "7", "9", "11"];
-        } else if (subject === "science") {
-            options = [
-                "Photosynthesis",
-                "Respiration",
-                "Digestion",
-                "Circulation",
-            ];
-        } else {
-            options = ["Option A", "Option B", "Option C", "Option D"];
-        }
-
-        // Enhance options with cultural context
-        if (persona.culturalContext === "New Zealand") {
-            return options.map((option) => {
-                if (option.includes("dollar"))
-                    return option.replace("dollar", "New Zealand dollar");
-                if (option.includes("city"))
-                    return option.replace("city", "Auckland or Wellington");
-                return option;
-            });
-        }
-
-        return options;
-    }
+    // ============================================================================
+    // PHASE A6.1: REMOVED OPTION GENERATION METHODS
+    // ============================================================================
+    // The following methods have been REMOVED as part of Phase A6 strategic pivot:
+    //
+    // 3. generateSmartOptionsWithAnswer() - ~107 lines - Distractor generation with calculated answer
+    // 4. generateSmartOptions() - ~32 lines - Legacy option generation
+    //
+    // REASON: Multiple choice format eliminated in favor of short-answer format.
+    // No longer need to generate plausible distractors or option sets.
+    //
+    // REPLACEMENT: Pure short-answer questions with AI validation (no options needed).
+    // ============================================================================
 
     /**
      * Generate AI-enhanced explanation
@@ -1218,286 +1069,23 @@ export class AIEnhancedQuestionsService {
         }
     }
 
-    /**
-     * Generates the correct answer for a question based on type, subject, and content.
-     * For mathematical questions, calculates the actual numerical result.
-     * For other subjects, provides appropriate fallback answers.
-     *
-     * @param {string} questionType - Type of question ('multiple_choice', 'short_answer', 'true_false')
-     * @param {string} subject - Academic subject (e.g., 'mathematics', 'english', 'science')
-     * @param {string} topic - Specific topic within the subject
-     * @param {string} [questionText] - The full question text for parsing mathematical expressions
-     * @param {string[]} [options] - Available answer options for multiple choice questions
-     * @returns {string} The correct answer as a string value
-     * @throws {Error} If questionType is invalid or required parameters are missing
-     * @example
-     * // Mathematical question
-     * const answer = this.generateCorrectAnswer(
-     *   'multiple_choice',
-     *   'mathematics',
-     *   'Addition',
-     *   'What is 5 + 3?',
-     *   ['6', '7', '8', '9']
-     * );
-     * // Returns: '8'
-     */
-    private generateCorrectAnswer(
-        questionType: string,
-        subject: string,
-        topic: string,
-        questionText?: string,
-        options?: string[]
-    ): string {
-        // Validate required parameters
-        if (!questionType || !subject) {
-            throw new Error(
-                "generateCorrectAnswer: questionType and subject are required"
-            );
-        }
-
-        if (questionType === "multiple_choice") {
-            // Calculate actual correct answer for mathematical questions
-            if (subject === "mathematics" && questionText) {
-                const correctValue =
-                    this.calculateMathematicalAnswer(questionText);
-
-                if (correctValue !== null && options && options.length > 0) {
-                    // Find the option that matches the correct answer
-                    const correctOption = options.find(
-                        (option) => option.trim() === correctValue.toString()
-                    );
-
-                    if (correctOption) {
-                        return correctValue.toString();
-                    } else {
-                        console.warn(
-                            `generateCorrectAnswer: Calculated answer ${correctValue} not found in options`,
-                            options
-                        );
-                        // If calculated answer not in options, return it anyway
-                        return correctValue.toString();
-                    }
-                }
-            }
-
-            // Fallback: return first option for non-mathematical questions
-            if (options && options.length > 0) {
-                return options[0];
-            }
-
-            // Ultimate fallback
-            return "Option A";
-        }
-
-        if (questionType === "true_false") {
-            return "true"; // Default for true/false questions
-        }
-
-        // For short_answer and other types
-        return "Sample correct answer";
-    }
-
-    /**
-     * Parses mathematical expressions from question text and calculates the numerical answer.
-     * Supports multiple mathematical operations and various question formats including
-     * word problems, direct expressions, and contextual math scenarios.
-     *
-     * @param {string} questionText - The question text containing mathematical expressions
-     * @returns {number | null} The calculated numerical result, or null if no valid expression found
-     * @throws {Error} Never throws - all errors are caught and logged as warnings
-     */
-    private calculateMathematicalAnswer(questionText: string): number | null {
-        try {
-            // Input validation
-            if (!questionText || typeof questionText !== "string") {
-                console.warn(
-                    "calculateMathematicalAnswer: Invalid or empty question text"
-                );
-                return null;
-            }
-
-            const text = questionText.toLowerCase();
-
-            // 1. MULTIPLICATION: Handle × symbol, times, product
-            const multiplicationMatch = text.match(/(\d+)\s*[×x*]\s*(\d+)/);
-            if (multiplicationMatch) {
-                const result =
-                    parseInt(multiplicationMatch[1], 10) *
-                    parseInt(multiplicationMatch[2], 10);
-                console.log(
-                    `🔢 Parsed multiplication: ${multiplicationMatch[1]} × ${multiplicationMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // Handle "X times Y" format
-            const timesMatch = text.match(/(\d+)\s+times\s+(\d+)/);
-            if (timesMatch) {
-                const result =
-                    parseInt(timesMatch[1], 10) * parseInt(timesMatch[2], 10);
-                console.log(
-                    `🔢 Parsed times: ${timesMatch[1]} times ${timesMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // Handle "product of X and Y"
-            const productMatch = text.match(
-                /product\s+of\s+(\d+)\s+and\s+(\d+)/
-            );
-            if (productMatch) {
-                const result =
-                    parseInt(productMatch[1], 10) *
-                    parseInt(productMatch[2], 10);
-                console.log(
-                    `🔢 Parsed product: product of ${productMatch[1]} and ${productMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // Handle multiplication word problems (groups, each, total)
-            const multiplyWordMatch = text.match(
-                /(\d+)\s+(?:boxes|bags|packs|groups|rows).*?(\d+)\s+(?:apples|cookies|books|toys|stickers|things|items).*?(?:in each|per|in total|altogether)/
-            );
-            if (multiplyWordMatch) {
-                const result =
-                    parseInt(multiplyWordMatch[1], 10) *
-                    parseInt(multiplyWordMatch[2], 10);
-                console.log(
-                    `🔢 Parsed multiplication word problem: ${multiplyWordMatch[1]} × ${multiplyWordMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // 2. DIVISION: Handle ÷ symbol, divided by
-            const divisionMatch = text.match(/(\d+)\s*[÷/]\s*(\d+)/);
-            if (divisionMatch) {
-                const result =
-                    parseInt(divisionMatch[1], 10) /
-                    parseInt(divisionMatch[2], 10);
-                console.log(
-                    `🔢 Parsed division: ${divisionMatch[1]} ÷ ${divisionMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // Handle "X divided by Y"
-            const dividedByMatch = text.match(/(\d+)\s+divided\s+by\s+(\d+)/);
-            if (dividedByMatch) {
-                const result =
-                    parseInt(dividedByMatch[1], 10) /
-                    parseInt(dividedByMatch[2], 10);
-                console.log(
-                    `🔢 Parsed divided by: ${dividedByMatch[1]} divided by ${dividedByMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // Handle division word problems (share, equally, each)
-            const divisionWordMatch = text.match(
-                /(\d+)\s+(?:cookies|apples|pencils|toys|cards|items).*?(?:share|divide|split).*?(?:among|between|into)\s+(\d+)/
-            );
-            if (divisionWordMatch) {
-                const result =
-                    parseInt(divisionWordMatch[1], 10) /
-                    parseInt(divisionWordMatch[2], 10);
-                console.log(
-                    `🔢 Parsed division word problem: ${divisionWordMatch[1]} ÷ ${divisionWordMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // 3. SUBTRACTION: Handle - symbol, difference
-            const subtractionMatch = text.match(/(\d+)\s*[-−–]\s*(\d+)/);
-            if (subtractionMatch) {
-                const result =
-                    parseInt(subtractionMatch[1], 10) -
-                    parseInt(subtractionMatch[2], 10);
-                console.log(
-                    `🔢 Parsed subtraction: ${subtractionMatch[1]} - ${subtractionMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // Handle "difference between X and Y"
-            const differenceMatch = text.match(
-                /difference\s+between\s+(\d+)\s+and\s+(\d+)/
-            );
-            if (differenceMatch) {
-                const result =
-                    parseInt(differenceMatch[1], 10) -
-                    parseInt(differenceMatch[2], 10);
-                console.log(
-                    `🔢 Parsed difference: difference between ${differenceMatch[1]} and ${differenceMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // Handle subtraction word problems (gives away, loses, left)
-            const subtractionWordMatch = text.match(
-                /(?:has|have|had|were)\s+(\d+).*?(?:gives away|gives|lose|loses|taken out|left with).*?(\d+)/
-            );
-            if (subtractionWordMatch) {
-                const result =
-                    parseInt(subtractionWordMatch[1], 10) -
-                    parseInt(subtractionWordMatch[2], 10);
-                console.log(
-                    `🔢 Parsed subtraction word problem: ${subtractionWordMatch[1]} - ${subtractionWordMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // 4. ADDITION: Handle + symbol, sum
-            const additionMatch = text.match(/(\d+)\s*\+\s*(\d+)/);
-            if (additionMatch) {
-                const result =
-                    parseInt(additionMatch[1], 10) +
-                    parseInt(additionMatch[2], 10);
-                console.log(
-                    `🔢 Parsed addition: ${additionMatch[1]} + ${additionMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // Handle "Find the sum of X and Y"
-            const sumMatch = text.match(/sum\s+of\s+(\d+)\s+and\s+(\d+)/);
-            if (sumMatch) {
-                const result =
-                    parseInt(sumMatch[1], 10) + parseInt(sumMatch[2], 10);
-                console.log(
-                    `🔢 Parsed sum: sum of ${sumMatch[1]} and ${sumMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // Handle addition word problems (more, additional, altogether)
-            const additionWordMatch = text.match(
-                /(?:have|has|scored|got|received|earned)\s+(\d+).*?(?:get|gets|give|gives|more|additional|extra|then|scored|received|earned|join).*?(\d+)/
-            );
-            if (additionWordMatch) {
-                const result =
-                    parseInt(additionWordMatch[1], 10) +
-                    parseInt(additionWordMatch[2], 10);
-                console.log(
-                    `🔢 Parsed addition word problem: ${additionWordMatch[1]} + ${additionWordMatch[2]} = ${result}`
-                );
-                return result;
-            }
-
-            // No mathematical expression found
-            console.log(
-                "🔧 DEBUG: No recognized mathematical pattern found in:",
-                questionText
-            );
-            return null;
-        } catch (error) {
-            console.warn(
-                "calculateMathematicalAnswer: Error parsing mathematical expression:",
-                error
-            );
-            return null;
-        }
-    }
+    // ============================================================================
+    // PHASE A6.1: REMOVED REGEX-BASED ANSWER CALCULATION METHODS
+    // ============================================================================
+    // The following methods have been REMOVED as part of Phase A6 strategic pivot:
+    //
+    // 1. generateCorrectAnswer() - ~76 lines - Regex-based answer generation
+    // 2. calculateMathematicalAnswer() - ~216 lines - Complex regex parsing
+    //
+    // REASON: Regex pattern matching proved unreliable (60% success rate) and
+    // required constant maintenance for each question format variation.
+    //
+    // REPLACEMENT: AI-validated short answer system using AnswerValidationAgent
+    // with qwen2.5:14b LLM for robust answer checking with partial credit scoring.
+    //
+    // Questions now generated WITHOUT correctAnswer field - validation happens
+    // after student submission using AI/LLM instead of brittle regex patterns.
+    // ============================================================================
 
     /**
      * Randomizes the order of array elements using Fisher-Yates shuffle algorithm.
@@ -2169,10 +1757,13 @@ export class AIEnhancedQuestionsService {
         // Generate questions for each type with its allocated count
         for (const [questionType, count] of Object.entries(distribution)) {
             if (count > 0) {
-                // Create legacy request format for each type
+                // E2E FIX #2: Vector Search vs AI Context Separation
+                // - topic: Use questionType (e.g., "ADDITION") for vector DB search (matches DB "type" field)
+                // - subtopic: Use rich category name for AI context and prompts
                 const legacyRequest: QuestionGenerationRequest = {
                     subject: request.subject,
-                    topic: topicForAI, // E2E FIX: Use rich name instead of category key
+                    topic: questionType, // E2E FIX #2: Use DB key for vector search (ADDITION, DIVISION, etc.)
+                    subtopic: topicForAI, // E2E FIX: Rich name for AI context (Number Operations & Arithmetic)
                     difficulty: request.difficultyLevel,
                     questionType: questionType,
                     count: count,
@@ -2338,37 +1929,28 @@ export class AIEnhancedQuestionsService {
     ): GeneratedQuestion {
         const formatted = { ...question };
 
+        // PHASE A6.1: All questions are now short-answer format
+        // Format parameter ignored - no options, no transformations needed
+        // Questions will be validated by AI after student submission
+
         switch (format) {
             case "multiple_choice":
-                // Ensure 4 options exist
-                if (!formatted.options || formatted.options.length < 4) {
-                    formatted.options = this.generateMultipleChoiceOptions(
-                        formatted.correctAnswer,
-                        formatted.questionType
-                    );
-                }
+                // PHASE A6.1: Multiple choice eliminated - treat as short answer
+                formatted.options = undefined;
                 break;
 
             case "short_answer":
-                // Remove options for short answer
+                // Already in correct format (no options)
                 formatted.options = undefined;
                 break;
 
             case "true_false":
-                // Convert to true/false format
-                formatted.options = ["True", "False"];
-                // Ensure correct answer is 'True' or 'False'
-                formatted.correctAnswer = this.isTrueFalseCorrect(formatted)
-                    ? "True"
-                    : "False";
+                // PHASE A6.1: True/False also converted to short answer
+                formatted.options = undefined;
                 break;
 
             case "fill_in_blank":
-                // Add blank marker to question text
-                formatted.question = this.addBlankMarker(
-                    formatted.question,
-                    formatted.correctAnswer
-                );
+                // PHASE A6.1: Fill-in-blank also converted to short answer
                 formatted.options = undefined;
                 break;
         }
@@ -2376,88 +1958,20 @@ export class AIEnhancedQuestionsService {
         return formatted;
     }
 
-    /**
-     * Generate plausible multiple choice options including the correct answer
-     *
-     * Creates 4 options total with pedagogically sound distractors. For numeric
-     * answers, generates mathematically plausible wrong answers. For non-numeric
-     * answers, creates generic placeholder options. All options are shuffled to
-     * prevent answer pattern recognition.
-     *
-     * @param correctAnswer - The correct answer string
-     * @param questionType - Type of question for context-specific distractors
-     * @returns Array of 4 shuffled options including correct answer
-     *
-     * @private Distractor generation for multiple choice
-     */
-    private generateMultipleChoiceOptions(
-        correctAnswer: string,
-        questionType: string
-    ): string[] {
-        const options = [correctAnswer];
-        const numericAnswer = parseFloat(correctAnswer);
-
-        if (!isNaN(numericAnswer)) {
-            // Generate plausible distractors for numeric answers
-            options.push(
-                (numericAnswer + Math.floor(Math.random() * 5) + 1).toString(),
-                (numericAnswer - Math.floor(Math.random() * 5) - 1).toString(),
-                (numericAnswer * 2).toString()
-            );
-        } else {
-            // For non-numeric answers, add generic options
-            options.push("Option B", "Option C", "Option D");
-        }
-
-        // Shuffle options
-        return options.sort(() => Math.random() - 0.5);
-    }
-
-    /**
-     * Determine if answer should be 'True' for true/false format
-     *
-     * Analyzes question structure to determine appropriate true/false answer.
-     * Uses heuristic analysis of question text and comparison operators.
-     *
-     * @param question - Generated question to analyze
-     * @returns True if answer should be 'True', false if should be 'False'
-     * @private True/false answer determination
-     */
-    private isTrueFalseCorrect(question: GeneratedQuestion): boolean {
-        // Simple heuristic: if question contains comparison operators
-        if (
-            question.question.includes("=") ||
-            question.question.includes(">") ||
-            question.question.includes("<")
-        ) {
-            return Math.random() > 0.5; // Randomize for now
-        }
-        return true;
-    }
-
-    /**
-     * Add blank marker to question text for fill-in-blank format
-     *
-     * Transforms a complete question into fill-in-blank format by replacing
-     * the correct answer with a blank marker (_____). If answer not found in
-     * question text, appends blank marker with "Answer: " label.
-     *
-     * @param questionText - Original question text
-     * @param correctAnswer - Answer to be replaced with blank
-     * @returns Modified question text with blank marker
-     * @private Fill-in-blank formatter
-     */
-    private addBlankMarker(
-        questionText: string,
-        correctAnswer: string
-    ): string {
-        // Replace the answer in the question with _____
-        if (questionText.includes(correctAnswer)) {
-            return questionText.replace(correctAnswer, "_____");
-        }
-        // If answer not in question, append format
-        return `${questionText} Answer: _____`;
-    }
+    // ============================================================================
+    // PHASE A6.1: REMOVED FORMAT-SPECIFIC HELPER METHODS
+    // ============================================================================
+    // The following methods have been REMOVED as part of Phase A6 strategic pivot:
+    //
+    // 5. generateMultipleChoiceOptions() - ~32 lines - Multiple choice distractor generation
+    // 6. isTrueFalseCorrect() - ~15 lines - True/false answer heuristics
+    // 7. addBlankMarker() - ~12 lines - Fill-in-blank text transformation
+    //
+    // REASON: All question formats have been unified into short-answer format.
+    // No need for format-specific transformations or answer generation.
+    //
+    // REPLACEMENT: Simple text input fields for all questions with AI validation.
+    // ============================================================================
 
     /**
      * Build human-readable personalization summary

@@ -274,6 +274,124 @@ export interface StudentAnswer {
 }
 
 /**
+ * Phase A6.2: Answer Submission for Batch Validation
+ *
+ * Represents a batch submission of student answers for AI validation.
+ * Used in short-answer mode where students complete all questions before submitting.
+ *
+ * @interface AnswerSubmission
+ * @since Phase A6.2 (Session 08)
+ *
+ * @example
+ * ```typescript
+ * const submission: AnswerSubmission = {
+ *   sessionId: 'session-123',
+ *   studentId: 'user-456',
+ *   studentEmail: 'student@example.com',
+ *   answers: [
+ *     { questionId: 'q1', questionText: 'What is 5 + 3?', studentAnswer: '8' },
+ *     { questionId: 'q2', questionText: 'What is 10 - 4?', studentAnswer: '6' }
+ *   ],
+ *   submittedAt: new Date()
+ * };
+ * ```
+ */
+export interface AnswerSubmission {
+  /** Session ID from question generation */
+  sessionId: string;
+
+  /** Student's user ID */
+  studentId: string;
+
+  /** Student's email address */
+  studentEmail: string;
+
+  /** Array of question-answer pairs to validate */
+  answers: {
+    questionId: string;
+    questionText: string;
+    studentAnswer: string;
+  }[];
+
+  /** Timestamp when answers were submitted */
+  submittedAt: Date;
+}
+
+/**
+ * Phase A6.2: Validation Result from AI
+ *
+ * Response from AI validation endpoint with detailed feedback for each question.
+ * Includes partial credit scoring (0-10 scale) and constructive feedback.
+ *
+ * @interface ValidationResult
+ * @since Phase A6.2 (Session 08)
+ *
+ * @example
+ * ```typescript
+ * const result: ValidationResult = {
+ *   success: true,
+ *   sessionId: 'session-123',
+ *   totalScore: 85,
+ *   maxScore: 100,
+ *   percentageScore: 85,
+ *   questions: [
+ *     {
+ *       questionId: 'q1',
+ *       questionText: 'What is 5 + 3?',
+ *       studentAnswer: '8',
+ *       score: 10,
+ *       maxScore: 10,
+ *       feedback: 'Correct! Excellent work.',
+ *       isCorrect: true
+ *     }
+ *   ],
+ *   overallFeedback: 'Great job! You demonstrated strong understanding.',
+ *   strengths: ['Accurate calculations', 'Clear explanations'],
+ *   areasForImprovement: ['Try to show your work']
+ * };
+ * ```
+ */
+export interface ValidationResult {
+  /** Indicates if validation was successful */
+  success: boolean;
+
+  /** Session ID for tracking */
+  sessionId: string;
+
+  /** Total score earned (sum of individual question scores) */
+  totalScore: number;
+
+  /** Maximum possible score */
+  maxScore: number;
+
+  /** Percentage score (0-100) */
+  percentageScore: number;
+
+  /** Detailed results for each question */
+  questions: {
+    questionId: string;
+    questionText: string;
+    studentAnswer: string;
+    score: number; // 0-10 scale with partial credit
+    maxScore: number; // Usually 10
+    feedback: string; // Constructive feedback from AI
+    isCorrect: boolean; // True if score >= 8
+  }[];
+
+  /** Overall feedback on performance */
+  overallFeedback: string;
+
+  /** List of strengths identified by AI */
+  strengths: string[];
+
+  /** Areas where student can improve */
+  areasForImprovement: string[];
+
+  /** Optional error message if validation failed */
+  errorMessage?: string;
+}
+
+/**
  * Phase 1: AI Quality Metrics
  * Provides transparency into AI-generated question quality
  */
