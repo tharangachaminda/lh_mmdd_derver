@@ -552,37 +552,28 @@ export class LangGraphAgenticWorkflow {
     private getFewShotExamples(subject: string, questionType: string): string {
         const examples: Record<string, Record<string, string>> = {
             mathematics: {
-                multiple_choice: `
+                short_answer: `
 Example 1:
 {
-  "question": "What is 8 + 6?",
-  "options": ["12", "14", "16", "18"],
-  "correctAnswer": "14",
-  "explanation": "8 + 6 = 14. Count 8, then add 6 more: 9, 10, 11, 12, 13, 14."
+  "question": "What is the product of 72 and 6?",
+  "correctAnswer": "432",
+  "explanation": "72 times 6 equals 432."
 }
 
 Example 2:
 {
-  "question": "Sarah has 12 stickers. She gives 5 to her friend. How many stickers does Sarah have left?",
-  "options": ["5", "7", "8", "17"],
-  "correctAnswer": "7",
-  "explanation": "12 - 5 = 7. Sarah started with 12 and gave away 5, so she has 7 left."
-}`,
-
-                fill_in_blank: `
-Example 1:
-{
-  "question": "Complete the addition: 9 + ___ = 15",
-  "correctAnswer": "6",
-  "explanation": "15 - 9 = 6, so 9 + 6 = 15"
+  "question": "If you have 236 candies and share them equally among 4 friends, how many candies does each friend get?",
+  "correctAnswer": "59",
+  "explanation": "236 divided by 4 equals 59. Each friend gets 59 candies."
 }
-
-Example 2:
+  
+Example 3:
 {
-  "question": "Tom bought ___ apples. He ate 3 and has 8 left. How many did he buy?",
-  "correctAnswer": "11",
-  "explanation": "8 + 3 = 11. Tom has 8 left plus the 3 he ate equals 11 total."
-}`,
+  "question": "What is the value of x in the equation 3x + 5 = 20?",
+  "correctAnswer": "5",
+  "explanation": "Subtract 5 from both sides to get 3x = 15, then divide by 3 to find x = 5."
+}
+`,
             },
         };
 

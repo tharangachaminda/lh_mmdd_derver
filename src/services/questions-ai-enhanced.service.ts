@@ -11,14 +11,44 @@ import { IStudentPersona, StudentPersona } from "../models/persona.model.js";
 import { JWTPayload } from "./auth.service.js";
 
 // Question generation interfaces
+// PHASE A6: Updated to match EnhancedQuestionGenerationRequest from frontend
 export interface QuestionGenerationRequest {
+    // Context from navigation
     subject: string;
-    topic: string;
+    category: string;
+    gradeLevel: number;
+
+    // Multi-type selection (Session 08)
+    questionTypes: string[];
+
+    // Question configuration (Session 08)
+    questionFormat: string; // QuestionFormat enum
+    difficultyLevel: string; // EnhancedDifficultyLevel enum
+    numberOfQuestions: number;
+
+    // Complete Persona Fields for AI Personalization
+    learningStyle: string;
+    interests: string[]; // 1-5 interests
+    motivators: string[]; // 0-3 motivators
+
+    // Optional enhancement fields
+    focusAreas?: string[];
+    includeExplanations?: boolean;
+
+    // E2E Fix (Phase A4): Rich category context
+    categoryMetadata?: {
+        name: string;
+        description: string;
+        skillsFocus: string[];
+    };
+
+    // Legacy compatibility (deprecated)
+    topic?: string; // Maps to category
     subtopic?: string;
-    difficulty: string;
-    questionType: string;
-    count: number;
-    persona: IStudentPersona;
+    difficulty?: string; // Maps to difficultyLevel
+    questionType?: string; // Maps to questionTypes[0]
+    count?: number; // Maps to numberOfQuestions
+    persona?: any; // Legacy persona object
     previousQuestions?: string[];
 }
 
@@ -57,6 +87,56 @@ export class AIEnhancedQuestionsService {
 
     // Enhanced workflow (Session 3+4 features)
     private enhancedWorkflow: any; // Will be imported when needed
+
+    /**
+     * Normalize request format to handle both old and new request structures
+     * PHASE A6: Provides backward compatibility while supporting enhanced format
+     */
+    private normalizeRequest(request: QuestionGenerationRequest): {
+        subject: string;
+        category: string;
+        topic: string;
+        gradeLevel: number;
+        questionTypes: string[];
+        questionType: string;
+        difficulty: string;
+        difficultyLevel: string;
+        count: number;
+        numberOfQuestions: number;
+        learningStyle: string;
+        interests: string[];
+        motivators: string[];
+    } {
+        return {
+            // New format (primary)
+            subject: request.subject,
+            category: request.category || request.topic || "",
+            gradeLevel: request.gradeLevel || request.persona?.grade || 5,
+            questionTypes:
+                request.questionTypes ||
+                (request.questionType ? [request.questionType] : []),
+            difficultyLevel:
+                request.difficultyLevel || request.difficulty || "MEDIUM",
+            numberOfQuestions: request.numberOfQuestions || request.count || 5,
+            learningStyle:
+                request.learningStyle ||
+                request.persona?.learningStyle ||
+                "visual",
+            interests: request.interests || request.persona?.interests || [],
+            motivators:
+                request.motivators ||
+                request.persona?.motivationalFactors ||
+                [],
+
+            // Legacy format (for backward compatibility)
+            topic: request.category || request.topic || "",
+            questionType:
+                request.questionTypes?.[0] || request.questionType || "",
+            difficulty:
+                request.difficultyLevel || request.difficulty || "medium",
+            count: request.numberOfQuestions || request.count || 5,
+        };
+    }
 
     /**
      * Generate AI questions using REAL vector database and agentic workflows
@@ -108,6 +188,9 @@ export class AIEnhancedQuestionsService {
         };
     }> {
         try {
+            // PHASE A6: Normalize request to handle both old and new formats
+            const normalized = this.normalizeRequest(request);
+
             // Handle demo users
             let user: any;
             if (jwtPayload.userId === "demo-user-id") {
@@ -117,7 +200,7 @@ export class AIEnhancedQuestionsService {
                     firstName: "Demo",
                     lastName: "User",
                     role: jwtPayload.role,
-                    grade: (jwtPayload as any).grade || 5,
+                    grade: (jwtPayload as any).grade || normalized.gradeLevel,
                     country: (jwtPayload as any).country || "New Zealand",
                 };
             } else {
@@ -210,8 +293,9 @@ export class AIEnhancedQuestionsService {
         user: IUser
     ): GeneratedQuestion[] {
         const questions: GeneratedQuestion[] = [];
+        const normalized = this.normalizeRequest(request);
 
-        for (let i = 0; i < request.count; i++) {
+        for (let i = 0; i < normalized.count; i++) {
             // PHASE A6.1: Generate question text only (no answer calculation)
             const questionText = this.generateAIContextualQuestion(
                 request,
@@ -224,42 +308,42 @@ export class AIEnhancedQuestionsService {
             const question: GeneratedQuestion = {
                 id: `ai_${Date.now()}_${i}`,
                 subject: request.subject,
-                topic: request.topic,
+                topic: normalized.topic,
                 subtopic: request.subtopic,
-                difficulty: request.difficulty,
-                questionType: request.questionType,
+                difficulty: normalized.difficulty,
+                questionType: normalized.questionType,
                 question: questionText,
                 // NO options field - all questions are short-answer format
                 // NO correctAnswer field - validated by AI after submission
                 correctAnswer: "", // Empty placeholder for interface compatibility
                 explanation: this.generateAIExplanation(
                     request.subject,
-                    request.topic,
-                    request.persona,
+                    normalized.topic,
+                    { learningStyle: normalized.learningStyle } as any,
                     i + 1
                 ),
                 hints: this.generatePersonalizedHints(
                     request.subject,
-                    request.topic,
-                    request.persona.learningStyle,
+                    normalized.topic,
+                    normalized.learningStyle,
                     i + 1
                 ),
                 personalizationContext: {
-                    learningStyle: request.persona.learningStyle,
-                    interests: request.persona.interests,
+                    learningStyle: normalized.learningStyle,
+                    interests: normalized.interests,
                     culturalReferences: this.getCulturalReferences(
-                        request.persona.culturalContext || "New Zealand"
+                        user.country || "New Zealand"
                     ),
                 },
                 metadata: {
                     estimatedTimeMinutes: this.estimateTimeByDifficulty(
-                        request.difficulty
+                        normalized.difficulty
                     ),
-                    gradeLevel: request.persona.grade,
+                    gradeLevel: normalized.gradeLevel,
                     tags: [
                         request.subject,
-                        request.topic,
-                        request.difficulty,
+                        normalized.topic,
+                        normalized.difficulty,
                         "ai-enhanced",
                         "vector-database-sourced",
                         "opensearch-context",
@@ -408,7 +492,7 @@ export class AIEnhancedQuestionsService {
                             { match: { subject: request.subject } },
                             { match: { type: request.topic } }, // E2E FIX #2: Use "type" field (DB schema)
                         ],
-                        filter: [{ term: { grade: request.persona.grade } }],
+                        filter: [{ term: { grade: request.gradeLevel } }],
                     },
                 },
                 size: 5,
@@ -416,7 +500,7 @@ export class AIEnhancedQuestionsService {
 
             console.log(`🔍 Vector search query:`, {
                 type: request.topic,
-                grade: request.persona.grade,
+                grade: request.gradeLevel,
                 subject: request.subject,
             });
 
@@ -837,6 +921,7 @@ export class AIEnhancedQuestionsService {
     private calculateFallbackAgenticScore(
         request: QuestionGenerationRequest
     ): number {
+        const normalized = this.normalizeRequest(request);
         let score = 0.7; // Conservative base for offline
 
         // Boost for standard subjects and difficulties
@@ -850,7 +935,7 @@ export class AIEnhancedQuestionsService {
 
         if (
             ["easy", "medium", "hard"].includes(
-                request.difficulty.toLowerCase()
+                normalized.difficulty.toLowerCase()
             )
         ) {
             score += 0.05;
@@ -911,12 +996,16 @@ export class AIEnhancedQuestionsService {
         user: IUser,
         questionNumber: number
     ): string {
+        const normalized = this.normalizeRequest(request);
         // GREEN PHASE: Dynamic template generation instead of static selection
         const dynamicQuestion = this.generateDynamicQuestion(
             request.subject,
-            request.topic,
-            request.difficulty,
-            request.persona
+            normalized.topic,
+            normalized.difficulty,
+            {
+                learningStyle: normalized.learningStyle,
+                interests: normalized.interests,
+            } as any
         );
 
         // Apply AI enhancements based on persona
@@ -1761,7 +1850,19 @@ export class AIEnhancedQuestionsService {
                 // - topic: Use questionType (e.g., "ADDITION") for vector DB search (matches DB "type" field)
                 // - subtopic: Use rich category name for AI context and prompts
                 const legacyRequest: QuestionGenerationRequest = {
+                    // New format (required fields)
                     subject: request.subject,
+                    category: topicForAI,
+                    gradeLevel: request.gradeLevel,
+                    questionTypes: [questionType],
+                    questionFormat: "SHORT_ANSWER",
+                    difficultyLevel: request.difficultyLevel,
+                    numberOfQuestions: count,
+                    learningStyle: request.learningStyle,
+                    interests: request.interests || [],
+                    motivators: request.motivators || [],
+
+                    // Legacy format (for backward compatibility)
                     topic: questionType, // E2E FIX #2: Use DB key for vector search (ADDITION, DIVISION, etc.)
                     subtopic: topicForAI, // E2E FIX: Rich name for AI context (Number Operations & Arithmetic)
                     difficulty: request.difficultyLevel,

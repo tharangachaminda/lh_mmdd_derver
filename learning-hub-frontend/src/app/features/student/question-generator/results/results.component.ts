@@ -75,7 +75,7 @@ export class ResultsComponent implements OnInit {
   ngOnInit(): void {
     // Get validation result from router state or route data
     try {
-      const navigation = this.router.getCurrentNavigation?.();
+      const navigation = this.router.currentNavigation();
       if (navigation?.extras?.state?.['validationResult']) {
         this.validationResult = navigation.extras.state['validationResult'];
       } else if (this.route.snapshot.data['validationResult']) {
