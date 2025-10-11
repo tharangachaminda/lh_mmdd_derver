@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
@@ -69,7 +69,7 @@ export class SubjectSelectionComponent {
    */
   @Output() subjectSelected = new EventEmitter<string>();
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
   /**
    * Handle subject selection and navigate to category view
@@ -86,7 +86,7 @@ export class SubjectSelectionComponent {
   onSubjectSelect(subjectKey: string): void {
     this.subjectSelected.emit(subjectKey);
     this.router.navigate(['/student/question-generator/categories'], {
-      queryParams: { subject: subjectKey },
+      queryParams: { subject: subjectKey, grade: this.route.snapshot.queryParams['grade'] || '' },
     });
   }
 }

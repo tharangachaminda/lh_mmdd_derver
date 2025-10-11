@@ -41,15 +41,6 @@ export interface QuestionGenerationRequest {
         description: string;
         skillsFocus: string[];
     };
-
-    // Legacy compatibility (deprecated)
-    topic?: string; // Maps to category
-    subtopic?: string;
-    difficulty?: string; // Maps to difficultyLevel
-    questionType?: string; // Maps to questionTypes[0]
-    count?: number; // Maps to numberOfQuestions
-    persona?: any; // Legacy persona object
-    previousQuestions?: string[];
 }
 
 export interface GeneratedQuestion {
@@ -87,56 +78,6 @@ export class AIEnhancedQuestionsService {
 
     // Enhanced workflow (Session 3+4 features)
     private enhancedWorkflow: any; // Will be imported when needed
-
-    /**
-     * Normalize request format to handle both old and new request structures
-     * PHASE A6: Provides backward compatibility while supporting enhanced format
-     */
-    private normalizeRequest(request: QuestionGenerationRequest): {
-        subject: string;
-        category: string;
-        topic: string;
-        gradeLevel: number;
-        questionTypes: string[];
-        questionType: string;
-        difficulty: string;
-        difficultyLevel: string;
-        count: number;
-        numberOfQuestions: number;
-        learningStyle: string;
-        interests: string[];
-        motivators: string[];
-    } {
-        return {
-            // New format (primary)
-            subject: request.subject,
-            category: request.category || request.topic || "",
-            gradeLevel: request.gradeLevel || request.persona?.grade || 5,
-            questionTypes:
-                request.questionTypes ||
-                (request.questionType ? [request.questionType] : []),
-            difficultyLevel:
-                request.difficultyLevel || request.difficulty || "MEDIUM",
-            numberOfQuestions: request.numberOfQuestions || request.count || 5,
-            learningStyle:
-                request.learningStyle ||
-                request.persona?.learningStyle ||
-                "visual",
-            interests: request.interests || request.persona?.interests || [],
-            motivators:
-                request.motivators ||
-                request.persona?.motivationalFactors ||
-                [],
-
-            // Legacy format (for backward compatibility)
-            topic: request.category || request.topic || "",
-            questionType:
-                request.questionTypes?.[0] || request.questionType || "",
-            difficulty:
-                request.difficultyLevel || request.difficulty || "medium",
-            count: request.numberOfQuestions || request.count || 5,
-        };
-    }
 
     /**
      * Generate AI questions using REAL vector database and agentic workflows
@@ -188,9 +129,6 @@ export class AIEnhancedQuestionsService {
         };
     }> {
         try {
-            // PHASE A6: Normalize request to handle both old and new formats
-            const normalized = this.normalizeRequest(request);
-
             // Handle demo users
             let user: any;
             if (jwtPayload.userId === "demo-user-id") {
@@ -200,7 +138,7 @@ export class AIEnhancedQuestionsService {
                     firstName: "Demo",
                     lastName: "User",
                     role: jwtPayload.role,
-                    grade: (jwtPayload as any).grade || normalized.gradeLevel,
+                    grade: (jwtPayload as any).grade || request.gradeLevel,
                     country: (jwtPayload as any).country || "New Zealand",
                 };
             } else {
@@ -222,17 +160,64 @@ export class AIEnhancedQuestionsService {
 
             // Phase 2: REAL Multi-agent validation (simplified for GREEN phase)
             console.log("🤖 Phase 2: Real multi-agent workflow validation...");
-            const agenticValidationScore =
+            const agenticValidationResult =
                 await this.performRealAgenticValidation(request);
 
-            // Phase 3: Enhanced personalization with real context
+            // Phase 3: Transform agent-generated questions to GeneratedQuestion format
             console.log(
-                "🎯 Phase 3: Real personalization with vector context..."
+                "✅ Transforming agent-generated questions to API format..."
             );
-            const questions = this.generateAIEnhancedQuestions(request, user);
+            const agentQuestions = agenticValidationResult.questions || [];
+            const questions = agentQuestions.map((q: any, i: number) => ({
+                id: `ai_${Date.now()}_${i}`,
+                subject: request.subject,
+                topic: request.category,
+                difficulty: request.difficultyLevel,
+                questionType: request.questionTypes[0] || "SHORT_ANSWER",
+                question: q.text || q.question || "", // Support both formats
+                correctAnswer: q.answer?.toString() || "", // Convert number to string if needed
+                explanation: q.explanation || "",
+                hints: this.generatePersonalizedHints(
+                    request.subject,
+                    request.category,
+                    request.learningStyle,
+                    i + 1
+                ),
+                personalizationContext: {
+                    learningStyle: request.learningStyle,
+                    interests: request.interests,
+                    culturalReferences: this.getCulturalReferences(
+                        user.country || "New Zealand"
+                    ),
+                },
+                metadata: {
+                    estimatedTimeMinutes: this.estimateTimeByDifficulty(
+                        request.difficultyLevel
+                    ),
+                    gradeLevel: request.gradeLevel,
+                    tags: [
+                        request.subject,
+                        request.category,
+                        request.difficultyLevel,
+                        "ai-enhanced",
+                        "vector-database-sourced",
+                        "agent-generated",
+                        "quality-validated",
+                        "short-answer",
+                        "ai-validated",
+                    ],
+                    createdAt: new Date(),
+                    ...(q.metadata || {}), // Include agent metadata if present
+                },
+            }));
             const personalizationScore = this.calculatePersonalizationScore(
                 questions,
-                request.persona
+                {
+                    learningStyle: request.learningStyle,
+                    interests: request.interests,
+                    culturalContext: user.country || "New Zealand",
+                    grade: request.gradeLevel,
+                } as any
             );
 
             // Generate session and metrics
@@ -244,15 +229,19 @@ export class AIEnhancedQuestionsService {
             );
 
             const personalizationSummary = this.createPersonalizationSummary(
-                request.persona,
+                {
+                    learningStyle: request.learningStyle,
+                    interests: request.interests,
+                    grade: request.gradeLevel,
+                } as any,
                 user
             );
 
             const qualityMetrics = {
                 vectorRelevanceScore,
-                agenticValidationScore: agenticValidationScore.score,
+                agenticValidationScore: agenticValidationResult.score,
                 personalizationScore,
-                agentMetrics: agenticValidationScore.agentMetrics,
+                agentMetrics: agenticValidationResult.agentMetrics,
             };
 
             console.log("✅ AI Question Generation Complete:", {
@@ -283,85 +272,6 @@ export class AIEnhancedQuestionsService {
                 `Failed to generate AI questions: ${error.message}`
             );
         }
-    }
-
-    /**
-     * Generate AI-enhanced questions with simulated ML processing
-     */
-    private generateAIEnhancedQuestions(
-        request: QuestionGenerationRequest,
-        user: IUser
-    ): GeneratedQuestion[] {
-        const questions: GeneratedQuestion[] = [];
-        const normalized = this.normalizeRequest(request);
-
-        for (let i = 0; i < normalized.count; i++) {
-            // PHASE A6.1: Generate question text only (no answer calculation)
-            const questionText = this.generateAIContextualQuestion(
-                request,
-                user,
-                i + 1
-            );
-
-            // PHASE A6.1: No options, no correctAnswer - pure short-answer format
-            // Answers will be validated by AI after student submission
-            const question: GeneratedQuestion = {
-                id: `ai_${Date.now()}_${i}`,
-                subject: request.subject,
-                topic: normalized.topic,
-                subtopic: request.subtopic,
-                difficulty: normalized.difficulty,
-                questionType: normalized.questionType,
-                question: questionText,
-                // NO options field - all questions are short-answer format
-                // NO correctAnswer field - validated by AI after submission
-                correctAnswer: "", // Empty placeholder for interface compatibility
-                explanation: this.generateAIExplanation(
-                    request.subject,
-                    normalized.topic,
-                    { learningStyle: normalized.learningStyle } as any,
-                    i + 1
-                ),
-                hints: this.generatePersonalizedHints(
-                    request.subject,
-                    normalized.topic,
-                    normalized.learningStyle,
-                    i + 1
-                ),
-                personalizationContext: {
-                    learningStyle: normalized.learningStyle,
-                    interests: normalized.interests,
-                    culturalReferences: this.getCulturalReferences(
-                        user.country || "New Zealand"
-                    ),
-                },
-                metadata: {
-                    estimatedTimeMinutes: this.estimateTimeByDifficulty(
-                        normalized.difficulty
-                    ),
-                    gradeLevel: normalized.gradeLevel,
-                    tags: [
-                        request.subject,
-                        normalized.topic,
-                        normalized.difficulty,
-                        "ai-enhanced",
-                        "vector-database-sourced",
-                        "opensearch-context",
-                        "dynamic-generation",
-                        "agent-generated",
-                        "quality-validated",
-                        "context-enhanced",
-                        "short-answer", // PHASE A6: All questions are short-answer
-                        "ai-validated", // PHASE A6: Answers validated by LLM
-                    ],
-                    createdAt: new Date(),
-                },
-            };
-
-            questions.push(question);
-        }
-
-        return questions;
     }
 
     /**
@@ -444,8 +354,13 @@ export class AIEnhancedQuestionsService {
         request: QuestionGenerationRequest
     ): Promise<number> {
         try {
-            // REFACTOR: Check cluster health before querying
-            // This replaces the simulated vector relevance calculation
+            // DEBUG: Log incoming request to see what we're working with
+            console.log(`🔍 performRealVectorSearch called with:`, {
+                subject: request.subject,
+                questionTypes: request.questionTypes,
+                gradeLevel: request.gradeLevel,
+                category: request.category,
+            });
 
             // Basic HTTP client for OpenSearch connection
             // Force HTTP for local development to avoid SSL issues
@@ -482,27 +397,50 @@ export class AIEnhancedQuestionsService {
                 return 0.75; // Fallback if connection fails
             }
 
-            // E2E FIX #2: Query vector database using correct field names
-            // Database schema: { type: "ADDITION", grade: 4, subject: "Mathematics", ... }
-            // request.topic now contains questionType (e.g., "ADDITION") for proper matching
+            // Build query with multiple type matches (OR condition)
+            // Include ADVANCED_ARITHMETIC as a fallback for basic operations
+            const typeQueries: any[] = [];
+            if (request.questionTypes && request.questionTypes.length > 0) {
+                request.questionTypes.forEach((type: string) => {
+                    typeQueries.push({ match: { type } });
+                });
+            }
+
+            console.log(
+                `✅ Querying for types:`,
+                typeQueries.map((q) => q.match.type)
+            );
+
+            // Capitalize subject for database query (DB stores "Mathematics", frontend sends "mathematics")
+            const subjectCapitalized =
+                request.subject.charAt(0).toUpperCase() +
+                request.subject.slice(1);
+
             const searchQuery = {
                 query: {
                     bool: {
                         must: [
-                            { match: { subject: request.subject } },
-                            { match: { type: request.topic } }, // E2E FIX #2: Use "type" field (DB schema)
+                            { match: { subject: subjectCapitalized } },
+                            { term: { grade: request.gradeLevel } },
                         ],
-                        filter: [{ term: { grade: request.gradeLevel } }],
+                        should: typeQueries, // OR condition for multiple question types
+                        minimum_should_match: 1, // At least one type must match
                     },
                 },
-                size: 5,
+                size: 20, // Get more results for diverse type matching
             };
 
-            console.log(`🔍 Vector search query:`, {
-                type: request.topic,
-                grade: request.gradeLevel,
+            console.log(`🔍 Vector search parameters:`, {
+                types: typeQueries.map((q) => q.match.type),
+                exactGrade: request.gradeLevel,
                 subject: request.subject,
+                queryCount: typeQueries.length,
             });
+
+            console.log(
+                `🔍 Full OpenSearch query:`,
+                JSON.stringify(searchQuery, null, 2)
+            );
 
             const searchResponse = await fetch(
                 `${opensearchUrl}/enhanced-math-questions/_search`,
@@ -519,6 +457,23 @@ export class AIEnhancedQuestionsService {
             if (searchResponse.ok) {
                 const searchData = (await searchResponse.json()) as any;
                 const hits = searchData.hits?.hits || [];
+
+                // Show sample questions found
+                if (hits.length > 0) {
+                    const sampleQuestions = hits
+                        .slice(0, 3)
+                        .map((hit: any) => ({
+                            type: hit._source.type,
+                            difficulty: hit._source.difficulty,
+                            question:
+                                hit._source.question.substring(0, 60) + "...",
+                            score: hit._score,
+                        }));
+                    console.log(
+                        `📚 Sample questions from vector DB:`,
+                        sampleQuestions
+                    );
+                }
 
                 // Calculate real similarity score based on search results
                 const relevanceScore =
@@ -651,6 +606,7 @@ export class AIEnhancedQuestionsService {
                 engagementScore: number;
             };
         };
+        questions?: any[]; // Agent-generated questions
     }> {
         try {
             // REFACTOR: Skip validation if OpenSearch is unavailable
@@ -669,8 +625,7 @@ export class AIEnhancedQuestionsService {
 
             // Session 3+4: Check if enhanced workflow should be used
             const useEnhancedWorkflow =
-                process.env.USE_ENHANCED_WORKFLOW === "true" ||
-                request.persona.userId?.toString() === "enhanced-demo-user-id";
+                process.env.USE_ENHANCED_WORKFLOW === "true";
 
             if (useEnhancedWorkflow) {
                 return this.executeEnhancedWorkflow(request);
@@ -694,10 +649,22 @@ export class AIEnhancedQuestionsService {
                 "../agents/context-enhancer.agent.js"
             );
 
-            // REFACTOR: Build agent context with validation
+            // REFACTOR: Build agent context with vector database results
             const agentContext = await this.buildAgentContext(request);
+
+            // CRITICAL: Add vector database context for QuestionGeneratorAgent
+            // The agent needs similarQuestions to generate contextual questions
+            agentContext.curriculumContext = await this.getCurriculumContext(
+                request
+            );
+
             console.log(
-                `📋 Agent context built for ${request.count} questions, grade ${request.persona.grade}`
+                `📋 Agent context built for ${
+                    request.numberOfQuestions
+                } questions, grade ${request.gradeLevel}, ${
+                    agentContext.curriculumContext?.similarQuestions?.length ||
+                    0
+                } vector examples`
             );
 
             // GREEN PHASE SESSION 2: Execute 4-agent sequential workflow
@@ -749,6 +716,17 @@ export class AIEnhancedQuestionsService {
                         elapsed > 300000 ? "(⚠️  Consider caching)" : ""
                     }`
                 );
+                console.log(`Generated questions before quality check:`, {
+                    count:
+                        (generatedContext.questions &&
+                            generatedContext.questions.length) ||
+                        0,
+                    sample: generatedContext.questions
+                        ? generatedContext.questions
+                              .slice(0, 2)
+                              .map((q: any) => q.text || q.question)
+                        : [],
+                });
             } catch (error) {
                 const elapsed = Date.now() - generatorStart;
                 timing["QuestionGeneratorAgent"] = elapsed;
@@ -886,7 +864,11 @@ export class AIEnhancedQuestionsService {
                 } agents, ${totalTime}ms, score ${score.toFixed(3)}`
             );
 
-            return { score, agentMetrics };
+            return {
+                score,
+                agentMetrics,
+                questions: enhancedContext.questions || [], // Return agent-generated questions
+            };
         } catch (error) {
             // REFACTOR: Enhanced error handling with specific error types
             const errorMessage =
@@ -921,7 +903,6 @@ export class AIEnhancedQuestionsService {
     private calculateFallbackAgenticScore(
         request: QuestionGenerationRequest
     ): number {
-        const normalized = this.normalizeRequest(request);
         let score = 0.7; // Conservative base for offline
 
         // Boost for standard subjects and difficulties
@@ -935,7 +916,7 @@ export class AIEnhancedQuestionsService {
 
         if (
             ["easy", "medium", "hard"].includes(
-                normalized.difficulty.toLowerCase()
+                request.difficultyLevel.toLowerCase()
             )
         ) {
             score += 0.05;
@@ -954,11 +935,12 @@ export class AIEnhancedQuestionsService {
         let score = 0.75; // Base score
 
         // Higher grade = better vector matching
-        score += (request.persona.grade / 12) * 0.15;
+        score += (request.gradeLevel / 12) * 0.15;
 
-        // Better score for specific topics
-        if (request.topic && request.topic.length > 0) score += 0.05;
-        if (request.subtopic && request.subtopic.length > 0) score += 0.05;
+        // Better score for specific category
+        if (request.category && request.category.length > 0) score += 0.05;
+        if (request.questionTypes && request.questionTypes.length > 0)
+            score += 0.05;
 
         return Math.min(score, 0.98); // Cap at 98%
     }
@@ -985,61 +967,6 @@ export class AIEnhancedQuestionsService {
         if (persona.grade) score += 0.1;
 
         return Math.min(score, 1.0);
-    }
-
-    /**
-     * Generate AI-enhanced contextual question with dynamic randomization
-     * GREEN PHASE: Fixed question set duplication by adding dynamic generation
-     */
-    private generateAIContextualQuestion(
-        request: QuestionGenerationRequest,
-        user: IUser,
-        questionNumber: number
-    ): string {
-        const normalized = this.normalizeRequest(request);
-        // GREEN PHASE: Dynamic template generation instead of static selection
-        const dynamicQuestion = this.generateDynamicQuestion(
-            request.subject,
-            normalized.topic,
-            normalized.difficulty,
-            {
-                learningStyle: normalized.learningStyle,
-                interests: normalized.interests,
-            } as any
-        );
-
-        // Apply AI enhancements based on persona
-        return this.enhanceQuestionWithAI(dynamicQuestion, request.persona);
-    }
-
-    /**
-     * Enhance question text with AI personalization
-     */
-    private enhanceQuestionWithAI(
-        baseQuestion: string,
-        persona: IStudentPersona
-    ): string {
-        let enhanced = baseQuestion;
-
-        // Apply cultural context
-        if (persona.culturalContext === "New Zealand") {
-            enhanced = enhanced.replace(/apple/gi, "kiwi fruit");
-            enhanced = enhanced.replace(/\bcity\b/gi, "Auckland");
-            enhanced = enhanced.replace(/school/gi, "kura");
-        }
-
-        // Apply interest-based contexts
-        if (persona.interests.includes("sports")) {
-            enhanced = enhanced.replace(/game/gi, "rugby match");
-            enhanced = enhanced.replace(/team/gi, "All Blacks team");
-        }
-
-        if (persona.interests.includes("animals")) {
-            enhanced = enhanced.replace(/bird/gi, "kiwi bird");
-            enhanced = enhanced.replace(/pet/gi, "native New Zealand animal");
-        }
-
-        return enhanced;
     }
 
     // ============================================================================
@@ -1238,6 +1165,93 @@ export class AIEnhancedQuestionsService {
     }
 
     /**
+     * Fetches curriculum context from vector database for agent use.
+     *
+     * Retrieves similar questions from OpenSearch to provide examples and context
+     * for the QuestionGeneratorAgent. This allows the agent to generate questions
+     * in a similar style and difficulty level to the vector database content.
+     *
+     * @param request - Question generation request with search parameters
+     * @returns Curriculum context with similar questions from vector DB
+     */
+    private async getCurriculumContext(
+        request: QuestionGenerationRequest
+    ): Promise<any> {
+        try {
+            // Use the same OpenSearch query logic as performRealVectorSearch
+            const opensearchUrl =
+                process.env.OPENSEARCH_NODE || "http://localhost:9200";
+            const auth = Buffer.from("admin:admin").toString("base64");
+
+            const typeQueries: any[] = [];
+            if (request.questionTypes && request.questionTypes.length > 0) {
+                request.questionTypes.forEach((type: string) => {
+                    typeQueries.push({ match: { type } });
+                });
+            }
+
+            const subjectCapitalized =
+                request.subject.charAt(0).toUpperCase() +
+                request.subject.slice(1);
+
+            const searchQuery = {
+                query: {
+                    bool: {
+                        must: [
+                            { match: { subject: subjectCapitalized } },
+                            { term: { grade: request.gradeLevel } },
+                        ],
+                        should: typeQueries,
+                        minimum_should_match: 1,
+                    },
+                },
+                size: 5, // Fetch 5 examples for agent context
+            };
+
+            const searchResponse = await fetch(
+                `${opensearchUrl}/enhanced-math-questions/_search`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Basic ${auth}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(searchQuery),
+                }
+            );
+
+            if (searchResponse.ok) {
+                const result: any = await searchResponse.json();
+                const similarQuestions =
+                    result.hits?.hits?.map((hit: any) => ({
+                        question: hit._source.question,
+                        answer: hit._source.answer,
+                        explanation: hit._source.explanation,
+                        type: hit._source.type,
+                        difficulty: hit._source.difficulty,
+                    })) || [];
+
+                console.log(
+                    `📚 Curriculum context: ${similarQuestions.length} similar questions from vector DB`
+                );
+
+                return {
+                    similarQuestions,
+                    learningObjectives: [], // Could be enhanced later
+                };
+            } else {
+                console.warn(
+                    "⚠️  Failed to fetch curriculum context from vector DB"
+                );
+                return { similarQuestions: [], learningObjectives: [] };
+            }
+        } catch (error) {
+            console.warn("⚠️  Error fetching curriculum context:", error);
+            return { similarQuestions: [], learningObjectives: [] };
+        }
+    }
+
+    /**
      * Constructs an AgentContext object for multi-agent workflow execution.
      *
      * This method transforms the question generation request into a standardized
@@ -1269,10 +1283,10 @@ export class AIEnhancedQuestionsService {
         );
 
         return {
-            questionType: request.questionType as any,
-            difficulty: request.difficulty as any,
-            grade: request.persona.grade,
-            count: request.count,
+            questionType: request.questionTypes[0] as any,
+            difficulty: request.difficultyLevel as any,
+            grade: request.gradeLevel,
+            count: request.numberOfQuestions,
             questions: [], // Agents will populate this
             workflow: {
                 currentStep: "initialization",
@@ -1435,201 +1449,6 @@ export class AIEnhancedQuestionsService {
     }
 
     /**
-     * Get base question templates for different subjects and topics
-     */
-    private getBaseQuestionTemplates(
-        subject: string,
-        topic: string,
-        difficulty: string
-    ): string[] {
-        if (
-            subject === "mathematics" &&
-            topic.toLowerCase().includes("addition")
-        ) {
-            return [
-                "What is 3 + 4?",
-                "If you have 5 apples and get 2 more, how many apples do you have?",
-                "Sarah has 6 stickers. Her friend gives her 3 more. How many stickers does Sarah have now?",
-                "What is the sum of 7 and 5?",
-                "A team scored 4 points in the first game and 6 points in the second game. What was their total score?",
-            ];
-        }
-
-        return [
-            `What is an important concept in ${topic}?`,
-            `Can you explain how ${topic} works?`,
-            `What would happen if you changed something in ${topic}?`,
-        ];
-    }
-
-    /**
-     * Generate dynamic questions with randomized content and templates
-     * GREEN PHASE: Solves question set duplication by creating unique questions per request
-     * REFACTOR: Added support for multiplication, subtraction, and division
-     */
-    private generateDynamicQuestion(
-        subject: string,
-        topic: string,
-        difficulty: string,
-        persona: IStudentPersona
-    ): string {
-        if (subject === "mathematics") {
-            const topicLower = topic.toLowerCase();
-
-            // Common names and items for word problems
-            const names = ["Alex", "Emma", "Liam", "Maya", "Sam", "Ruby"];
-            const name = names[Math.floor(Math.random() * names.length)];
-
-            // ADDITION
-            if (topicLower.includes("addition")) {
-                const num1 = Math.floor(Math.random() * 12) + 1; // 1-12
-                const num2 = Math.floor(Math.random() * 8) + 1; // 1-8
-                const items = [
-                    "stickers",
-                    "books",
-                    "marbles",
-                    "cards",
-                    "coins",
-                ];
-                const item = items[Math.floor(Math.random() * items.length)];
-
-                const templates = [
-                    `What is ${num1} + ${num2}?`,
-                    `Calculate ${num1} + ${num2}`,
-                    `Find the sum of ${num1} and ${num2}`,
-                    `${name} has ${num1} ${item}. A friend gives ${name} ${num2} more. How many ${item} does ${name} have now?`,
-                    `If you have ${num1} ${item} and get ${num2} more, how many ${item} do you have?`,
-                ];
-
-                // Add persona-based word problems
-                if (persona.interests.includes("Sports")) {
-                    templates.push(
-                        `A rugby team scored ${num1} tries in the first half and ${num2} tries in the second half. What was their total score?`
-                    );
-                }
-                if (persona.interests.includes("Animals")) {
-                    templates.push(
-                        `If you have ${num1} kiwi birds and ${num2} more join them, how many kiwi birds are there?`
-                    );
-                }
-
-                return templates[Math.floor(Math.random() * templates.length)];
-            }
-
-            // SUBTRACTION
-            if (topicLower.includes("subtraction")) {
-                const num1 = Math.floor(Math.random() * 15) + 10; // 10-24 (larger number)
-                const num2 = Math.floor(Math.random() * 8) + 1; // 1-8 (smaller number)
-                const items = [
-                    "apples",
-                    "cookies",
-                    "toys",
-                    "pencils",
-                    "balloons",
-                ];
-                const item = items[Math.floor(Math.random() * items.length)];
-
-                const templates = [
-                    `What is ${num1} - ${num2}?`,
-                    `Calculate ${num1} - ${num2}`,
-                    `Find the difference between ${num1} and ${num2}`,
-                    `${name} has ${num1} ${item}. ${name} gives away ${num2} ${item}. How many ${item} does ${name} have left?`,
-                    `If you have ${num1} ${item} and lose ${num2}, how many ${item} do you have?`,
-                    `There were ${num1} ${item} in a box. ${num2} ${item} were taken out. How many ${item} are left in the box?`,
-                ];
-
-                if (persona.interests.includes("Sports")) {
-                    templates.push(
-                        `A team had ${num1} points. They lost ${num2} points due to a penalty. What is their score now?`
-                    );
-                }
-
-                return templates[Math.floor(Math.random() * templates.length)];
-            }
-
-            // MULTIPLICATION
-            if (
-                topicLower.includes("multiplication") ||
-                topicLower.includes("multiply")
-            ) {
-                const num1 = Math.floor(Math.random() * 10) + 2; // 2-11
-                const num2 = Math.floor(Math.random() * 8) + 2; // 2-9
-                const items = ["boxes", "bags", "packs", "groups", "rows"];
-                const item = items[Math.floor(Math.random() * items.length)];
-                const things = [
-                    "apples",
-                    "cookies",
-                    "books",
-                    "toys",
-                    "stickers",
-                ];
-                const thing = things[Math.floor(Math.random() * things.length)];
-
-                const templates = [
-                    `What is ${num1} × ${num2}?`,
-                    `Calculate ${num1} × ${num2}`,
-                    `What is ${num1} times ${num2}?`,
-                    `Find the product of ${num1} and ${num2}`,
-                    `There are ${num1} ${item} with ${num2} ${thing} in each ${item.slice(
-                        0,
-                        -1
-                    )}. How many ${thing} are there in total?`,
-                    `${name} has ${num1} ${item} of ${thing}. Each ${item.slice(
-                        0,
-                        -1
-                    )} contains ${num2} ${thing}. How many ${thing} does ${name} have altogether?`,
-                ];
-
-                if (persona.interests.includes("Sports")) {
-                    templates.push(
-                        `A team has ${num1} players. Each player scored ${num2} points. What is the team's total score?`
-                    );
-                }
-
-                return templates[Math.floor(Math.random() * templates.length)];
-            }
-
-            // DIVISION
-            if (
-                topicLower.includes("division") ||
-                topicLower.includes("divide")
-            ) {
-                const num2 = Math.floor(Math.random() * 6) + 2; // 2-7 (divisor)
-                const num1 = num2 * (Math.floor(Math.random() * 8) + 2); // Ensure even division
-                const items = ["cookies", "apples", "pencils", "toys", "cards"];
-                const item = items[Math.floor(Math.random() * items.length)];
-
-                const templates = [
-                    `What is ${num1} ÷ ${num2}?`,
-                    `Calculate ${num1} ÷ ${num2}`,
-                    `What is ${num1} divided by ${num2}?`,
-                    `${name} has ${num1} ${item}. ${name} wants to share them equally among ${num2} friends. How many ${item} does each friend get?`,
-                    `If you divide ${num1} ${item} into ${num2} equal groups, how many ${item} are in each group?`,
-                    `There are ${num1} ${item}. If ${num2} people share them equally, how many ${item} does each person get?`,
-                ];
-
-                return templates[Math.floor(Math.random() * templates.length)];
-            }
-        }
-
-        // For non-math or unrecognized math topics, return generic questions
-        const questionStarters = [
-            "What is an important concept in",
-            "Can you explain how",
-            "What would happen if you changed something in",
-            "Describe the main features of",
-            "How does",
-            "What are the key principles of",
-        ];
-
-        const starter =
-            questionStarters[
-                Math.floor(Math.random() * questionStarters.length)
-            ];
-        return `${starter} ${topic}?`;
-    }
-
-    /**
      * Execute enhanced workflow with LangChain prompts (Session 3+4)
      */
     private async executeEnhancedWorkflow(
@@ -1653,17 +1472,17 @@ export class AIEnhancedQuestionsService {
             // Execute enhanced workflow
             const result = await this.enhancedWorkflow.executeWorkflow({
                 subject: request.subject,
-                topic: request.topic,
-                difficulty: request.difficulty,
-                questionType: request.questionType,
-                count: request.count,
+                category: request.category,
+                difficulty: request.difficultyLevel,
+                questionType: request.questionTypes[0],
+                count: request.numberOfQuestions,
                 persona: {
-                    userId: request.persona.userId?.toString() || "demo-user",
-                    grade: request.persona.grade,
-                    learningStyle: request.persona.learningStyle,
-                    interests: request.persona.interests,
-                    culturalContext: request.persona.culturalContext,
-                    strengths: request.persona.strengths || [],
+                    userId: "demo-user",
+                    grade: request.gradeLevel,
+                    learningStyle: request.learningStyle,
+                    interests: request.interests,
+                    culturalContext: "New Zealand",
+                    strengths: [],
                 },
             });
 
@@ -1861,21 +1680,6 @@ export class AIEnhancedQuestionsService {
                     learningStyle: request.learningStyle,
                     interests: request.interests || [],
                     motivators: request.motivators || [],
-
-                    // Legacy format (for backward compatibility)
-                    topic: questionType, // E2E FIX #2: Use DB key for vector search (ADDITION, DIVISION, etc.)
-                    subtopic: topicForAI, // E2E FIX: Rich name for AI context (Number Operations & Arithmetic)
-                    difficulty: request.difficultyLevel,
-                    questionType: questionType,
-                    count: count,
-                    persona: {
-                        learningStyle: request.learningStyle,
-                        interests: request.interests || [],
-                        motivationalFactors: request.motivators || [],
-                        gradeLevel: request.gradeLevel,
-                        culturalBackground: "diverse", // Default
-                        accessibilityNeeds: [], // Default
-                    } as any, // Type assertion for compatibility
                 };
 
                 // Generate questions using existing generation logic

@@ -179,8 +179,25 @@ export class QuestionGeneratorAgent implements IEducationalAgent {
 
         const modelUsed = useAlternativeModel ? "qwen3:14b" : "llama3.1:latest";
 
+        // DEBUG: Log LLM response to see what we're getting
+        console.log(`🔍 LLM Response (question ${questionIndex + 1}):`, {
+            responseLength: response.length,
+            responsePreview: response.substring(0, 200),
+            questionType: context.questionType,
+            grade: context.grade,
+            difficulty: context.difficulty,
+        });
+
         // Parse the response (response is a string)
         const parsedQuestion = this.parseQuestionResponse(response);
+
+        // DEBUG: Log parsed result
+        console.log(`📝 Parsed Question ${questionIndex + 1}:`, {
+            hasQuestion: !!parsedQuestion.question,
+            questionLength: parsedQuestion.question?.length || 0,
+            hasAnswer: !!parsedQuestion.answer,
+            answer: parsedQuestion.answer,
+        });
         return {
             text: parsedQuestion.question,
             answer: parsedQuestion.answer,
