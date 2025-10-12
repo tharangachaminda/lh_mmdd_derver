@@ -12,8 +12,8 @@
 
   <!-- Categories Grid -->
   <div class="categories-grid" role="list">
+    @for (category of categories; track category.key) {
     <mat-card
-      *ngFor="let category of categories"
       class="category-card"
       [attr.data-category]="category.key"
       matRipple
@@ -68,6 +68,7 @@
         </div>
       </mat-card-content>
     </mat-card>
+    }
   </div>
 
   <!-- Empty State -->
