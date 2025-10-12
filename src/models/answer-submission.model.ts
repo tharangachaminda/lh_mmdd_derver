@@ -31,8 +31,8 @@ export interface IQuestionResult {
     maxScore: number;
     /** Binary correctness flag (score >= 7 typically means correct) */
     isCorrect: boolean;
-    /** Expected/ideal answer as determined by AI */
-    expectedAnswer: string;
+    /** Expected/ideal answer (optional for AI-validated SHORT_ANSWER questions) */
+    expectedAnswer?: string;
     /** Detailed feedback from AI validator */
     feedback: string;
     /** Explanation for partial credit, if applicable */
@@ -110,7 +110,7 @@ const QuestionResultSchema = new Schema<IQuestionResult>(
         score: { type: Number, required: true, min: 0, max: 10 },
         maxScore: { type: Number, required: true, default: 10 },
         isCorrect: { type: Boolean, required: true },
-        expectedAnswer: { type: String, required: true },
+        expectedAnswer: { type: String, required: false }, // Optional for AI-validated answers
         feedback: { type: String, required: true },
         partialCreditReason: { type: String, required: false },
     },

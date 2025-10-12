@@ -349,9 +349,10 @@ export class AuthService {
     private generateAccessToken(
         payload: Omit<JWTPayload, "iat" | "exp">
     ): string {
-        return jwt.sign(payload, this.JWT_SECRET, {
-            expiresIn: this.JWT_EXPIRES_IN,
-        } as SignOptions);
+        // Expires in 1 hour
+        const expiresIn = Math.floor(Date.now() / 1000) + 60 * 60;
+        const jwtPayload: JWTPayload = { ...payload, exp: expiresIn };
+        return jwt.sign(jwtPayload, this.JWT_SECRET);
     }
 
     /**
@@ -362,9 +363,10 @@ export class AuthService {
     private generateRefreshToken(
         payload: Omit<JWTPayload, "iat" | "exp">
     ): string {
-        return jwt.sign(payload, this.JWT_REFRESH_SECRET, {
-            expiresIn: this.JWT_REFRESH_EXPIRES_IN,
-        } as SignOptions);
+        // Expires in 1 hour
+        const expiresIn = Math.floor(Date.now() / 1000) + 60 * 60;
+        const jwtPayload: JWTPayload = { ...payload, exp: expiresIn };
+        return jwt.sign(jwtPayload, this.JWT_SECRET);
     }
 
     /**

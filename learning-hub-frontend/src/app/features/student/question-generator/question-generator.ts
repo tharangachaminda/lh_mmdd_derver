@@ -35,6 +35,7 @@ import {
 
 export { LearningStyle };
 import { User } from '../../../core/models/user.model';
+import { ResultsService } from '../../../core/services/results.service';
 
 @Component({
   selector: 'app-question-generator',
@@ -61,6 +62,7 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     // PHASE A6.4: Save current answer before navigating
     if (this.isShortAnswerMode && this.currentQuestion) {
       this.studentAnswers.set(this.currentQuestion.id, this.userAnswer);
+      this.questionService.storeStudentAnswersInLocalStorage(this.studentAnswers);
     }
 
     if (this.currentQuestionIndex < this.currentSession.questions.length - 1) {
@@ -69,6 +71,7 @@ export class QuestionGenerator implements OnInit, OnDestroy {
 
       // PHASE A6.4: Load stored answer for new question
       if (this.isShortAnswerMode && this.currentQuestion) {
+        this.studentAnswers = this.questionService.loadStudentAnswersFromLocalStorage();
         this.userAnswer = this.studentAnswers.get(this.currentQuestion.id) || '';
       }
 
@@ -95,6 +98,7 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     // PHASE A6.4: Save current answer before navigating
     if (this.isShortAnswerMode && this.currentQuestion) {
       this.studentAnswers.set(this.currentQuestion.id, this.userAnswer);
+      this.questionService.storeStudentAnswersInLocalStorage(this.studentAnswers);
     }
 
     if (this.currentQuestionIndex > 0) {
@@ -103,6 +107,7 @@ export class QuestionGenerator implements OnInit, OnDestroy {
 
       // PHASE A6.4: Load stored answer for new question
       if (this.isShortAnswerMode && this.currentQuestion) {
+        this.studentAnswers = this.questionService.loadStudentAnswersFromLocalStorage();
         this.userAnswer = this.studentAnswers.get(this.currentQuestion.id) || '';
       }
 
@@ -129,7 +134,8 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     private readonly questionService: QuestionService,
     private readonly authService: AuthService,
     private readonly router: Router,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private resultService: ResultsService
   ) {
     this.subscriptions = new Subscription();
     // ...existing code...
@@ -209,8 +215,6 @@ export class QuestionGenerator implements OnInit, OnDestroy {
   isSubmittingAnswers: boolean = false;
 
   ngOnInit(): void {
-    // ...existing code...
-
     // Check if user is authenticated
     if (!this.authService.isAuthenticated()) {
       console.log('❌ User not authenticated, redirecting to login');
@@ -220,6 +224,7 @@ export class QuestionGenerator implements OnInit, OnDestroy {
 
     // PHASE A6.3: Check for session in service first (persists across refresh)
     const existingSession = this.questionService.getCurrentSession();
+    console.log('Existing session from service:', existingSession);
     if (existingSession && existingSession.questions.length > 0) {
       this.isShortAnswerMode = true;
       this.currentSession = existingSession;
@@ -227,6 +232,8 @@ export class QuestionGenerator implements OnInit, OnDestroy {
       this.currentQuestionIndex = 0;
       this.currentQuestion = this.currentSession.questions[0];
 
+      this.studentAnswers = this.questionService.loadStudentAnswersFromLocalStorage();
+      console.log('Loaded student answers from local storage Q gen:', this.studentAnswers);
       // PHASE A6.4: Initialize userAnswer from stored answers for first question
       if (this.currentQuestion) {
         this.userAnswer = this.studentAnswers.get(this.currentQuestion.id) || '';
@@ -347,16 +354,6 @@ export class QuestionGenerator implements OnInit, OnDestroy {
           console.log('[AIQG] Session updated from observable:', session);
           console.log('[AIQG] Current question set from observable:', this.currentQuestion);
           this.cdr.detectChanges();
-        }
-      })
-    );
-
-    this.subscriptions.add(
-      this.questionService.currentQuestionIndex$.subscribe((index) => {
-        this.currentQuestionIndex = index;
-        this.currentQuestion = this.questionService.getCurrentQuestion();
-        if (this.currentQuestion) {
-          this.resetQuestionState();
         }
       })
     );
@@ -635,7 +632,6 @@ export class QuestionGenerator implements OnInit, OnDestroy {
    * Reset question state for new question
    */
   private resetQuestionState(): void {
-    this.userAnswer = '';
     this.showHint = false;
     this.hintsUsed = 0;
     this.questionStartTime = Date.now();
@@ -819,16 +815,21 @@ export class QuestionGenerator implements OnInit, OnDestroy {
           questionsValidated: result.questions.length,
         });
 
+        // Clear current session in service
+        this.questionService.clearLocalSession();
+
+        // Clear stored answers from local storage
+        this.questionService.clearStudentAnswersFromLocalStorage();
+        this.studentAnswers.clear();
+
         // Reset loading state
         this.isSubmittingAnswers = false;
         this.error = null;
 
         // Phase A6.5: Navigate to results page with validation data
-        this.router.navigate(['/student/question-generator/results'], {
-          state: {
-            validationResult: result,
-          },
-        });
+        // set results in shared results service
+        this.resultService.setValidationResults(result);
+        this.router.navigate(['/student/question-generator/results']);
       },
       error: (err) => {
         console.error('❌ Validation failed:', err);

@@ -7,7 +7,13 @@
 
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  FormControl,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -52,6 +58,8 @@ export class LoginComponent implements OnInit {
   hidePassword = true;
 
   ngOnInit(): void {
+    this.initializeForm();
+
     // Redirect if already authenticated
     if (this.authService.isAuthenticated()) {
       const user = this.authService.getCurrentUser();
@@ -60,15 +68,13 @@ export class LoginComponent implements OnInit {
         return;
       }
     }
-
-    this.initializeForm();
   }
 
   private initializeForm(): void {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      rememberMe: [false],
+    this.loginForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      rememberMe: new FormControl(false),
     });
   }
 
