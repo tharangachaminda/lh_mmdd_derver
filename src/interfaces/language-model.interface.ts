@@ -5,6 +5,10 @@ export interface ILanguageModel {
         grade: number,
         difficulty: string
     ): Promise<string>;
+    generateWithCustomPrompt(
+        prompt: string,
+        complexity?: "simple" | "complex"
+    ): Promise<string>;
     generateFeedback(
         question: string,
         studentAnswer: number,

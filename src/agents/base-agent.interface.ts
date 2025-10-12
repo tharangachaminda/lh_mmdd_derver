@@ -51,8 +51,10 @@ export interface AgentContext {
         prerequisiteSkills: string[];
         similarQuestions: Array<{
             question: string;
+            answer?: string | number;
             explanation?: string;
             type: QuestionType;
+            difficulty?: string;
             score: number;
         }>;
     };
