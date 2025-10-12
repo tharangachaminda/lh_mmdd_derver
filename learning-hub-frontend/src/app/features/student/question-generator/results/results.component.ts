@@ -18,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ResultsService } from '../../../../core/services/results.service';
 
 /**
  * Individual question validation result
@@ -186,23 +187,18 @@ export class ResultsComponent implements OnInit {
     areasForImprovement: ['Addition operations'],
   };
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private resultService: ResultsService
+  ) {}
 
   ngOnInit(): void {
     // Get validation result from router state or route data
     try {
-      const navigation = this.router.currentNavigation();
-      console.log('Navigation:', navigation);
-      if (navigation?.extras?.state?.['validationResult']) {
-        this.validationResult = navigation.extras.state['validationResult'];
-      } else if (this.route.snapshot.data['validationResult']) {
-        this.validationResult = this.route.snapshot.data['validationResult'];
-      }
+      this.validationResult = this.resultService.getValidationResult();
     } catch (error) {
-      // Fallback to route data in test environment
-      if (this.route.snapshot.data['validationResult']) {
-        this.validationResult = this.route.snapshot.data['validationResult'];
-      }
+      console.error('Failed to load validation result:', error);
     }
   }
 

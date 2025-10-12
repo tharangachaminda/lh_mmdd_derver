@@ -35,6 +35,7 @@ import {
 
 export { LearningStyle };
 import { User } from '../../../core/models/user.model';
+import { ResultsService } from '../../../core/services/results.service';
 
 @Component({
   selector: 'app-question-generator',
@@ -133,7 +134,8 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     private readonly questionService: QuestionService,
     private readonly authService: AuthService,
     private readonly router: Router,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private resultService: ResultsService
   ) {
     this.subscriptions = new Subscription();
     // ...existing code...
@@ -825,11 +827,9 @@ export class QuestionGenerator implements OnInit, OnDestroy {
         this.error = null;
 
         // Phase A6.5: Navigate to results page with validation data
-        this.router.navigate(['/student/question-generator/results'], {
-          state: {
-            validationResult: result,
-          },
-        });
+        // set results in shared results service
+        this.resultService.setValidationResults(result);
+        this.router.navigate(['/student/question-generator/results']);
       },
       error: (err) => {
         console.error('❌ Validation failed:', err);
