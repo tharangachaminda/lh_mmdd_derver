@@ -17,6 +17,8 @@ import {
   StudentRegistration,
 } from '../models/user.model';
 import { environment } from '../../../environments/environment';
+import { AuthToken } from '../models/auth.model';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -25,9 +27,9 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
 
-  private readonly TOKEN_KEY = 'learning_hub_token';
-  private readonly REFRESH_TOKEN_KEY = 'learning_hub_refresh_token';
-  private readonly USER_KEY = 'learning_hub_user';
+  private readonly TOKEN_KEY = AuthToken.LEARNING_HUB_TOKEN_KEY;
+  private readonly REFRESH_TOKEN_KEY = AuthToken.LEARNING_HUB_REFRESH_TOKEN_KEY;
+  private readonly USER_KEY = AuthToken.LEARNING_HUB_USER_KEY;
 
   // Current user state
   private currentUserSubject = new BehaviorSubject<User | null>(null);
@@ -49,7 +51,9 @@ export class AuthService {
     const token = this.getToken();
     const storedUser = this.getStoredUser();
 
-    if (token && storedUser && !this.isTokenExpired(token)) {
+    // TODO: Consider token expiration check
+    if (token && storedUser) {
+      // && !this.isTokenExpired(token) --- IGNORE for now ---
       this.currentUserSubject.next(storedUser);
       this.isAuthenticatedSubject.next(true);
     } else {
@@ -63,6 +67,7 @@ export class AuthService {
   login(credentials: LoginCredentials): Observable<AuthResponse> {
     return this.http.post<any>(`${environment.apiUrl}/auth/login`, credentials).pipe(
       tap((response) => {
+        console.log('Login response:', response);
         // Transform backend response to frontend format
         const authResponse: AuthResponse = {
           success: response.success,
@@ -99,6 +104,7 @@ export class AuthService {
    * Logout user and clear authentication data
    */
   logout(): void {
+    console.log('Clearing authentication data: Logout');
     this.clearAuthData();
     this.router.navigate(['/auth/login']);
   }
@@ -235,11 +241,14 @@ export class AuthService {
    */
   private isTokenExpired(token: string): boolean {
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      const payload = jwtDecode<JwtPayload>(token, { header: true });
+      console.log('Token payload:', payload);
       const currentTime = Math.floor(Date.now() / 1000);
-      return payload.exp < currentTime;
-    } catch {
-      return true;
+      return false;
+      // return payload.exp < currentTime;
+    } catch (e) {
+      console.error('Error decoding token:', e);
+      return false;
     }
   }
 

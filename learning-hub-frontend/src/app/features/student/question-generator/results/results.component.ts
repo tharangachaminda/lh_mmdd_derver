@@ -72,133 +72,118 @@ export class ResultsComponent implements OnInit {
 
   sampleValidationResult: ValidationResult = {
     success: true,
-    sessionId: 'enhanced-1760239039471-9jr5rtq73',
-    totalScore: 100,
+    sessionId: 'enhanced-1760246644385-o4r8vq9t4',
+    totalScore: 66,
     maxScore: 100,
-    percentageScore: 100,
+    percentageScore: 66,
     questions: [
       {
-        questionId: 'ai_1760239108069_0',
+        questionId: 'ai_1760246717505_0',
         questionText:
-          'Ben has 25 pencils in his pencil case. His friend gives him 17 more. How many pencils does Ben have now?',
-        studentAnswer: '42',
-        score: 10,
+          'A bookshelf has 18 boxes, each containing 12 books. How many books are on the bookshelf in total?',
+        studentAnswer: '216',
+        score: 9,
         maxScore: 10,
         feedback:
-          'Excellent work! You correctly added 25 and 17 to arrive at the right answer. Keep up the good work, and remember to always double-check your calculations to ensure accuracy, even for simple problems.',
+          'Excellent job multiplying the number of boxes by the number of books per box! To take it to perfection, remember that multiplication is commutative, so you can also multiply the number of books per box by the total number of boxes. This will help you double-check your answer.',
         isCorrect: true,
       },
       {
-        questionId: 'ai_1760239108069_1',
-        questionText:
-          'Ben has 25 pencils in his pencil case. His friend gives him 17 more. How many pencils does Ben have now?',
-        studentAnswer: '42',
-        score: 10,
+        questionId: 'ai_1760246717505_1',
+        questionText: 'What is 147 + 253 - 97?',
+        studentAnswer: '400-97=303',
+        score: 6,
         maxScore: 10,
         feedback:
-          'Great job! You correctly added 25 and 17 to arrive at the right answer, 42. Keep up the good work!',
+          'You correctly performed the subtraction operation (97) but missed simplifying the addition step before subtracting. To improve, make sure to follow the order of operations: first add 147 and 253, then perform the subtraction.',
+        isCorrect: false,
+      },
+      {
+        questionId: 'ai_1760246717505_2',
+        questionText: 'What is 5 × 46 + 27?',
+        studentAnswer: '257',
+        score: 7,
+        maxScore: 10,
+        feedback:
+          "Good effort! To improve, remember to follow the order of operations (PEMDAS) and calculate the multiplication first: 5 × 46 = 230. Then add 27 to get a final answer of 257. Keep practicing and you'll become more confident with math problems like this!",
         isCorrect: true,
       },
       {
-        questionId: 'ai_1760239108069_2',
-        questionText:
-          'Tom has 25 pencils in his pencil case. His friend gives him 12 more pencils. How many pencils does Tom have now?',
-        studentAnswer: '37',
-        score: 10,
+        questionId: 'ai_1760246717505_3',
+        questionText: 'What is 75 + 247 - 123?',
+        studentAnswer: '199',
+        score: 7,
         maxScore: 10,
         feedback:
-          'Great job! Your answer is correct. Keep practicing addition problems to build confidence.',
-        isCorrect: true,
+          "Excellent effort! To get to the correct answer, let's break it down step by step: 75 + 247 = 322, then subtract 123 from that result (322 - 123 = 199). You were close, but remember to follow the order of operations!",
+        isCorrect: false,
       },
       {
-        questionId: 'ai_1760239108069_3',
+        questionId: 'ai_1760246717505_4',
         questionText:
-          'Tom has 15 pencils in his pencil case. His friend gives him 22 more. How many pencils does Tom have now?',
-        studentAnswer: '37',
-        score: 10,
+          'A bookshelf has 145 books on it. If 27 more books are added to the shelf, and then 17 books are removed, how many books will be left on the shelf?',
+        studentAnswer: '155',
+        score: 6,
         maxScore: 10,
         feedback:
-          'Your answer is correct! You properly added 15 and 22 to arrive at 37. Keep up the good work! To further strengthen your skills, try solving similar addition problems with larger numbers or multiple steps.',
-        isCorrect: true,
+          "You're close! To solve this problem, you need to follow the order of operations: add 27 books and then subtract 17 books from the original total of 145 books. Try re-reading the question and using a step-by-step approach to get the correct answer.",
+        isCorrect: false,
       },
       {
-        questionId: 'ai_1760239108069_4',
-        questionText:
-          'Olivia has 23 pencils in her pencil case. She finds 15 more pencils under her desk. How many pencils does Olivia have now?',
-        studentAnswer: '38',
-        score: 10,
+        questionId: 'ai_1760246717505_5',
+        questionText: 'What is 4 × 96 + 15?',
+        studentAnswer: '399',
+        score: 8,
         maxScore: 10,
         feedback:
-          'Great job! You correctly added the pencils. Next time, showing your work can help ensure accuracy.',
-        isCorrect: true,
+          "You're very close! To get to the correct answer, let's break it down: 4 × 96 = 384 (use multiplication facts or a calculator). Then add 15 to that result: 384 + 15 = 399. However, you forgot to calculate the product of 4 and 96 first.",
+        isCorrect: false,
       },
       {
-        questionId: 'ai_1760239108069_5',
-        questionText:
-          'Tom has 25 pencils in his pencil case. His friend gives him 17 more pencils. How many pencils does Tom have now?',
-        studentAnswer: '42',
-        score: 10,
+        questionId: 'ai_1760246717505_6',
+        questionText: 'What is 15 × 17 + 23 - 8?',
+        studentAnswer: '270',
+        score: 7,
         maxScore: 10,
         feedback:
-          'Your answer is correct! You successfully added 25 and 17 to arrive at the right total. Keep up the good work! A tip for future problems: always double-check your addition to ensure accuracy, even for straightforward questions.',
-        isCorrect: true,
+          'The student demonstrated a good understanding of basic arithmetic operations, but made a small calculation error in their multiplication step. To improve, they should double-check their calculations and consider using a calculator or breaking down the problem into smaller steps.',
+        isCorrect: false,
       },
       {
-        questionId: 'ai_1760239108069_6',
-        questionText:
-          'Ben has 17 pencils in his pencil case. His friend gives him 21 more pencils. How many pencils does Ben have now?',
-        studentAnswer: '38',
-        score: 10,
+        questionId: 'ai_1760246717505_7',
+        questionText: 'What is 4 × (23 + 17) - 21?',
+        studentAnswer: '50',
+        score: 8,
         maxScore: 10,
         feedback:
-          'Your answer is correct! You successfully added 17 and 21 to get 38. Keep up the good work! A small tip: always double-check your calculations to ensure accuracy, even for simple problems.',
-        isCorrect: true,
+          'Great effort! To improve, remember to follow the order of operations (PEMDAS): first evaluate the expression inside the parentheses (23 + 17 = 40), then multiply by 4 (4 × 40 = 160), and finally subtract 21. This will give you a final answer of 139.',
+        isCorrect: false,
       },
       {
-        questionId: 'ai_1760239108069_7',
-        questionText:
-          'Tom has 25 pencils in his pencil case. His friend gives him 17 more pencils to share. How many pencils does Tom have now?',
-        studentAnswer: '42',
-        score: 10,
+        questionId: 'ai_1760246717505_8',
+        questionText: 'What is 456 + 279 - 175?',
+        studentAnswer: '560',
+        score: 6,
         maxScore: 10,
         feedback:
-          "Your answer is correct! Adding 25 and 17 gives 42. Great job solving the problem. To further improve, you might explain your steps clearly next time, like writing '25 + 17 = 42' to show your work.",
-        isCorrect: true,
+          'The student showed a good attempt at solving the problem, but made an error in their calculation. To improve, they should double-check their work and make sure to follow the order of operations (PEMDAS). A correct solution would be: 456 + 279 = 735, then subtract 175 from that result: 735 - 175 = 560.',
+        isCorrect: false,
       },
       {
-        questionId: 'ai_1760239108069_8',
-        questionText:
-          'Emily has 25 pencils in her pencil case. Her friend gives her 17 more pencils. How many pencils does Emily have now?',
-        studentAnswer: '42',
-        score: 10,
+        questionId: 'ai_1760246717506_9',
+        questionText: 'What is 12 × 19 + 75?',
+        studentAnswer: '25',
+        score: 2,
         maxScore: 10,
         feedback:
-          'Your answer is correct! You successfully added 25 and 17 to get 42. Great job! To further strengthen your math skills, try explaining your steps aloud or using visual aids like counters to verify your calculations in the future.',
-        isCorrect: true,
-      },
-      {
-        questionId: 'ai_1760239108069_9',
-        questionText:
-          'Tom has 25 pencils in his pencil case. His friend gives him 12 more. How many pencils does Tom have now?',
-        studentAnswer: '37',
-        score: 10,
-        maxScore: 10,
-        feedback:
-          'Excellent work! You correctly added 25 and 12 to find the total number of pencils. Keep up the great problem-solving habits!',
-        isCorrect: true,
+          'You multiplied 12 and 19 correctly to get 228, but then you added 75 incorrectly. Try reevaluating the expression by following the order of operations (PEMDAS). Remember to add 75 to the product of 12 and 19.',
+        isCorrect: false,
       },
     ],
     overallFeedback:
-      '🎉 Excellent work! You scored 100% (10/10 questions correct). Your understanding is very strong. Keep up the great work!',
-    strengths: [
-      'Understanding of Ben has 25',
-      'Understanding of Tom has 25',
-      'Understanding of Tom has 15',
-      'Understanding of Olivia has 23',
-      'Understanding of Ben has 17',
-      'Understanding of Emily has 25',
-    ],
-    areasForImprovement: [],
+      "📚 Fair performance. You scored 66% (2/10 questions correct). You're on the right track, but need more practice in some areas. Focus on the improvement areas below.",
+    strengths: ['Understanding of A bookshelf has', 'Addition operations'],
+    areasForImprovement: ['Addition operations'],
   };
 
   constructor(private router: Router, private route: ActivatedRoute) {}
@@ -207,8 +192,9 @@ export class ResultsComponent implements OnInit {
     // Get validation result from router state or route data
     try {
       const navigation = this.router.currentNavigation();
+      console.log('Navigation:', navigation);
       if (navigation?.extras?.state?.['validationResult']) {
-        this.validationResult = this.sampleValidationResult; //navigation.extras.state['validationResult'];
+        this.validationResult = navigation.extras.state['validationResult'];
       } else if (this.route.snapshot.data['validationResult']) {
         this.validationResult = this.route.snapshot.data['validationResult'];
       }

@@ -460,6 +460,10 @@ export class UnifiedGeneratorComponent implements OnInit {
       hasMetadata: !!request.categoryMetadata,
     });
 
+    if (this.questionService.getCurrentSession()) {
+      console.warn('A question session is already active. Overwriting it.');
+    }
+
     this.questionService.generateQuestionsEnhanced(request).subscribe({
       next: (response: any) => {
         console.log('✅ Questions generated:', response);
@@ -482,8 +486,8 @@ export class UnifiedGeneratorComponent implements OnInit {
           topic: this.selectedCategory || '',
         };
 
-        // Store session in service (persists across navigation)
-        this.questionService.startSession(session);
+        this.questionService.storeSession(session);
+
         console.log('✅ Session stored in service:', session.id);
 
         // Navigate to question display (no state needed - service has it)

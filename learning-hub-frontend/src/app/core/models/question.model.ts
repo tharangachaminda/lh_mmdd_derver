@@ -36,6 +36,14 @@ export enum LearningStyle {
 }
 
 /**
+ * Student Answers
+ */
+export interface StudentAnswer {
+  questionId: string;
+  studentAnswer: string;
+}
+
+/**
  * Student Persona for Question Personalization
  */
 export interface StudentPersona {

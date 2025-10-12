@@ -400,6 +400,56 @@ export class QuestionService {
   }
 
   /**
+   * store the current session in local storage.
+   *
+   * @returns {void}
+   * @example
+   * this.questionService.storeSession();
+   */
+  storeSession(session: QuestionSession): void {
+    if (session) {
+      console.log('Storing session in local storage:', session);
+      localStorage.setItem('current_question_session', JSON.stringify(session));
+    }
+  }
+
+  /**
+   * load the current session from local storage.
+   *
+   * @returns {void}
+   * @example
+   * this.questionService.loadSession();
+   */
+  loadSession(): void {
+    const session = localStorage.getItem('current_question_session');
+    if (session) {
+      this.currentSessionSubject.next(JSON.parse(session));
+    }
+  }
+
+  /**
+   * Check if a local session exists.
+   *
+   * @returns {boolean} True if a session exists, false otherwise.
+   * @example
+   * const exists = this.questionService.hasLocalSession();
+   */
+  hasLocalSession(): boolean {
+    return localStorage.getItem('current_question_session') !== null;
+  }
+
+  /**
+   * Clear local session storage.
+   *
+   * @returns {void}
+   * @example
+   * this.questionService.clearLocalSession();
+   */
+  clearLocalSession(): void {
+    localStorage.removeItem('current_question_session');
+  }
+
+  /**
    * Get current question session.
    *
    * @returns {QuestionSession | null} Current question session or null.
@@ -407,7 +457,51 @@ export class QuestionService {
    * const session = this.questionService.getCurrentSession();
    */
   getCurrentSession(): QuestionSession | null {
+    // Load from local storage if not already loaded
+    if (this.hasLocalSession()) {
+      this.loadSession();
+    }
     return this.currentSessionSubject.value;
+  }
+
+  /**
+   * store Student Answers in local storage.
+   *
+   * @returns {void}
+   * @example
+   * this.questionService.storeStudentAnswers();
+   */
+  storeStudentAnswersInLocalStorage(answers: Map<string, string>): void {
+    if (answers) {
+      console.log('Storing student answers in local storage:', answers);
+      localStorage.setItem('student_answers', JSON.stringify(Array.from(answers.entries())));
+    }
+  }
+
+  /**
+   * load Student Answers from local storage.
+   *
+   * @returns {Map<string, string>} Map of questionId to studentAnswer.
+   * @example
+   * const answers = this.questionService.loadStudentAnswers();
+   */
+  loadStudentAnswersFromLocalStorage(): Map<string, string> {
+    const answers = localStorage.getItem('student_answers');
+    if (answers) {
+      return new Map<string, string>(JSON.parse(answers));
+    }
+    return new Map<string, string>();
+  }
+
+  /**
+   * Clear Student Answers from local storage.
+   *
+   * @returns {void}
+   * @example
+   * this.questionService.clearStudentAnswers();
+   */
+  clearStudentAnswersFromLocalStorage(): void {
+    localStorage.removeItem('student_answers');
   }
 
   /**
