@@ -54,6 +54,7 @@ import {
   getDisplayNameForQuestionType,
   QuestionSession,
   GeneratedQuestion,
+  getQuestionTypesForCategoryAndGrade,
 } from '../../../../core/models/question.model';
 
 /**
@@ -216,7 +217,7 @@ export class UnifiedGeneratorComponent implements OnInit {
       return;
     }
 
-    const types = getQuestionTypesForCategory(this.selectedCategory);
+    const types = getQuestionTypesForCategoryAndGrade(this.selectedCategory, this.gradeLevel);
     this.questionTypes = types.map((type) => ({
       dbType: type,
       displayName: getDisplayNameForQuestionType(type),

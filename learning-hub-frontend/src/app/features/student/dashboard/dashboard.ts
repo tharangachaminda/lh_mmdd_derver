@@ -60,7 +60,7 @@ export class Dashboard implements OnInit {
    */
   startQuestionGenerator(): void {
     this.router.navigate(['/student/question-generator/select-subject'], {
-      queryParams: { grade: this.user?.grade },
+      queryParams: { grade: this.user?.grade || 3 }, // Default to grade 3 for demo; ideally pass actual user grade
     });
   }
 }

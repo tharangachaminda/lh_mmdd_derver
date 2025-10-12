@@ -478,14 +478,7 @@ export interface GradeTopics {
  */
 export const GRADE_TOPICS: GradeTopics = {
   3: {
-    mathematics: [
-      'ADDITION',
-      'SUBTRACTION',
-      'MULTIPLICATION',
-      'DIVISION',
-      'PATTERN_RECOGNITION',
-      'SHAPE_PROPERTIES',
-    ],
+    mathematics: ['ADDITION', 'SUBTRACTION', 'MULTIPLICATION', 'DIVISION', 'PATTERN_RECOGNITION'],
   },
   4: {
     mathematics: [
@@ -499,115 +492,57 @@ export const GRADE_TOPICS: GradeTopics = {
       'PATTERN_RECOGNITION',
       'SHAPE_PROPERTIES',
       'TIME_MEASUREMENT',
-      'MEASUREMENT_MASTERY',
     ],
   },
   5: {
     mathematics: [
-      'MULTIPLICATION',
-      'DIVISION',
       'ADVANCED_ARITHMETIC',
+      'ALGEBRAIC_THINKING',
       'DECIMAL_OPERATIONS',
       'FRACTION_OPERATIONS',
       'RATIO_PROPORTION',
-      'ALGEBRAIC_THINKING',
-      'PATTERN_RECOGNITION',
-      'AREA_VOLUME_CALCULATIONS',
-      'COORDINATE_GEOMETRY',
-      'MEASUREMENT_MASTERY',
-      'TIME_CALCULATIONS',
-      'DATA_ANALYSIS',
-      'PROBABILITY_BASICS',
-      'SHAPE_PROPERTIES',
-      'REAL_WORLD_APPLICATIONS',
     ],
   },
   6: {
     mathematics: [
       'LARGE_NUMBER_OPERATIONS',
       'ADVANCED_FRACTIONS_DECIMALS',
-      'FRACTION_DECIMAL_PERCENTAGE',
       'ALGEBRAIC_EQUATIONS',
-      'ALGEBRAIC_THINKING',
       'ADVANCED_PATTERNS',
-      'NUMBER_PATTERNS',
-      'PERIMETER_AREA_VOLUME',
+      'AREA_VOLUME_CALCULATIONS',
       'COORDINATE_GEOMETRY',
       'TRANSFORMATIONS_SYMMETRY',
       'MEASUREMENT_MASTERY',
-      'UNIT_CONVERSIONS',
       'DATA_ANALYSIS',
       'PROBABILITY_BASICS',
-      'RATIO_PROPORTION',
-      'SIMPLE_RATIOS',
       'ADVANCED_PROBLEM_SOLVING',
       'MATHEMATICAL_REASONING',
       'REAL_WORLD_APPLICATIONS',
-      'TIME_CALCULATIONS',
-      'SHAPE_PROPERTIES',
-      'ADVANCED_ARITHMETIC',
     ],
   },
   7: {
     mathematics: [
       'ADVANCED_NUMBER_OPERATIONS',
-      'NEGATIVE_NUMBERS',
       'FRACTION_DECIMAL_MASTERY',
-      'ADVANCED_FRACTIONS_DECIMALS',
       'ALGEBRAIC_FOUNDATIONS',
-      'ALGEBRAIC_EQUATIONS',
-      'NUMBER_PATTERNS',
-      'ADVANCED_PATTERNS',
-      'PERIMETER_AREA_VOLUME',
       'GEOMETRY_SPATIAL_REASONING',
-      'COORDINATE_GEOMETRY',
-      'TRANSFORMATIONS_SYMMETRY',
       'MULTI_UNIT_CONVERSIONS',
-      'UNIT_CONVERSIONS',
       'DATA_ANALYSIS_PROBABILITY',
-      'DATA_ANALYSIS',
-      'PROBABILITY_BASICS',
-      'RATIO_PROPORTION',
-      'EQUIVALENT_RATIOS',
-      'UNIT_RATES',
-      'SPEED_CALCULATIONS',
-      'ADVANCED_PROBLEM_SOLVING',
-      'MATHEMATICAL_REASONING',
-      'REAL_WORLD_APPLICATIONS',
     ],
   },
   8: {
     mathematics: [
       'PRIME_COMPOSITE_NUMBERS',
       'NEGATIVE_NUMBERS',
-      'LARGE_NUMBER_OPERATIONS',
       'FRACTION_DECIMAL_PERCENTAGE',
-      'ADVANCED_FRACTIONS_DECIMALS',
-      'FINANCIAL_LITERACY',
       'NUMBER_PATTERNS',
       'LINEAR_EQUATIONS',
       'ALGEBRAIC_MANIPULATION',
-      'ALGEBRAIC_FOUNDATIONS',
-      'ALGEBRAIC_EQUATIONS',
       'PERIMETER_AREA_VOLUME',
-      'COORDINATE_GEOMETRY',
-      'GEOMETRY_SPATIAL_REASONING',
-      'TRANSFORMATIONS_SYMMETRY',
-      'MULTI_UNIT_CONVERSIONS',
       'UNIT_CONVERSIONS',
-      'TIME_CALCULATIONS',
       'SPEED_CALCULATIONS',
-      'AVERAGE_SPEED',
-      'DISTANCE_CALCULATIONS',
-      'MULTI_STAGE_JOURNEYS',
-      'UNIT_CONVERSIONS_MOTION',
-      'DATA_ANALYSIS_PROBABILITY',
-      'DATA_ANALYSIS',
-      'RATIO_PROPORTION',
-      'RATIO_SIMPLIFICATION',
-      'SCALE_FACTORS',
-      'ADVANCED_PROBLEM_SOLVING',
-      'MATHEMATICAL_REASONING',
+      'RATIOS_PROPORTIONS',
+      'FINANCIAL_LITERACY',
     ],
   },
 };
@@ -745,85 +680,85 @@ export const QUESTION_CATEGORIES: Record<string, CategoryInfo> = {
 
 /**
  * Maps vector database question types to user-friendly display names
+ * Updated to match actual question bank files (Grades 3-8)
+ *
+ * @remarks
+ * This mapping only includes question types that exist in the database.
+ * Organized by category for maintainability.
  */
 export const QUESTION_TYPE_DISPLAY_NAMES: Record<string, string> = {
-  // Number Operations & Arithmetic
-  ADDITION: 'Addition',
-  SUBTRACTION: 'Subtraction',
-  MULTIPLICATION: 'Multiplication',
-  DIVISION: 'Division',
-  DECIMAL_BASICS: 'Decimals (Basic)',
-  DECIMAL_OPERATIONS: 'Decimal Operations',
-  FRACTION_BASICS: 'Fractions (Basic)',
-  FRACTION_OPERATIONS: 'Fraction Operations',
-  FRACTION_DECIMAL_PERCENTAGE: 'Fractions, Decimals & Percentages',
-  FRACTION_DECIMAL_MASTERY: 'Fraction & Decimal Mastery',
-  ADVANCED_FRACTIONS_DECIMALS: 'Advanced Fractions & Decimals',
-  PLACE_VALUE: 'Place Value',
-  LARGE_NUMBER_OPERATIONS: 'Large Numbers',
-  NEGATIVE_NUMBERS: 'Negative Numbers',
-  PRIME_COMPOSITE_NUMBERS: 'Prime & Composite Numbers',
-  ADVANCED_ARITHMETIC: 'Advanced Arithmetic',
-  ADVANCED_NUMBER_OPERATIONS: 'Advanced Number Operations',
+  // Number Operations & Arithmetic (Grades 3-8)
+  ADDITION: 'Addition', // Grades 3-4
+  SUBTRACTION: 'Subtraction', // Grades 3-4
+  MULTIPLICATION: 'Multiplication', // Grades 3-4
+  DIVISION: 'Division', // Grades 3-4
+  DECIMAL_BASICS: 'Decimals (Basic)', // Grade 4
+  DECIMAL_OPERATIONS: 'Decimal Operations', // Grade 5
+  FRACTION_BASICS: 'Fractions (Basic)', // Grade 4
+  FRACTION_OPERATIONS: 'Fraction Operations', // Grade 5
+  FRACTION_DECIMAL_PERCENTAGE: 'Fractions, Decimals & Percentages', // Grade 8
+  FRACTION_DECIMAL_MASTERY: 'Fraction & Decimal Mastery', // Grade 7
+  ADVANCED_FRACTIONS_DECIMALS: 'Advanced Fractions & Decimals', // Grade 6
+  PLACE_VALUE: 'Place Value', // Grade 4
+  LARGE_NUMBER_OPERATIONS: 'Large Numbers', // Grade 6
+  NEGATIVE_NUMBERS: 'Negative Numbers', // Grade 8
+  PRIME_COMPOSITE_NUMBERS: 'Prime & Composite Numbers', // Grade 8
+  ADVANCED_ARITHMETIC: 'Advanced Arithmetic', // Grade 5
+  ADVANCED_NUMBER_OPERATIONS: 'Advanced Number Operations', // Grade 7
 
-  // Algebra & Patterns
-  PATTERN_RECOGNITION: 'Pattern Recognition',
-  NUMBER_PATTERNS: 'Number Patterns',
-  ADVANCED_PATTERNS: 'Advanced Patterns',
-  ALGEBRAIC_THINKING: 'Algebraic Thinking',
-  ALGEBRAIC_EQUATIONS: 'Algebraic Equations',
-  ALGEBRAIC_FOUNDATIONS: 'Algebraic Foundations',
-  ALGEBRAIC_MANIPULATION: 'Algebraic Expressions',
-  LINEAR_EQUATIONS: 'Linear Equations',
+  // Algebra & Patterns (Grades 3-8)
+  PATTERN_RECOGNITION: 'Pattern Recognition', // Grades 3-4
+  NUMBER_PATTERNS: 'Number Patterns', // Grade 8
+  ADVANCED_PATTERNS: 'Advanced Patterns', // Grade 6
+  ALGEBRAIC_THINKING: 'Algebraic Thinking', // Grade 5
+  ALGEBRAIC_EQUATIONS: 'Algebraic Equations', // Grade 6
+  ALGEBRAIC_FOUNDATIONS: 'Algebraic Foundations', // Grade 7
+  ALGEBRAIC_MANIPULATION: 'Algebraic Expressions', // Grade 8
+  LINEAR_EQUATIONS: 'Linear Equations', // Grade 8
 
-  // Geometry & Measurement
-  SHAPE_PROPERTIES: 'Shape Properties',
-  AREA_VOLUME_CALCULATIONS: 'Area & Volume',
-  PERIMETER_AREA_VOLUME: 'Perimeter, Area & Volume',
-  COORDINATE_GEOMETRY: 'Coordinate Geometry',
-  GEOMETRY_SPATIAL_REASONING: 'Spatial Reasoning',
-  TRANSFORMATIONS_SYMMETRY: 'Transformations & Symmetry',
-  MEASUREMENT_MASTERY: 'Measurement Mastery',
-  UNIT_CONVERSIONS: 'Unit Conversions',
-  MULTI_UNIT_CONVERSIONS: 'Multi-Unit Conversions',
-  TIME_MEASUREMENT: 'Time Measurement',
-  TIME_CALCULATIONS: 'Time Calculations',
+  // Geometry & Measurement (Grades 4-8)
+  SHAPE_PROPERTIES: 'Shape Properties', // Grade 4
+  AREA_VOLUME_CALCULATIONS: 'Area & Volume', // Grade 6
+  PERIMETER_AREA_VOLUME: 'Perimeter, Area & Volume', // Grade 8
+  COORDINATE_GEOMETRY: 'Coordinate Geometry', // Grade 6
+  GEOMETRY_SPATIAL_REASONING: 'Spatial Reasoning', // Grade 7
+  TRANSFORMATIONS_SYMMETRY: 'Transformations & Symmetry', // Grade 6
+  MEASUREMENT_MASTERY: 'Measurement Mastery', // Grade 6
+  UNIT_CONVERSIONS: 'Unit Conversions', // Grade 8
+  MULTI_UNIT_CONVERSIONS: 'Multi-Unit Conversions', // Grade 7
+  TIME_MEASUREMENT: 'Time Measurement', // Grade 4
 
-  // Statistics & Probability
-  DATA_ANALYSIS: 'Data Analysis',
-  DATA_ANALYSIS_PROBABILITY: 'Data Analysis & Probability',
-  PROBABILITY_BASICS: 'Probability Basics',
+  // Statistics & Probability (Grades 6-7)
+  DATA_ANALYSIS: 'Data Analysis', // Grade 6
+  DATA_ANALYSIS_PROBABILITY: 'Data Analysis & Probability', // Grade 7
+  PROBABILITY_BASICS: 'Probability Basics', // Grade 6
 
-  // Ratios, Rates & Proportions
-  RATIO_PROPORTION: 'Ratios & Proportions',
-  SIMPLE_RATIOS: 'Simple Ratios',
-  EQUIVALENT_RATIOS: 'Equivalent Ratios',
-  RATIO_SIMPLIFICATION: 'Ratio Simplification',
-  PROPORTIONS: 'Proportions',
-  SCALE_FACTORS: 'Scale Factors',
-  UNIT_RATES: 'Unit Rates',
+  // Ratios & Proportions (Grades 5, 8)
+  RATIO_PROPORTION: 'Ratios & Proportions', // Grade 5
+  RATIOS_PROPORTIONS: 'Ratios & Proportions', // Grade 8
 
-  // Motion & Distance
-  SPEED_CALCULATIONS: 'Speed Calculations',
-  AVERAGE_SPEED: 'Average Speed',
-  DISTANCE_CALCULATIONS: 'Distance Calculations',
-  MULTI_STAGE_JOURNEYS: 'Multi-Stage Journeys',
-  UNIT_CONVERSIONS_MOTION: 'Unit Conversions (Motion)',
+  // Motion & Distance (Grade 8)
+  SPEED_CALCULATIONS: 'Speed Calculations', // Grade 8
 
-  // Financial Literacy
-  FINANCIAL_LITERACY: 'Money & Financial Literacy',
+  // Financial Literacy (Grade 8)
+  FINANCIAL_LITERACY: 'Money & Financial Literacy', // Grade 8
 
-  // Problem Solving & Reasoning
-  REAL_WORLD_APPLICATIONS: 'Real-World Math Problems',
-  ADVANCED_PROBLEM_SOLVING: 'Problem Solving',
-  MATHEMATICAL_REASONING: 'Mathematical Reasoning',
+  // Problem Solving & Reasoning (Grade 6)
+  REAL_WORLD_APPLICATIONS: 'Real-World Math Problems', // Grade 6
+  ADVANCED_PROBLEM_SOLVING: 'Problem Solving', // Grade 6
+  MATHEMATICAL_REASONING: 'Mathematical Reasoning', // Grade 6
 };
 
 /**
  * Maps question types to their categories
+ * Updated to match actual question bank files (Grades 3-8)
+ *
+ * @remarks
+ * This mapping only includes question types that exist in the database.
+ * Used for organizing questions into educational categories in the UI.
  */
 export const QUESTION_TYPE_TO_CATEGORY: Record<string, string> = {
-  // Number Operations & Arithmetic
+  // Number Operations & Arithmetic (Grades 3-8)
   ADDITION: 'number-operations',
   SUBTRACTION: 'number-operations',
   MULTIPLICATION: 'number-operations',
@@ -842,7 +777,7 @@ export const QUESTION_TYPE_TO_CATEGORY: Record<string, string> = {
   ADVANCED_ARITHMETIC: 'number-operations',
   ADVANCED_NUMBER_OPERATIONS: 'number-operations',
 
-  // Algebra & Patterns
+  // Algebra & Patterns (Grades 3-8)
   PATTERN_RECOGNITION: 'algebra-patterns',
   NUMBER_PATTERNS: 'algebra-patterns',
   ADVANCED_PATTERNS: 'algebra-patterns',
@@ -852,7 +787,7 @@ export const QUESTION_TYPE_TO_CATEGORY: Record<string, string> = {
   ALGEBRAIC_MANIPULATION: 'algebra-patterns',
   LINEAR_EQUATIONS: 'algebra-patterns',
 
-  // Geometry & Measurement
+  // Geometry & Measurement (Grades 4-8)
   SHAPE_PROPERTIES: 'geometry-measurement',
   AREA_VOLUME_CALCULATIONS: 'geometry-measurement',
   PERIMETER_AREA_VOLUME: 'geometry-measurement',
@@ -863,37 +798,68 @@ export const QUESTION_TYPE_TO_CATEGORY: Record<string, string> = {
   UNIT_CONVERSIONS: 'geometry-measurement',
   MULTI_UNIT_CONVERSIONS: 'geometry-measurement',
   TIME_MEASUREMENT: 'geometry-measurement',
-  TIME_CALCULATIONS: 'geometry-measurement',
 
-  // Statistics & Probability
+  // Statistics & Probability (Grades 6-7)
   DATA_ANALYSIS: 'statistics-probability',
   DATA_ANALYSIS_PROBABILITY: 'statistics-probability',
   PROBABILITY_BASICS: 'statistics-probability',
 
-  // Ratios, Rates & Proportions
+  // Ratios & Proportions (Grades 5, 8)
   RATIO_PROPORTION: 'ratios-rates-proportions',
-  SIMPLE_RATIOS: 'ratios-rates-proportions',
-  EQUIVALENT_RATIOS: 'ratios-rates-proportions',
-  RATIO_SIMPLIFICATION: 'ratios-rates-proportions',
-  PROPORTIONS: 'ratios-rates-proportions',
-  SCALE_FACTORS: 'ratios-rates-proportions',
-  UNIT_RATES: 'ratios-rates-proportions',
+  RATIOS_PROPORTIONS: 'ratios-rates-proportions',
 
-  // Motion & Distance
+  // Motion & Distance (Grade 8)
   SPEED_CALCULATIONS: 'motion-distance',
-  AVERAGE_SPEED: 'motion-distance',
-  DISTANCE_CALCULATIONS: 'motion-distance',
-  MULTI_STAGE_JOURNEYS: 'motion-distance',
-  UNIT_CONVERSIONS_MOTION: 'motion-distance',
 
-  // Financial Literacy
+  // Financial Literacy (Grade 8)
   FINANCIAL_LITERACY: 'financial-literacy',
 
-  // Problem Solving & Reasoning
+  // Problem Solving & Reasoning (Grade 6)
   REAL_WORLD_APPLICATIONS: 'problem-solving-reasoning',
   ADVANCED_PROBLEM_SOLVING: 'problem-solving-reasoning',
   MATHEMATICAL_REASONING: 'problem-solving-reasoning',
 };
+
+/**
+ * Grade to available categories mapping
+ * Used to filter categories shown based on selected grade level
+ */
+export const GRADE_TO_CATEGORIES: Record<number, string[]> = {
+  3: ['number-operations', 'algebra-patterns'],
+  4: ['number-operations', 'algebra-patterns', 'geometry-measurement'],
+  5: ['number-operations', 'algebra-patterns', 'ratios-rates-proportions'],
+  6: [
+    'number-operations',
+    'algebra-patterns',
+    'geometry-measurement',
+    'statistics-probability',
+    'problem-solving-reasoning',
+  ],
+  7: [
+    'number-operations',
+    'algebra-patterns',
+    'geometry-measurement',
+    'statistics-probability',
+    'problem-solving-reasoning',
+  ],
+  8: [
+    'number-operations',
+    'algebra-patterns',
+    'geometry-measurement',
+    'ratios-rates-proportions',
+    'motion-distance',
+    'financial-literacy',
+  ],
+};
+
+/**
+ * Helper function to get all available categories for a given grade level
+ * @param grade - The student's grade level
+ * @returns Array of category keys available for that grade
+ */
+export function getCategoriesForGrade(grade: number): string[] {
+  return GRADE_TO_CATEGORIES[grade] || [];
+}
 
 /**
  * ============================================================================
@@ -986,6 +952,55 @@ export function getQuestionTypesForCategory(categoryKey: string): string[] {
   return Object.entries(QUESTION_TYPE_TO_CATEGORY)
     .filter(([_, cat]) => cat === categoryKey)
     .map(([type, _]) => type);
+}
+
+/**
+ * Get question types available for a specific category filtered by grade level.
+ *
+ * Returns only the question types that exist in the database for both the specified
+ * category AND grade level. This prevents showing question types that aren't available
+ * for the student's grade.
+ *
+ * @param categoryKey - The category identifier (e.g., 'number-operations')
+ * @param grade - The student's grade level (3-8)
+ * @returns Array of database question type keys available for that grade and category
+ *
+ * @example
+ * ```typescript
+ * // Grade 3 only has basic operations
+ * getQuestionTypesForCategoryAndGrade('number-operations', 3);
+ * // Returns: ['ADDITION', 'SUBTRACTION', 'MULTIPLICATION', 'DIVISION']
+ *
+ * // Grade 8 has more advanced types
+ * getQuestionTypesForCategoryAndGrade('number-operations', 8);
+ * // Returns: ['PRIME_COMPOSITE_NUMBERS', 'NEGATIVE_NUMBERS', 'FRACTION_DECIMAL_PERCENTAGE']
+ *
+ * // Financial literacy only available at grade 8
+ * getQuestionTypesForCategoryAndGrade('financial-literacy', 5);
+ * // Returns: []
+ *
+ * getQuestionTypesForCategoryAndGrade('financial-literacy', 8);
+ * // Returns: ['FINANCIAL_LITERACY']
+ * ```
+ *
+ * @remarks
+ * - Returns empty array if category not available for that grade
+ * - Combines GRADE_TOPICS (what exists per grade) with QUESTION_TYPE_TO_CATEGORY (categorization)
+ * - Use this function instead of getQuestionTypesForCategory() when grade context is known
+ */
+export function getQuestionTypesForCategoryAndGrade(categoryKey: string, grade: number): string[] {
+  // Get all question types available for this grade
+  const gradeTopics = GRADE_TOPICS[grade];
+  if (!gradeTopics || !gradeTopics['mathematics']) {
+    return [];
+  }
+
+  const availableTypesForGrade = gradeTopics['mathematics'];
+
+  // Filter to only types that match the category AND are available for this grade
+  return availableTypesForGrade.filter((type) => {
+    return QUESTION_TYPE_TO_CATEGORY[type] === categoryKey;
+  });
 }
 
 /**

@@ -19,6 +19,7 @@ import {
   EnhancedQuestionGenerationRequest,
   AnswerSubmission,
   ValidationResult,
+  getCategoriesForGrade,
 } from '../models/question.model';
 import { environment } from '../../../environments/environment';
 
@@ -373,6 +374,11 @@ export class QuestionService {
     const topics = GRADE_TOPICS[grade];
     if (!topics) return [];
     return Object.keys(topics).filter((subject) => topics[subject].length > 0);
+  }
+
+  /** Get all available categories for a grade level. */
+  getAvailableCategories(grade: number): string[] {
+    return getCategoriesForGrade(grade);
   }
 
   /**

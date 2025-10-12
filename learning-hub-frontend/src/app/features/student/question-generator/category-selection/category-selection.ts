@@ -7,6 +7,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatRippleModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { QUESTION_CATEGORIES, CategoryInfo } from '../../../../core/models/question.model';
+import { QuestionService } from '../../../../core/services/question.service';
 
 /**
  * Category with progress tracking
@@ -81,7 +82,11 @@ export class CategorySelectionComponent implements OnInit {
    */
   @Output() categorySelected = new EventEmitter<string>();
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private questionService: QuestionService
+  ) {}
 
   /**
    * Initialize component and load data
@@ -95,14 +100,16 @@ export class CategorySelectionComponent implements OnInit {
     });
 
     // Load categories from Phase 1 with mock progress
-    this.categories = Object.keys(QUESTION_CATEGORIES).map((key) => ({
-      key, // Explicitly add the key property
-      ...QUESTION_CATEGORIES[key],
-      progress: {
-        completed: 0,
-        total: 100,
-      },
-    }));
+    this.categories = this.questionService
+      .getAvailableCategories(parseInt(this.gradeLevel))
+      .map((key) => ({
+        key, // Explicitly add the key property
+        ...QUESTION_CATEGORIES[key],
+        progress: {
+          completed: 0,
+          total: 100,
+        },
+      }));
   }
 
   /**

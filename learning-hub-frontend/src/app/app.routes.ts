@@ -8,6 +8,7 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { StudentGuard } from './core/guards/student.guard';
 import { AdminGuard } from './core/guards/admin.guard';
+import { UnifiedGeneratorComponent } from './features/student/question-generator/unified-generator/unified-generator';
 
 export const routes: Routes = [
   // Default redirect to login
@@ -54,20 +55,10 @@ export const routes: Routes = [
             './features/student/question-generator/category-selection/category-selection'
           ).then((m) => m.CategorySelectionComponent),
       },
-      {
-        path: 'question-generator/types',
-        loadComponent: () =>
-          import('./features/student/question-generator/type-selection/type-selection').then(
-            (m) => m.TypeSelectionComponent
-          ),
-      },
       // Session 08: Unified Generator - Combines type selection + persona + configuration
       {
         path: 'question-generator/unified',
-        loadComponent: () =>
-          import('./features/student/question-generator/unified-generator/unified-generator').then(
-            (m) => m.UnifiedGeneratorComponent
-          ),
+        loadComponent: () => UnifiedGeneratorComponent,
       },
       // Phase A6.5: Results display for AI-validated answers
       {

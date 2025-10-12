@@ -300,9 +300,6 @@ export class QuestionGeneratorAgent implements IEducationalAgent {
         prompt += `- Focuses on ${questionType.replace("_", " ")} skills\n`;
         prompt += `- Uses straightforward language and age-appropriate numbers\n`;
         prompt += `- Avoids unnecessary complexity or elaborate contexts\n`;
-        prompt += `- It's OK to generate 20% of the total questions as word problems at the end of the list\n`;
-        prompt += `- If you generate word problems, the complexity if numeric calculation MUST match the examples above\n`;
-        prompt += `- If you generate a word problem, include a brief context or story\n`;
 
         if (questionIndex > 0) {
             prompt += `- Is different from the previous ${questionIndex} question(s) in this set\n`;
