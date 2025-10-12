@@ -70,6 +70,137 @@ export class ResultsComponent implements OnInit {
   /** Complete validation result from AI */
   validationResult: ValidationResult | null = null;
 
+  sampleValidationResult: ValidationResult = {
+    success: true,
+    sessionId: 'enhanced-1760239039471-9jr5rtq73',
+    totalScore: 100,
+    maxScore: 100,
+    percentageScore: 100,
+    questions: [
+      {
+        questionId: 'ai_1760239108069_0',
+        questionText:
+          'Ben has 25 pencils in his pencil case. His friend gives him 17 more. How many pencils does Ben have now?',
+        studentAnswer: '42',
+        score: 10,
+        maxScore: 10,
+        feedback:
+          'Excellent work! You correctly added 25 and 17 to arrive at the right answer. Keep up the good work, and remember to always double-check your calculations to ensure accuracy, even for simple problems.',
+        isCorrect: true,
+      },
+      {
+        questionId: 'ai_1760239108069_1',
+        questionText:
+          'Ben has 25 pencils in his pencil case. His friend gives him 17 more. How many pencils does Ben have now?',
+        studentAnswer: '42',
+        score: 10,
+        maxScore: 10,
+        feedback:
+          'Great job! You correctly added 25 and 17 to arrive at the right answer, 42. Keep up the good work!',
+        isCorrect: true,
+      },
+      {
+        questionId: 'ai_1760239108069_2',
+        questionText:
+          'Tom has 25 pencils in his pencil case. His friend gives him 12 more pencils. How many pencils does Tom have now?',
+        studentAnswer: '37',
+        score: 10,
+        maxScore: 10,
+        feedback:
+          'Great job! Your answer is correct. Keep practicing addition problems to build confidence.',
+        isCorrect: true,
+      },
+      {
+        questionId: 'ai_1760239108069_3',
+        questionText:
+          'Tom has 15 pencils in his pencil case. His friend gives him 22 more. How many pencils does Tom have now?',
+        studentAnswer: '37',
+        score: 10,
+        maxScore: 10,
+        feedback:
+          'Your answer is correct! You properly added 15 and 22 to arrive at 37. Keep up the good work! To further strengthen your skills, try solving similar addition problems with larger numbers or multiple steps.',
+        isCorrect: true,
+      },
+      {
+        questionId: 'ai_1760239108069_4',
+        questionText:
+          'Olivia has 23 pencils in her pencil case. She finds 15 more pencils under her desk. How many pencils does Olivia have now?',
+        studentAnswer: '38',
+        score: 10,
+        maxScore: 10,
+        feedback:
+          'Great job! You correctly added the pencils. Next time, showing your work can help ensure accuracy.',
+        isCorrect: true,
+      },
+      {
+        questionId: 'ai_1760239108069_5',
+        questionText:
+          'Tom has 25 pencils in his pencil case. His friend gives him 17 more pencils. How many pencils does Tom have now?',
+        studentAnswer: '42',
+        score: 10,
+        maxScore: 10,
+        feedback:
+          'Your answer is correct! You successfully added 25 and 17 to arrive at the right total. Keep up the good work! A tip for future problems: always double-check your addition to ensure accuracy, even for straightforward questions.',
+        isCorrect: true,
+      },
+      {
+        questionId: 'ai_1760239108069_6',
+        questionText:
+          'Ben has 17 pencils in his pencil case. His friend gives him 21 more pencils. How many pencils does Ben have now?',
+        studentAnswer: '38',
+        score: 10,
+        maxScore: 10,
+        feedback:
+          'Your answer is correct! You successfully added 17 and 21 to get 38. Keep up the good work! A small tip: always double-check your calculations to ensure accuracy, even for simple problems.',
+        isCorrect: true,
+      },
+      {
+        questionId: 'ai_1760239108069_7',
+        questionText:
+          'Tom has 25 pencils in his pencil case. His friend gives him 17 more pencils to share. How many pencils does Tom have now?',
+        studentAnswer: '42',
+        score: 10,
+        maxScore: 10,
+        feedback:
+          "Your answer is correct! Adding 25 and 17 gives 42. Great job solving the problem. To further improve, you might explain your steps clearly next time, like writing '25 + 17 = 42' to show your work.",
+        isCorrect: true,
+      },
+      {
+        questionId: 'ai_1760239108069_8',
+        questionText:
+          'Emily has 25 pencils in her pencil case. Her friend gives her 17 more pencils. How many pencils does Emily have now?',
+        studentAnswer: '42',
+        score: 10,
+        maxScore: 10,
+        feedback:
+          'Your answer is correct! You successfully added 25 and 17 to get 42. Great job! To further strengthen your math skills, try explaining your steps aloud or using visual aids like counters to verify your calculations in the future.',
+        isCorrect: true,
+      },
+      {
+        questionId: 'ai_1760239108069_9',
+        questionText:
+          'Tom has 25 pencils in his pencil case. His friend gives him 12 more. How many pencils does Tom have now?',
+        studentAnswer: '37',
+        score: 10,
+        maxScore: 10,
+        feedback:
+          'Excellent work! You correctly added 25 and 12 to find the total number of pencils. Keep up the great problem-solving habits!',
+        isCorrect: true,
+      },
+    ],
+    overallFeedback:
+      '🎉 Excellent work! You scored 100% (10/10 questions correct). Your understanding is very strong. Keep up the great work!',
+    strengths: [
+      'Understanding of Ben has 25',
+      'Understanding of Tom has 25',
+      'Understanding of Tom has 15',
+      'Understanding of Olivia has 23',
+      'Understanding of Ben has 17',
+      'Understanding of Emily has 25',
+    ],
+    areasForImprovement: [],
+  };
+
   constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
@@ -77,7 +208,7 @@ export class ResultsComponent implements OnInit {
     try {
       const navigation = this.router.currentNavigation();
       if (navigation?.extras?.state?.['validationResult']) {
-        this.validationResult = navigation.extras.state['validationResult'];
+        this.validationResult = this.sampleValidationResult; //navigation.extras.state['validationResult'];
       } else if (this.route.snapshot.data['validationResult']) {
         this.validationResult = this.route.snapshot.data['validationResult'];
       }

@@ -727,7 +727,7 @@ export class QuestionsController {
                         score: q.score,
                         maxScore: q.maxScore,
                         isCorrect: q.isCorrect,
-                        expectedAnswer: "", // AI doesn't provide this
+                        expectedAnswer: undefined, // Optional - AI validates semantically
                         feedback: q.feedback,
                         partialCreditReason:
                             q.score > 0 && q.score < q.maxScore

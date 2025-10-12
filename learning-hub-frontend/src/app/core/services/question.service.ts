@@ -7,6 +7,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {
   QuestionGenerationRequest,
   QuestionGenerationResponse,
@@ -220,11 +221,15 @@ export class QuestionService {
       throw new Error('Invalid submission: sessionId, studentId, and answers are required');
     }
 
-    // Submit to AI validation endpoint (Phase A6.3 will implement backend)
-    return this.http.post<ValidationResult>(
-      `${environment.apiUrl}/questions/validate-answers`,
-      submission
-    );
+    // Submit to AI validation endpoint and extract data from response wrapper
+    return this.http
+      .post<{ success: boolean; message: string; data: ValidationResult }>(
+        `${environment.apiUrl}/questions/validate-answers`,
+        submission
+      )
+      .pipe(
+        map((response) => response.data) // Extract ValidationResult from wrapper
+      );
   }
 
   /**
