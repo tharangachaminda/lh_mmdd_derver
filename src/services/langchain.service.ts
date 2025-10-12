@@ -27,6 +27,19 @@ export class LangChainService implements ILanguageModel {
         return text;
     }
 
+    public async generateWithCustomPrompt(
+        prompt: string,
+        complexity: "simple" | "complex" = "complex"
+    ): Promise<string> {
+        await this.initializeModel();
+        if (!this.model) {
+            throw new Error("LLM not initialized");
+        }
+
+        const { text } = await this.model.completion(prompt);
+        return text;
+    }
+
     public async generateFeedback(
         question: string,
         studentAnswer: number,

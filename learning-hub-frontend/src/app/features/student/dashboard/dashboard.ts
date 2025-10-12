@@ -59,6 +59,8 @@ export class Dashboard implements OnInit {
    * Starts at subject selection view
    */
   startQuestionGenerator(): void {
-    this.router.navigate(['/student/question-generator/select-subject']);
+    this.router.navigate(['/student/question-generator/select-subject'], {
+      queryParams: { grade: this.user?.grade },
+    });
   }
 }

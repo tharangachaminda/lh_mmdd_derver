@@ -164,23 +164,40 @@ export class QuestionGeneratorAgent implements IEducationalAgent {
         confidence: number;
         modelUsed: string;
     }> {
-        // Build context-aware prompt
+        // Build context-aware prompt with vector DB examples and style matching instructions
         const prompt = this.buildContextAwarePrompt(context, questionIndex);
 
         // Determine which model to use based on complexity
         const useAlternativeModel = this.shouldUseAlternativeModel(context);
+        const complexity = useAlternativeModel ? "complex" : "simple";
 
-        // Generate question using language model
-        const response = await this.languageModel.generateMathQuestion(
-            context.questionType,
-            context.grade,
-            context.difficulty
+        // Generate question using language model WITH CUSTOM PROMPT
+        const response = await this.languageModel.generateWithCustomPrompt(
+            prompt,
+            complexity
         );
 
         const modelUsed = useAlternativeModel ? "qwen3:14b" : "llama3.1:latest";
 
+        // DEBUG: Log LLM response to see what we're getting
+        console.log(`🔍 LLM Response (question ${questionIndex + 1}):`, {
+            responseLength: response.length,
+            responsePreview: response.substring(0, 200),
+            questionType: context.questionType,
+            grade: context.grade,
+            difficulty: context.difficulty,
+        });
+
         // Parse the response (response is a string)
         const parsedQuestion = this.parseQuestionResponse(response);
+
+        // DEBUG: Log parsed result
+        console.log(`📝 Parsed Question ${questionIndex + 1}:`, {
+            hasQuestion: !!parsedQuestion.question,
+            questionLength: parsedQuestion.question?.length || 0,
+            hasAnswer: !!parsedQuestion.answer,
+            answer: parsedQuestion.answer,
+        });
         return {
             text: parsedQuestion.question,
             answer: parsedQuestion.answer,
@@ -231,17 +248,28 @@ export class QuestionGeneratorAgent implements IEducationalAgent {
             curriculumContext?.similarQuestions &&
             curriculumContext.similarQuestions.length > 0
         ) {
-            prompt += `Here are some examples of similar questions to inspire your generation (create something in a similar style but different):\n\n`;
+            prompt += `IMPORTANT: Here are REAL examples from the curriculum database. Match their EXACT style, complexity, and simplicity level:\n\n`;
 
             curriculumContext.similarQuestions
                 .slice(0, 3)
                 .forEach((q, index) => {
-                    prompt += `Example ${index + 1}: ${q.question}\n`;
+                    prompt += `Example ${index + 1} (${
+                        q.difficulty || difficulty
+                    } difficulty):\n`;
+                    prompt += `Question: ${q.question}\n`;
+                    prompt += `Answer: ${q.answer}\n`;
                     if (q.explanation) {
                         prompt += `Explanation: ${q.explanation}\n`;
                     }
                     prompt += "\n";
                 });
+
+            prompt += `CRITICAL: Your question MUST match the examples' simplicity level:\n`;
+            prompt += `- If examples are direct calculations like "What is 1/2 + 1/4?", generate similar direct questions\n`;
+            prompt += `- If examples are word problems, then use word problems\n`;
+            prompt += `- Match the number complexity and sentence structure of examples\n`;
+            prompt += `- Do NOT make questions more complex than the examples shown\n`;
+            prompt += `\n`;
         }
 
         // Add difficulty-specific constraints
@@ -266,10 +294,15 @@ export class QuestionGeneratorAgent implements IEducationalAgent {
 
         // Add generation requirements
         prompt += `Requirements:\n`;
+        prompt += `- MUST match the simplicity and style of the example questions above\n`;
         prompt += `- Is appropriate for grade ${grade} students\n`;
         prompt += `- Has ${difficulty} difficulty level\n`;
         prompt += `- Focuses on ${questionType.replace("_", " ")} skills\n`;
-        prompt += `- Uses age-appropriate numbers and context\n`;
+        prompt += `- Uses straightforward language and age-appropriate numbers\n`;
+        prompt += `- Avoids unnecessary complexity or elaborate contexts\n`;
+        prompt += `- It's OK to generate 20% of the total questions as word problems at the end of the list\n`;
+        prompt += `- If you generate word problems, the complexity if numeric calculation MUST match the examples above\n`;
+        prompt += `- If you generate a word problem, include a brief context or story\n`;
 
         if (questionIndex > 0) {
             prompt += `- Is different from the previous ${questionIndex} question(s) in this set\n`;

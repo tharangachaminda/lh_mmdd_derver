@@ -34,6 +34,14 @@ export class OllamaLanguageModel implements ILanguageModel {
         return response;
     }
 
+    public async generateWithCustomPrompt(
+        prompt: string,
+        complexity: "simple" | "complex" = "complex"
+    ): Promise<string> {
+        const response = await this.generateCompletion(prompt, complexity);
+        return response;
+    }
+
     public async generateFeedback(
         question: string,
         studentAnswer: number,

@@ -3,9 +3,11 @@
   <div class="header">
     <h2>{{ title }}</h2>
     <p class="subtitle">{{ subtitle }}</p>
-    <p class="subject-context" *ngIf="selectedSubject">
+    @if (selectedSubject) {
+    <p class="subject-context">
       Subject: <strong>{{ selectedSubject | titlecase }}</strong>
     </p>
+    }
   </div>
 
   <!-- Categories Grid -->

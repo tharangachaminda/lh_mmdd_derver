@@ -67,6 +67,7 @@ export class CategorySelectionComponent implements OnInit {
    * Selected subject from query params (e.g., 'mathematics')
    */
   selectedSubject = '';
+  gradeLevel = '';
 
   /**
    * Categories with progress tracking
@@ -90,6 +91,7 @@ export class CategorySelectionComponent implements OnInit {
     // Read subject from query params
     this.route.queryParams.subscribe((params) => {
       this.selectedSubject = params['subject'] || '';
+      this.gradeLevel = params['grade'] || '';
     });
 
     // Load categories from Phase 1 with mock progress
@@ -141,10 +143,11 @@ export class CategorySelectionComponent implements OnInit {
    */
   onCategorySelect(categoryKey: string): void {
     this.categorySelected.emit(categoryKey);
-    this.router.navigate(['/student/question-generator/unified'], {
+    this.router.navigate([`/student/question-generator/unified`], {
       queryParams: {
         subject: this.selectedSubject,
         category: categoryKey,
+        grade: this.gradeLevel,
       },
     });
   }
