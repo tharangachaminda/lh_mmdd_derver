@@ -422,8 +422,21 @@ export class UnifiedGeneratorComponent implements OnInit {
    * Navigates to question display on success
    */
   generateQuestions(): void {
+    console.log('🔘 Generate Questions button clicked');
+    console.log('📋 Form state:', {
+      selectedSubject: this.selectedSubject,
+      selectedCategory: this.selectedCategory,
+      gradeLevel: this.gradeLevel,
+      selectedTypes: this.selectedTypes,
+      selectedInterests: this.selectedInterests,
+      selectedMotivators: this.selectedMotivators,
+      numberOfQuestions: this.numberOfQuestions,
+      isFormValid: this.isFormValid(),
+    });
+
     if (!this.isFormValid()) {
-      console.warn('Form validation failed');
+      console.error('❌ Form validation failed - cannot generate questions');
+      alert('Please ensure all required fields are filled correctly before generating questions.');
       return;
     }
 
@@ -454,50 +467,34 @@ export class UnifiedGeneratorComponent implements OnInit {
         : undefined,
     };
 
-    console.log('📤 Sending enhanced request with category metadata:', {
+    console.log('📤 Enhanced request prepared for streaming:', {
       category: request.category,
       categoryName: request.categoryMetadata?.name,
-      hasMetadata: !!request.categoryMetadata,
+      questionCount: request.numberOfQuestions,
     });
 
     if (this.questionService.getCurrentSession()) {
-      console.warn('A question session is already active. Overwriting it.');
+      console.warn('A question session is already active. Clearing it for new generation.');
+      this.questionService.clearSession();
     }
 
-    this.questionService.generateQuestionsEnhanced(request).subscribe({
-      next: (response: any) => {
-        console.log('✅ Questions generated:', response);
-        this.isGenerating = false;
+    // REFACTOR: Navigate immediately to question-generator with query params
+    // question-generator component will handle all streaming logic
+    console.log('🚀 Navigating to question-generator with streaming query params');
 
-        const questions = response.data.questions as GeneratedQuestion[];
-        const currentUser = this.authService.getCurrentUser();
+    // Store streaming request in sessionStorage (query params can't hold complex objects)
+    sessionStorage.setItem('streamingRequest', JSON.stringify(request));
 
-        // PHASE A6.3: Create session and store in service for persistence
-        const session: QuestionSession = {
-          id: response.data.sessionId || `session-${Date.now()}`,
-          userId: currentUser?.id || '',
-          questions: questions,
-          answers: [],
-          startedAt: new Date(),
-          totalScore: 0,
-          maxScore: questions.length * 10, // 10 points per question
-          timeSpentMinutes: 0,
-          subject: this.selectedSubject || 'mathematics',
-          topic: this.selectedCategory || '',
-        };
-
-        this.questionService.storeSession(session);
-
-        console.log('✅ Session stored in service:', session.id);
-
-        // Navigate to question display (no state needed - service has it)
-        this.router.navigate(['/student/question-generator']);
-      },
-      error: (error: any) => {
-        console.error('❌ Question generation failed:', error);
-        this.isGenerating = false;
+    this.router.navigate(['/student/question-generator'], {
+      queryParams: {
+        streaming: 'true',
+        count: this.numberOfQuestions,
+        subject: request.subject,
+        category: request.category,
       },
     });
+
+    this.isGenerating = false;
   }
 
   /**

@@ -9,6 +9,7 @@
 import { IUser, User } from "../models/user.model.js";
 import { IStudentPersona, StudentPersona } from "../models/persona.model.js";
 import { JWTPayload } from "./auth.service.js";
+import type { AgentContext } from "../agents/base-agent.interface.js";
 
 // Question generation interfaces
 // PHASE A6: Updated to match EnhancedQuestionGenerationRequest from frontend
@@ -1721,6 +1722,246 @@ export class AIEnhancedQuestionsService {
                     this.calculateEnhancedPersonalizationScore(request),
             },
         };
+    }
+
+    /**
+     * Generate questions with streaming support (async iterator)
+     *
+     * Yields questions one-by-one as they're generated, enabling real-time
+     * streaming to the frontend. This provides better UX by showing questions
+     * progressively instead of waiting for all to complete.
+     *
+     * @param request - Enhanced question generation request
+     * @param jwtPayload - User authentication payload
+     * @yields Individual questions as they're generated
+     *
+     * @example
+     * ```typescript
+     * for await (const question of service.generateQuestionsEnhancedStream(request, jwt)) {
+     *   res.write(`data: ${JSON.stringify(question)}\n\n`);
+     * }
+     * ```
+     *
+     * @since Session 1 - Streaming Implementation
+     */
+    async *generateQuestionsEnhancedStream(
+        request: any,
+        jwtPayload: JWTPayload
+    ): AsyncGenerator<any, void, unknown> {
+        // Validate request (same as non-streaming)
+        if (!request.questionTypes || !Array.isArray(request.questionTypes)) {
+            throw new Error("questionTypes array is required");
+        }
+
+        if (request.questionTypes.length === 0) {
+            throw new Error("At least one question type is required");
+        }
+
+        if (request.questionTypes.length > 5) {
+            throw new Error("Maximum 5 question types allowed");
+        }
+
+        if (!request.category) {
+            throw new Error("Category is required for enhanced generation");
+        }
+
+        // Use rich category context for better AI generation
+        const topicForAI = request.categoryMetadata?.name || request.category;
+        const categoryContext = request.categoryMetadata?.description || "";
+        const skillsFocus = request.categoryMetadata?.skillsFocus || [];
+
+        console.log("🌊 Starting streaming generation:", {
+            questionTypes: request.questionTypes,
+            totalQuestions: request.numberOfQuestions,
+            category: request.category,
+        });
+
+        // Calculate question distribution across types
+        const distribution = this.calculateQuestionDistribution(
+            request.numberOfQuestions,
+            request.questionTypes
+        );
+
+        const sessionId = `stream-${Date.now()}-${Math.random()
+            .toString(36)
+            .substr(2, 9)}`;
+
+        let questionCount = 0;
+
+        // STREAMING STRATEGY: Generate questions one-by-one and yield immediately
+        // This provides TRUE streaming instead of batch-then-stream
+
+        // Get user for persona context
+        let user: any;
+        if (jwtPayload.userId === "demo-user-id") {
+            user = {
+                id: "demo-user-id",
+                name: "Demo User",
+                grade: request.gradeLevel,
+                country: "New Zealand",
+            };
+        } else {
+            const { User } = await import("../models/user.model.js");
+            user = await User.findById(jwtPayload.userId);
+        }
+
+        // Import agents for direct question generation
+        const { DifficultyCalibatorAgent } = await import(
+            "../agents/difficulty-calibrator.agent.js"
+        );
+        const { QuestionGeneratorAgent } = await import(
+            "../agents/question-generator.agent.js"
+        );
+
+        // Calibrate difficulty once (applies to all questions)
+        console.log("🎯 Calibrating difficulty settings for streaming...");
+        const calibratorAgent = new DifficultyCalibatorAgent();
+        const calibratedContext: any = await calibratorAgent.process({
+            grade: request.gradeLevel,
+            difficulty: request.difficultyLevel as any,
+            questionType: request.questionTypes[0] as any,
+            count: 1,
+            questions: [],
+            workflow: {
+                currentStep: "calibration",
+                startTime: Date.now(),
+                errors: [],
+                warnings: [],
+            },
+        });
+
+        // Get curriculum context from vector DB once
+        console.log("📚 Fetching curriculum context from vector DB...");
+        const curriculumContext = await this.getCurriculumContext({
+            subject: request.subject,
+            category: request.category,
+            gradeLevel: request.gradeLevel,
+            questionTypes: request.questionTypes,
+            questionFormat: request.questionFormat,
+            difficultyLevel: request.difficultyLevel,
+            numberOfQuestions: request.numberOfQuestions,
+            learningStyle: request.learningStyle,
+            interests: request.interests || [],
+            motivators: request.motivators || [],
+        });
+
+        // Generate questions one-by-one across all types
+        const questionGenerator = new QuestionGeneratorAgent();
+
+        for (const [questionType, count] of Object.entries(distribution)) {
+            if (count > 0) {
+                console.log(
+                    `🌊 Streaming ${count} questions of type: ${questionType} (one at a time)`
+                );
+
+                // Generate each question individually and yield IMMEDIATELY
+                for (let i = 0; i < count; i++) {
+                    try {
+                        console.log(
+                            `🔄 Generating question ${questionCount + 1}/${
+                                request.numberOfQuestions
+                            }...`
+                        );
+
+                        // Create agent context for SINGLE question
+                        const agentContext: AgentContext = {
+                            questionType: questionType as any,
+                            difficulty: request.difficultyLevel as any,
+                            grade: request.gradeLevel,
+                            count: 1, // ONE question at a time!
+                            questions: [],
+                            difficultySettings:
+                                calibratedContext.difficultySettings,
+                            curriculumContext: curriculumContext,
+                            workflow: {
+                                currentStep: "generation",
+                                startTime: Date.now(),
+                                errors: [],
+                                warnings: [],
+                            },
+                        };
+
+                        // Generate single question
+                        const result = await questionGenerator.process(
+                            agentContext
+                        );
+
+                        if (result.questions && result.questions.length > 0) {
+                            const agentQuestion = result.questions[0];
+                            questionCount++;
+
+                            // Transform to API format
+                            const formattedQuestion: any = {
+                                id: `stream_${Date.now()}_${questionCount}`,
+                                subject: request.subject,
+                                topic: request.category,
+                                difficulty: request.difficultyLevel,
+                                questionType: questionType,
+                                question:
+                                    agentQuestion.text ||
+                                    agentQuestion.question ||
+                                    "",
+                                correctAnswer:
+                                    agentQuestion.answer?.toString() || "",
+                                explanation: agentQuestion.explanation || "",
+                                hints: this.generatePersonalizedHints(
+                                    request.subject,
+                                    request.category,
+                                    request.learningStyle,
+                                    questionCount
+                                ),
+                                personalizationContext: {
+                                    learningStyle: request.learningStyle,
+                                    interests: request.interests || [],
+                                    culturalReferences:
+                                        this.getCulturalReferences(
+                                            user.country || "New Zealand"
+                                        ),
+                                },
+                                metadata: {
+                                    estimatedTimeMinutes:
+                                        this.estimateTimeByDifficulty(
+                                            request.difficultyLevel
+                                        ),
+                                    gradeLevel: request.gradeLevel,
+                                    tags: [
+                                        request.subject,
+                                        request.category,
+                                        request.difficultyLevel,
+                                        "ai-generated",
+                                        "streamed",
+                                    ],
+                                    createdAt: new Date(),
+                                },
+                                // Streaming metadata
+                                sessionId,
+                                questionNumber: questionCount,
+                                totalExpected: request.numberOfQuestions,
+                            };
+
+                            console.log(
+                                `📤 Yielding question ${questionCount}/${request.numberOfQuestions} immediately`
+                            );
+
+                            // YIELD IMMEDIATELY after each question is generated
+                            yield formattedQuestion;
+                        }
+                    } catch (error) {
+                        console.error(
+                            `❌ Error generating question ${
+                                questionCount + 1
+                            }:`,
+                            error
+                        );
+                        // Continue with next question instead of failing entire stream
+                    }
+                }
+            }
+        }
+
+        console.log(
+            `🎉 Streaming complete: ${questionCount} questions generated`
+        );
     }
 
     /**

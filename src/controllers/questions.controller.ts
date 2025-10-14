@@ -418,6 +418,160 @@ export class QuestionsController {
     }
 
     /**
+     * Generate questions with Server-Sent Events (SSE) streaming
+     *
+     * Streams questions to the client as they're generated, providing real-time
+     * updates and better UX. Each question is sent as an SSE event, allowing
+     * the frontend to display questions progressively.
+     *
+     * **Endpoint:** `POST /api/questions/generate-enhanced-stream`
+     *
+     * **Authentication:** Required - Bearer token authentication
+     *
+     * **Request Body:** Same as generateQuestionsEnhanced
+     *
+     * **Response Format:** Server-Sent Events (text/event-stream)
+     * ```
+     * event: question
+     * data: {"id":"q1","question":"What is 5+3?","sessionId":"stream-123",...}
+     *
+     * event: question
+     * data: {"id":"q2","question":"What is 10-4?","sessionId":"stream-123",...}
+     *
+     * event: complete
+     * data: {"totalQuestions":10,"sessionId":"stream-123"}
+     *
+     * event: error
+     * data: {"message":"Error description"}
+     * ```
+     *
+     * **SSE Event Types:**
+     * - `question` - New question available
+     * - `complete` - All questions generated
+     * - `error` - Generation error occurred
+     *
+     * @param req - Express request containing EnhancedQuestionGenerationRequest
+     * @param res - Express response (SSE stream)
+     *
+     * @example Frontend Usage
+     * ```typescript
+     * const eventSource = new EventSource('/api/questions/generate-enhanced-stream');
+     * eventSource.addEventListener('question', (e) => {
+     *   const question = JSON.parse(e.data);
+     *   displayQuestion(question);
+     * });
+     * ```
+     *
+     * @since Session 1 - Streaming Implementation
+     */
+    async generateQuestionsEnhancedStream(
+        req: Request,
+        res: Response
+    ): Promise<void> {
+        const authReq = req as AuthenticatedRequest;
+
+        try {
+            // Check authentication
+            if (!authReq.user) {
+                res.status(401).json({
+                    success: false,
+                    message: "Authentication required",
+                });
+                return;
+            }
+
+            console.log(
+                "🌊 Streaming question generation for user:",
+                authReq.user?.email
+            );
+
+            const enhancedRequest =
+                req.body as EnhancedQuestionGenerationRequest;
+
+            // Validate enhanced request
+            const validation = validateEnhancedRequest(enhancedRequest);
+            if (!validation.isValid) {
+                res.status(400).json({
+                    success: false,
+                    message: validation.errors.join("; "),
+                    errors: validation.errors,
+                });
+                return;
+            }
+
+            // Set up SSE headers
+            res.setHeader("Content-Type", "text/event-stream");
+            res.setHeader("Cache-Control", "no-cache");
+            res.setHeader("Connection", "keep-alive");
+            res.setHeader("X-Accel-Buffering", "no"); // Disable nginx buffering
+
+            console.log("📡 SSE connection established, starting stream...");
+
+            // Create JWT payload
+            const jwtPayload: JWTPayload = {
+                userId: authReq.user.userId,
+                email: authReq.user.email,
+                role: authReq.user.role,
+            };
+
+            let sessionId = "";
+            let questionCount = 0;
+
+            // Stream questions as they're generated
+            for await (const question of this.aiQuestionsService.generateQuestionsEnhancedStream(
+                enhancedRequest,
+                jwtPayload
+            )) {
+                questionCount++;
+                sessionId = question.sessionId;
+
+                // Send question as SSE event
+                res.write(`event: question\n`);
+                res.write(`data: ${JSON.stringify(question)}\n\n`);
+
+                console.log(
+                    `📤 Streamed question ${questionCount}/${enhancedRequest.numberOfQuestions}`
+                );
+            }
+
+            // Send completion event
+            res.write(`event: complete\n`);
+            res.write(
+                `data: ${JSON.stringify({
+                    totalQuestions: questionCount,
+                    sessionId: sessionId,
+                    userId: authReq.user.userId,
+                    userEmail: authReq.user.email,
+                    userGrade: authReq.user.grade,
+                })}\n\n`
+            );
+
+            console.log(
+                `✅ Streaming complete: ${questionCount} questions sent`
+            );
+
+            // End the SSE connection
+            res.end();
+        } catch (error: any) {
+            console.error("❌ Streaming generation error:", error);
+
+            // Send error event to client
+            res.write(`event: error\n`);
+            res.write(
+                `data: ${JSON.stringify({
+                    message: error.message || "Question generation failed",
+                    details:
+                        process.env.NODE_ENV === "development"
+                            ? error.stack
+                            : undefined,
+                })}\n\n`
+            );
+
+            res.end();
+        }
+    }
+
+    /**
      * Get available subjects for the authenticated student's grade (working implementation)
      */
     async getSubjectsForGrade(req: Request, res: Response): Promise<void> {

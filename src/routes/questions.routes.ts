@@ -61,6 +61,24 @@ router.post(
 );
 
 /**
+ * POST /api/questions/generate-enhanced-stream
+ * Generate questions with Server-Sent Events (SSE) streaming
+ *
+ * Requires: Simple Bearer token authentication
+ * Body: Same as /generate-enhanced
+ * Response: text/event-stream with events:
+ *   - question: Individual question data
+ *   - complete: Generation finished
+ *   - error: Error occurred
+ */
+router.post(
+    "/generate-enhanced-stream",
+    QuestionsController.authenticateStudent,
+    (req: any, res: any) =>
+        questionsController.generateQuestionsEnhancedStream(req, res)
+);
+
+/**
  * POST /api/questions/validate-answers
  * Validate student answers with AI grading
  *

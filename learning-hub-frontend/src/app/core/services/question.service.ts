@@ -5,7 +5,7 @@
  */
 
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
@@ -111,6 +111,150 @@ export class QuestionService {
    */
   generateQuestionsEnhanced(request: EnhancedQuestionGenerationRequest): Observable<any> {
     return this.http.post<any>(`${environment.apiUrl}/questions/generate-enhanced`, request);
+  }
+
+  /**
+   * Generate questions with Server-Sent Events (SSE) streaming
+   *
+   * Streams questions to the client as they're generated, providing real-time updates
+   * and progressive display. Each question is received incrementally, allowing users
+   * to start interacting before all questions are ready.
+   *
+   * **Benefits over non-streaming:**
+   * - Instant feedback: First question appears in ~2 seconds (vs 10+ seconds for all)
+   * - Progress visibility: Users see questions loading one-by-one
+   * - Better UX: Can start reading/answering while remaining questions generate
+   * - Reduced perceived wait time
+   *
+   * **Implementation:**
+   * Uses Angular HttpClient with observe: 'events' and reportProgress for SSE streaming.
+   * Backend sends SSE events: `event: question`, `event: complete`, `event: error`
+   *
+   * @param {EnhancedQuestionGenerationRequest} request - Question generation parameters
+   * @returns {Observable<GeneratedQuestion>} Observable emitting questions as they're generated
+   *
+   * @example
+   * ```typescript
+   * this.questionService.generateQuestionsEnhancedStream(request).subscribe({
+   *   next: (question) => {
+   *     console.log('New question received:', question);
+   *     this.questions.push(question);
+   *     this.enableNavigationButton(this.questions.length - 1);
+   *   },
+   *   complete: () => {
+   *     console.log('All questions received');
+   *   },
+   *   error: (err) => {
+   *     console.error('Streaming error:', err);
+   *   }
+   * });
+   * ```
+   *
+   * @since Session 1 - Streaming Implementation
+   * @version 1.2.0 - Using Angular HttpClient for proper streaming
+   */
+  generateQuestionsEnhancedStream(
+    request: EnhancedQuestionGenerationRequest
+  ): Observable<GeneratedQuestion> {
+    return new Observable((observer) => {
+      const token = localStorage.getItem('learning_hub_token');
+      if (!token) {
+        observer.error(new Error('Authentication token not found'));
+        return;
+      }
+
+      console.log('🌊 Starting SSE stream with Angular HttpClient...');
+
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        Accept: 'text/event-stream',
+      });
+
+      let buffer = '';
+      let currentEvent = '';
+      let currentData = '';
+
+      const parseSSEChunk = (chunk: string) => {
+        const lines = chunk.split('\n');
+
+        for (const line of lines) {
+          if (line.startsWith('event:')) {
+            currentEvent = line.substring(6).trim();
+          } else if (line.startsWith('data:')) {
+            currentData = line.substring(5).trim();
+          } else if (line.trim() === '' && currentEvent && currentData) {
+            try {
+              console.log(`📡 SSE Event: ${currentEvent}`);
+
+              if (currentEvent === 'question') {
+                const question = JSON.parse(currentData);
+                console.log('📥 Question received:', question.id || 'unknown');
+                observer.next(question);
+              } else if (currentEvent === 'complete') {
+                const completion = JSON.parse(currentData);
+                console.log('✅ Stream complete:', completion);
+                observer.complete();
+                return;
+              } else if (currentEvent === 'error') {
+                const error = JSON.parse(currentData);
+                console.error('❌ Stream error:', error);
+                observer.error(new Error(error.message || 'Stream error'));
+                return;
+              }
+            } catch (parseError) {
+              console.error('⚠️ Error parsing SSE data:', parseError, 'Data:', currentData);
+            }
+
+            currentEvent = '';
+            currentData = '';
+          }
+        }
+      };
+
+      // Use HttpClient with proper streaming configuration
+      const subscription = this.http
+        .request('POST', `${environment.apiUrl}/questions/generate-enhanced-stream`, {
+          headers,
+          body: request,
+          responseType: 'text',
+          observe: 'events',
+          reportProgress: true,
+        })
+        .subscribe({
+          next: (event: any) => {
+            // Type 3 = HttpEventType.DownloadProgress
+            if (event.type === 3 && event.partialText) {
+              const newChunk = event.partialText.substring(buffer.length);
+              buffer = event.partialText;
+
+              if (newChunk) {
+                parseSSEChunk(newChunk);
+              }
+            }
+            // Type 4 = HttpEventType.Response
+            else if (event.type === 4) {
+              console.log('📡 HTTP Response complete');
+              if (event.body && event.body.length > buffer.length) {
+                const finalChunk = event.body.substring(buffer.length);
+                parseSSEChunk(finalChunk);
+              }
+            }
+          },
+          error: (error) => {
+            console.error('❌ HttpClient error:', error);
+            observer.error(error);
+          },
+          complete: () => {
+            console.log('📡 HttpClient complete');
+          },
+        });
+
+      return () => {
+        console.log('🛑 Unsubscribing from stream');
+        subscription.unsubscribe();
+      };
+    });
   }
 
   /**

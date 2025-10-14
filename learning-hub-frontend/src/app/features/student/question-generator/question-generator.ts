@@ -8,12 +8,19 @@ export enum QuestionGeneratorStep {
   QUESTIONS = 'questions',
   RESULTS = 'results',
 }
-import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  inject,
+  ChangeDetectorRef,
+  HostListener,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { QuestionService } from '../../../core/services/question.service';
@@ -31,19 +38,73 @@ import {
   AgentMetrics, // Phase 1: Import agent metrics
   AnswerSubmission, // Phase A6.2: Batch answer submission
   ValidationResult, // Phase A6.2: AI validation response
+  QuestionFormat, // STREAMING: Question format enum
+  EnhancedDifficultyLevel, // STREAMING: Enhanced difficulty levels
 } from '../../../core/models/question.model';
 
 export { LearningStyle };
 import { User } from '../../../core/models/user.model';
 import { ResultsService } from '../../../core/services/results.service';
+import { QuestionSkeletonComponent } from '../../../shared/components/question-skeleton/question-skeleton';
 
 @Component({
   selector: 'app-question-generator',
-  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule, QuestionSkeletonComponent],
   templateUrl: './question-generator.html',
   styleUrl: './question-generator.scss',
 })
 export class QuestionGenerator implements OnInit, OnDestroy {
+  /**
+   * REFACTOR: Navigate to specific question by index (used by pagination buttons)
+   *
+   * Saves current answer before navigation, updates index and current question,
+   * loads stored answer for target question if available.
+   *
+   * **Streaming Support**: Works with both streaming (streamingQuestions) and
+   * completed sessions (currentSession.questions) seamlessly.
+   *
+   * @param {number} index - Zero-based question index
+   * @returns {void}
+   * @example
+   * component.navigateToQuestion(3); // Navigate to question 4
+   */
+  navigateToQuestion(index: number): void {
+    // During streaming, check streamingQuestions array
+    const availableQuestions =
+      this.isStreaming || this.streamingQuestions.length > 0
+        ? this.streamingQuestions
+        : this.currentSession?.questions || [];
+
+    if (availableQuestions.length === 0) {
+      console.error('❌ No questions available for navigation');
+      return;
+    }
+
+    // Don't navigate to questions that haven't loaded yet
+    if (index >= availableQuestions.length) {
+      console.warn(`⚠️  Question ${index + 1} not loaded yet`);
+      return;
+    }
+
+    // Save current answer before navigating
+    if (this.isShortAnswerMode && this.currentQuestion) {
+      this.studentAnswers.set(this.currentQuestion.id, this.userAnswer);
+      this.questionService.storeStudentAnswersInLocalStorage(this.studentAnswers);
+    }
+
+    // Update to new question
+    this.currentQuestionIndex = index;
+    this.currentQuestion = availableQuestions[index];
+
+    // Load stored answer for new question
+    if (this.isShortAnswerMode && this.currentQuestion) {
+      this.studentAnswers = this.questionService.loadStudentAnswersFromLocalStorage();
+      this.userAnswer = this.studentAnswers.get(this.currentQuestion.id) || '';
+    }
+
+    this.cdr.detectChanges();
+  }
+
   /**
    * Advances to the next question in the session, if possible.
    * Updates `currentQuestionIndex` and `currentQuestion`.
@@ -125,17 +186,16 @@ export class QuestionGenerator implements OnInit, OnDestroy {
 
   // Component state
   currentUser: User | null = null;
-  /**
-   * Current UI step in the question generation flow
-   */
-  currentStep: QuestionGeneratorStep = QuestionGeneratorStep.SETUP;
+
   // Diagnostic: log initial step
   constructor(
     private readonly questionService: QuestionService,
     private readonly authService: AuthService,
     private readonly router: Router,
+    private readonly route: ActivatedRoute,
     private readonly cdr: ChangeDetectorRef,
-    private resultService: ResultsService
+    private resultService: ResultsService,
+    private location: Location
   ) {
     this.subscriptions = new Subscription();
     // ...existing code...
@@ -214,6 +274,18 @@ export class QuestionGenerator implements OnInit, OnDestroy {
   /** Loading state for answer submission */
   isSubmittingAnswers: boolean = false;
 
+  // STREAMING: Progressive question loading
+  /** Array of questions that grows as stream receives them */
+  streamingQuestions: GeneratedQuestion[] = [];
+  /** Total expected number of questions from streaming */
+  totalExpectedQuestions: number = 0;
+  /** Per-question loading states (true = loading, false = loaded) */
+  questionLoadingStates: boolean[] = [];
+  /** Flag indicating if currently streaming questions */
+  isStreaming: boolean = false;
+  /** Streaming error message */
+  streamingError: string | null = null;
+
   ngOnInit(): void {
     // Check if user is authenticated
     if (!this.authService.isAuthenticated()) {
@@ -222,13 +294,56 @@ export class QuestionGenerator implements OnInit, OnDestroy {
       return;
     }
 
-    // PHASE A6.3: Check for session in service first (persists across refresh)
+    // REFACTOR: Check for streaming query params first (new consolidated streaming approach)
+    this.route.queryParams.subscribe((params) => {
+      if (params['streaming'] === 'true') {
+        console.log('🌊 Streaming mode detected from query params:', params);
+
+        // Get streaming request from sessionStorage
+        const streamingRequestJson = sessionStorage.getItem('streamingRequest');
+        if (!streamingRequestJson) {
+          console.error('❌ No streaming request found in sessionStorage');
+          this.error = 'Streaming session expired. Please generate questions again.';
+          return;
+        }
+
+        const streamingParams = JSON.parse(streamingRequestJson);
+        const expectedCount = parseInt(params['count'], 10) || 10;
+
+        // REFACTOR: Extract display info from query params and streaming request
+        this.selectedSubject = params['subject'] || streamingParams.subject || 'mathematics';
+        this.selectedTopic = params['category'] || streamingParams.category || '';
+        this.selectedDifficulty = streamingParams.difficultyLevel || 'medium';
+
+        // Initialize streaming state
+        this.totalExpectedQuestions = expectedCount;
+        this.isStreaming = true;
+        this.streamingQuestions = [];
+        this.isShortAnswerMode = true;
+
+        console.log('📋 Display info set:', {
+          subject: this.selectedSubject,
+          topic: this.selectedTopic,
+          difficulty: this.selectedDifficulty,
+        });
+
+        // Start streaming immediately
+        this.startStreamingGeneration(streamingParams);
+
+        // Clear sessionStorage after reading
+        sessionStorage.removeItem('streamingRequest');
+
+        // Load user data and subscribe to changes
+        this.loadUserData();
+        this.subscribeToSessionChanges();
+        return;
+      }
+    }); // PHASE A6.3: Check for session in service first (persists across refresh)
     const existingSession = this.questionService.getCurrentSession();
     console.log('Existing session from service:', existingSession);
     if (existingSession && existingSession.questions.length > 0) {
       this.isShortAnswerMode = true;
       this.currentSession = existingSession;
-      this.currentStep = QuestionGeneratorStep.QUESTIONS;
       this.currentQuestionIndex = 0;
       this.currentQuestion = this.currentSession.questions[0];
 
@@ -247,45 +362,8 @@ export class QuestionGenerator implements OnInit, OnDestroy {
         'questions'
       );
     }
-    // PHASE A6.2: Fallback to router state (short-answer mode from unified generator)
-    else {
-      const navigation = this.router.getCurrentNavigation();
-      if (navigation?.extras?.state) {
-        const state = navigation.extras.state;
-        if (state['isShortAnswerMode'] && state['questions'] && this.currentUser) {
-          this.isShortAnswerMode = true;
-          const questions = state['questions'] as GeneratedQuestion[];
-          this.currentSession = {
-            id: state['sessionId'] || `session-${Date.now()}`,
-            userId: this.currentUser.id || '',
-            questions: questions,
-            answers: [],
-            startedAt: new Date(),
-            totalScore: 0,
-            maxScore: questions.length * 10, // 10 points per question
-            timeSpentMinutes: 0,
-            subject: this.selectedSubject || 'mathematics',
-            topic: this.selectedTopic || '',
-          };
-          this.currentStep = QuestionGeneratorStep.QUESTIONS;
-          this.currentQuestionIndex = 0;
-          if (this.currentSession && this.currentSession.questions.length > 0) {
-            this.currentQuestion = this.currentSession.questions[0];
-
-            // PHASE A6.4: Initialize userAnswer for first question
-            if (this.currentQuestion) {
-              this.userAnswer = this.studentAnswers.get(this.currentQuestion.id) || '';
-            }
-
-            console.log(
-              '✅ Short-answer mode activated from router state with',
-              this.currentSession.questions.length,
-              'questions'
-            );
-          }
-        }
-      }
-    }
+    // PHASE A6.2: Fallback - legacy router state support (kept for backward compatibility)
+    // This path is rarely used now that streaming uses query params
 
     this.loadUserData();
     this.subscribeToSessionChanges();
@@ -293,6 +371,63 @@ export class QuestionGenerator implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  /**
+   * Warn user before page refresh/close if they have unsaved answers
+   *
+   * Uses browser's native confirmation dialog to prevent accidental data loss.
+   * Only shows warning if in short-answer mode with active session.
+   *
+   * Modern browsers show generic message like "Leave site? Changes you made may not be saved."
+   *
+   * @param {BeforeUnloadEvent} event - Browser's beforeunload event
+   * @returns {string | undefined} Non-empty string triggers confirmation dialog
+   *
+   * @example
+   * // User tries to refresh page → Browser shows: "Leave site? Changes you made may not be saved."
+   */
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any) {
+    if (this.hasUnsavedProgress()) {
+      // Custom function to check for unsaved changes
+      $event.returnValue = true; // Required for some browsers to show the prompt
+      return 'Your practice session will be lost. Do you want to leave?'; // Message for the prompt
+    }
+    return null; // Allow navigation without prompt
+  }
+
+  /**
+   * Check if user has unsaved progress that would be lost
+   *
+   * @returns {boolean} True if there's active session or answered questions
+   */
+  private hasUnsavedProgress(): boolean {
+    // Check if streaming is in progress
+    if (this.isStreaming) {
+      console.log('⚠️  Unsaved progress: streaming in progress');
+      return true;
+    }
+
+    if (!this.currentSession) {
+      console.log('🔍 No unsaved progress: no current session');
+      return false;
+    }
+
+    // Check if there are any questions loaded
+    if (this.currentSession.questions && this.currentSession.questions.length > 0) {
+      console.log('⚠️  Unsaved progress: questions loaded');
+      return true;
+    }
+
+    // Check if there are any answered questions
+    if (this.studentAnswers.size > 0) {
+      console.log('⚠️  Unsaved progress: answers recorded');
+      return true;
+    }
+
+    console.log('🔍 No unsaved progress detected');
+    return false;
   }
 
   /**
@@ -430,44 +565,29 @@ export class QuestionGenerator implements OnInit, OnDestroy {
   }
 
   /**
-   * Proceed to persona setup step
-   */
-  proceedToPersona(): void {
-    if (!this.selectedSubject || !this.selectedTopic) {
-      this.error = 'Please select both subject and topic';
-      return;
-    }
-    this.currentStep = QuestionGeneratorStep.PERSONA;
-    // ...existing code...
-    this.error = null;
-  }
-
-  /**
-   * Generates AI questions based on the current selections and persona.
-   * Handles UI state transitions from persona selection to question generation.
+   * Generates AI questions with streaming support.
+   * Uses Server-Sent Events (SSE) to receive questions progressively as they're generated,
+   * providing instant feedback and better user experience compared to waiting for all questions.
    *
-   * @returns {Promise<void>} Resolves when questions are generated and UI state is updated.
-   * @throws {Error} If question generation fails due to missing session or backend error.
+   * **Streaming Benefits:**
+   * - First question appears in ~2 seconds vs 10+ seconds for batch
+   * - Users can start reading/answering while remaining questions generate
+   * - Visual feedback with skeleton loaders for pending questions
+   * - Navigation buttons enable as questions become available
+   *
+   * @returns {Promise<void>} Resolves when streaming completes or UI transitions occur
+   * @throws {Error} If question generation fails due to missing session or backend error
+   *
    * @example
    * await component.generateQuestions();
    */
   async generateQuestions(): Promise<void> {
-    // Transition from persona selection to generating state
-    if (this.currentStep === QuestionGeneratorStep.PERSONA) {
-      this.currentStep = QuestionGeneratorStep.GENERATING;
-      // ...existing code...
-    }
-
-    // If questions are already present in the session, transition to questions view
-    if (
-      this.currentSession &&
-      Array.isArray(this.currentSession.questions) &&
-      this.currentSession.questions.length > 0
-    ) {
-      this.currentStep = QuestionGeneratorStep.QUESTIONS;
-      // ...existing code...
-      return;
-    }
+    // REFACTOR: This method is now DEPRECATED - streaming happens in ngOnInit via router state
+    // Kept for backward compatibility but should not be called in normal flow
+    console.warn(
+      '⚠️  generateQuestions() called directly - this is deprecated. Use unified-generator instead.'
+    );
+    return;
 
     // GREEN phase fix: If no session exists, create a new session before generating questions
     if (!this.currentSession) {
@@ -487,17 +607,21 @@ export class QuestionGenerator implements OnInit, OnDestroy {
       // ...existing code...
     }
 
-    // Minimal implementation: if no questions exist, trigger question generation
+    // NOTE: DEPRECATED CODE PATH - This legacy batch generation is no longer used
+    // All generation now goes through generateQuestionsWithStreaming() above
+    // This code path is unreachable but kept for reference
+    // Using non-null assertions since streaming redirect happens first
     if (
       this.currentSession &&
-      Array.isArray(this.currentSession.questions) &&
-      this.currentSession.questions.length === 0
+      Array.isArray(this.currentSession?.questions) &&
+      this.currentSession!.questions.length === 0
     ) {
       // Build request from current selections and persona
       const user = this.currentUser;
+      const session = this.currentSession!;
       const request = {
-        subject: this.currentSession.subject,
-        topic: this.currentSession.topic,
+        subject: session.subject,
+        topic: session.topic,
         difficulty: this.selectedDifficulty,
         questionType: this.selectedQuestionType,
         numQuestions: this.questionCount,
@@ -515,12 +639,16 @@ export class QuestionGenerator implements OnInit, OnDestroy {
         },
       };
       try {
-        const response = await this.questionService.generateQuestions(request).toPromise();
+        const response: any = await this.questionService.generateQuestions(request).toPromise();
         // ...existing code...
         console.log('[AIQG] Backend response:', response);
-        if (response && response.success && Array.isArray(response.data.questions)) {
-          this.currentSession.questions = response.data.questions;
-          this.currentStep = QuestionGeneratorStep.QUESTIONS;
+        if (
+          response &&
+          response.success &&
+          response.data &&
+          Array.isArray(response.data.questions)
+        ) {
+          this.currentSession!.questions = response.data.questions;
           // ...existing code...
 
           // Phase 1: Capture AI quality metrics and agent metrics
@@ -534,7 +662,7 @@ export class QuestionGenerator implements OnInit, OnDestroy {
 
           // Minimal fix: ensure first question is displayed
           this.currentQuestionIndex = 0;
-          this.currentQuestion = this.currentSession.questions[0] || null;
+          this.currentQuestion = this.currentSession!.questions[0] || null;
           console.log('[AIQG] Session after generation:', this.currentSession);
           console.log('[AIQG] Current question after generation:', this.currentQuestion);
           this.cdr.detectChanges();
@@ -547,6 +675,125 @@ export class QuestionGenerator implements OnInit, OnDestroy {
         // ...existing code...
       }
     }
+  }
+
+  /**
+   * REFACTOR: Start streaming generation with provided request parameters
+   *
+   * Consolidated streaming logic - this is now the ONLY place where questions stream.
+   * Called from ngOnInit when router state contains streaming params from unified-generator.
+   *
+   * Progressively loads questions as they're generated, providing instant feedback.
+   * Updates UI with skeleton loaders for pending questions and enables navigation
+   * as each question becomes available.
+   *
+   * **Implementation Details:**
+   * - Creates new session for streaming questions
+   * - Initializes loading states for all expected questions
+   * - Subscribes to streaming observable
+   * - Adds questions to array and session as they arrive
+   * - Updates loading states and enables navigation progressively
+   * - Handles completion and errors gracefully
+   * - Saves partial sessions to localStorage for answer persistence
+   *
+   * @param {any} request - Enhanced question generation request with all parameters
+   * @returns {void}
+   * @throws {Error} If session creation or streaming subscription fails
+   *
+   * @example
+   * const request = { subject: 'mathematics', category: 'addition', ... };
+   * component.startStreamingGeneration(request);
+   */
+  private startStreamingGeneration(request: any): void {
+    // Create new session for streaming
+    const user = this.currentUser;
+    const sessionId = `session-${Date.now()}`;
+
+    this.currentSession = {
+      id: sessionId,
+      userId: user?.id || '',
+      questions: [],
+      answers: [],
+      startedAt: new Date(),
+      totalScore: 0,
+      maxScore: this.totalExpectedQuestions * 10,
+      timeSpentMinutes: 0,
+      subject: request.subject || 'mathematics',
+      topic: request.category || '',
+    };
+
+    // Initialize streaming state (already set in ngOnInit, but ensure arrays are ready)
+    this.streamingError = null;
+    this.streamingQuestions = [];
+    this.questionLoadingStates = new Array(this.totalExpectedQuestions).fill(true);
+    this.isShortAnswerMode = true;
+
+    console.log('🌊 Starting question streaming...', {
+      sessionId: sessionId,
+      expectedQuestions: this.totalExpectedQuestions,
+      request,
+    });
+
+    // Subscribe to streaming observable
+    this.subscriptions.add(
+      this.questionService.generateQuestionsEnhancedStream(request).subscribe({
+        next: (question: GeneratedQuestion) => {
+          console.log(
+            `📥 Received question ${this.streamingQuestions.length + 1}/${
+              this.totalExpectedQuestions
+            }`,
+            question
+          );
+
+          // Add question to streaming array
+          this.streamingQuestions.push(question);
+
+          // Update loading state for this question
+          const questionIndex = this.streamingQuestions.length - 1;
+          this.questionLoadingStates[questionIndex] = false;
+
+          // Update session questions
+          if (this.currentSession) {
+            this.currentSession.questions = [...this.streamingQuestions];
+            this.currentSession.maxScore = this.streamingQuestions.length * 10;
+
+            // REFACTOR: Store partial session after each question for answer persistence
+            this.questionService.storeSession(this.currentSession);
+          }
+
+          // Transition to questions view on first question
+          if (this.streamingQuestions.length === 1) {
+            this.currentQuestionIndex = 0;
+            this.currentQuestion = this.streamingQuestions[0];
+            console.log('✅ First question received, displaying in UI');
+          }
+
+          // Trigger change detection to update UI
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('❌ Streaming error:', error);
+          this.isStreaming = false;
+          this.streamingError = error.message || 'Failed to stream questions';
+          this.error = this.streamingError;
+          this.cdr.detectChanges();
+        },
+        complete: () => {
+          console.log(
+            `✅ Streaming complete: ${this.streamingQuestions.length} questions received`
+          );
+          this.isStreaming = false;
+
+          // Final update to session
+          if (this.currentSession) {
+            this.currentSession.questions = this.streamingQuestions;
+            this.currentSession.maxScore = this.streamingQuestions.length * 10;
+          }
+
+          this.cdr.detectChanges();
+        },
+      })
+    );
   }
 
   /**
@@ -598,6 +845,50 @@ export class QuestionGenerator implements OnInit, OnDestroy {
   }
 
   /**
+   * Check if a question at given index is loaded (available for viewing)
+   *
+   * During streaming, questions load progressively. This method determines
+   * if a specific question has been received and can be displayed.
+   *
+   * @param {number} index - Zero-based question index
+   * @returns {boolean} True if question is loaded, false if still loading
+   *
+   * @example
+   * // Check if question 3 is loaded
+   * if (component.isQuestionLoaded(2)) {
+   *   // Enable navigation to question 3
+   * }
+   */
+  isQuestionLoaded(index: number): boolean {
+    // During streaming, check loading states
+    if (this.isStreaming || this.streamingQuestions.length > 0) {
+      return index < this.streamingQuestions.length;
+    }
+    // Non-streaming mode: all questions loaded at once
+    return !!(this.currentSession?.questions && index < this.currentSession.questions.length);
+  }
+
+  /**
+   * Check if should show skeleton loader for a question index
+   *
+   * @param {number} index - Zero-based question index
+   * @returns {boolean} True if should show skeleton, false otherwise
+   *
+   * @example
+   * // Show skeleton for pending questions
+   * if (component.shouldShowSkeleton(5)) {
+   *   // Display skeleton loader
+   * }
+   */
+  shouldShowSkeleton(index: number): boolean {
+    return (
+      this.isStreaming &&
+      index >= this.streamingQuestions.length &&
+      index < this.totalExpectedQuestions
+    );
+  }
+
+  /**
    * Complete the current question session
    */
   private async completeSession(): Promise<void> {
@@ -621,7 +912,6 @@ export class QuestionGenerator implements OnInit, OnDestroy {
         summary: result?.sessionSummary,
       };
 
-      this.currentStep = QuestionGeneratorStep.RESULTS;
       // ...existing code...
     } catch (error: any) {
       this.error = error.message || 'Failed to complete session';
@@ -642,7 +932,6 @@ export class QuestionGenerator implements OnInit, OnDestroy {
    */
   startNewSession(): void {
     this.questionService.clearSession();
-    this.currentStep = QuestionGeneratorStep.SETUP;
     // ...existing code...
     this.sessionResults = null;
     this.qualityMetrics = null;
@@ -884,5 +1173,12 @@ export class QuestionGenerator implements OnInit, OnDestroy {
    */
   returnToDashboard(): void {
     this.router.navigate(['/student/dashboard']);
+  }
+
+  /**
+   * Navigate back to category selection to generate new questions
+   */
+  backToCategories(): void {
+    this.location.back();
   }
 }
