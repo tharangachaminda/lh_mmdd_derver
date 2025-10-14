@@ -54,3 +54,9 @@ opensearch-data/
 opensearch-logs/
 backups/
 .codei-core
+
+# MMDD (Micromanaged Driven Development) session logs
+# Personal development artifacts - not tracked in git
+# Note: dev_mmdd_logs/decisions/ IS tracked (team-shared technical decisions)
+dev_mmdd_logs/sessions/
+!dev_mmdd_logs/decisions/
