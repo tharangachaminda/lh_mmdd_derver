@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { QuestionService } from '../../../core/services/question.service';
@@ -47,6 +47,57 @@ import { QuestionSkeletonComponent } from '../../../shared/components/question-s
   styleUrl: './question-generator.scss',
 })
 export class QuestionGenerator implements OnInit, OnDestroy {
+  /**
+   * REFACTOR: Navigate to specific question by index (used by pagination buttons)
+   *
+   * Saves current answer before navigation, updates index and current question,
+   * loads stored answer for target question if available.
+   *
+   * **Streaming Support**: Works with both streaming (streamingQuestions) and
+   * completed sessions (currentSession.questions) seamlessly.
+   *
+   * @param {number} index - Zero-based question index
+   * @returns {void}
+   * @example
+   * component.navigateToQuestion(3); // Navigate to question 4
+   */
+  navigateToQuestion(index: number): void {
+    // During streaming, check streamingQuestions array
+    const availableQuestions =
+      this.isStreaming || this.streamingQuestions.length > 0
+        ? this.streamingQuestions
+        : this.currentSession?.questions || [];
+
+    if (availableQuestions.length === 0) {
+      console.error('❌ No questions available for navigation');
+      return;
+    }
+
+    // Don't navigate to questions that haven't loaded yet
+    if (index >= availableQuestions.length) {
+      console.warn(`⚠️  Question ${index + 1} not loaded yet`);
+      return;
+    }
+
+    // Save current answer before navigating
+    if (this.isShortAnswerMode && this.currentQuestion) {
+      this.studentAnswers.set(this.currentQuestion.id, this.userAnswer);
+      this.questionService.storeStudentAnswersInLocalStorage(this.studentAnswers);
+    }
+
+    // Update to new question
+    this.currentQuestionIndex = index;
+    this.currentQuestion = availableQuestions[index];
+
+    // Load stored answer for new question
+    if (this.isShortAnswerMode && this.currentQuestion) {
+      this.studentAnswers = this.questionService.loadStudentAnswersFromLocalStorage();
+      this.userAnswer = this.studentAnswers.get(this.currentQuestion.id) || '';
+    }
+
+    this.cdr.detectChanges();
+  }
+
   /**
    * Advances to the next question in the session, if possible.
    * Updates `currentQuestionIndex` and `currentQuestion`.
@@ -134,6 +185,7 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     private readonly questionService: QuestionService,
     private readonly authService: AuthService,
     private readonly router: Router,
+    private readonly route: ActivatedRoute,
     private readonly cdr: ChangeDetectorRef,
     private resultService: ResultsService
   ) {
@@ -234,7 +286,40 @@ export class QuestionGenerator implements OnInit, OnDestroy {
       return;
     }
 
-    // PHASE A6.3: Check for session in service first (persists across refresh)
+    // REFACTOR: Check for streaming query params first (new consolidated streaming approach)
+    this.route.queryParams.subscribe((params) => {
+      if (params['streaming'] === 'true') {
+        console.log('🌊 Streaming mode detected from query params:', params);
+
+        // Get streaming request from sessionStorage
+        const streamingRequestJson = sessionStorage.getItem('streamingRequest');
+        if (!streamingRequestJson) {
+          console.error('❌ No streaming request found in sessionStorage');
+          this.error = 'Streaming session expired. Please generate questions again.';
+          return;
+        }
+
+        const streamingParams = JSON.parse(streamingRequestJson);
+        const expectedCount = parseInt(params['count'], 10) || 10;
+
+        // Initialize streaming state
+        this.totalExpectedQuestions = expectedCount;
+        this.isStreaming = true;
+        this.streamingQuestions = [];
+        this.isShortAnswerMode = true;
+
+        // Start streaming immediately
+        this.startStreamingGeneration(streamingParams);
+
+        // Clear sessionStorage after reading
+        sessionStorage.removeItem('streamingRequest');
+
+        // Load user data and subscribe to changes
+        this.loadUserData();
+        this.subscribeToSessionChanges();
+        return;
+      }
+    }); // PHASE A6.3: Check for session in service first (persists across refresh)
     const existingSession = this.questionService.getCurrentSession();
     console.log('Existing session from service:', existingSession);
     if (existingSession && existingSession.questions.length > 0) {
@@ -258,44 +343,8 @@ export class QuestionGenerator implements OnInit, OnDestroy {
         'questions'
       );
     }
-    // PHASE A6.2: Fallback to router state (short-answer mode from unified generator)
-    else {
-      const navigation = this.router.getCurrentNavigation();
-      if (navigation?.extras?.state) {
-        const state = navigation.extras.state;
-        if (state['isShortAnswerMode'] && state['questions'] && this.currentUser) {
-          this.isShortAnswerMode = true;
-          const questions = state['questions'] as GeneratedQuestion[];
-          this.currentSession = {
-            id: state['sessionId'] || `session-${Date.now()}`,
-            userId: this.currentUser.id || '',
-            questions: questions,
-            answers: [],
-            startedAt: new Date(),
-            totalScore: 0,
-            maxScore: questions.length * 10, // 10 points per question
-            timeSpentMinutes: 0,
-            subject: this.selectedSubject || 'mathematics',
-            topic: this.selectedTopic || '',
-          };
-          this.currentQuestionIndex = 0;
-          if (this.currentSession && this.currentSession.questions.length > 0) {
-            this.currentQuestion = this.currentSession.questions[0];
-
-            // PHASE A6.4: Initialize userAnswer for first question
-            if (this.currentQuestion) {
-              this.userAnswer = this.studentAnswers.get(this.currentQuestion.id) || '';
-            }
-
-            console.log(
-              '✅ Short-answer mode activated from router state with',
-              this.currentSession.questions.length,
-              'questions'
-            );
-          }
-        }
-      }
-    }
+    // PHASE A6.2: Fallback - legacy router state support (kept for backward compatibility)
+    // This path is rarely used now that streaming uses query params
 
     this.loadUserData();
     this.subscribeToSessionChanges();
@@ -457,8 +506,12 @@ export class QuestionGenerator implements OnInit, OnDestroy {
    * await component.generateQuestions();
    */
   async generateQuestions(): Promise<void> {
-    // STREAMING: Use progressive loading instead of batch generation
-    return this.generateQuestionsWithStreaming();
+    // REFACTOR: This method is now DEPRECATED - streaming happens in ngOnInit via router state
+    // Kept for backward compatibility but should not be called in normal flow
+    console.warn(
+      '⚠️  generateQuestions() called directly - this is deprecated. Use unified-generator instead.'
+    );
+    return;
 
     // GREEN phase fix: If no session exists, create a new session before generating questions
     if (!this.currentSession) {
@@ -549,89 +602,58 @@ export class QuestionGenerator implements OnInit, OnDestroy {
   }
 
   /**
-   * Generate questions using Server-Sent Events (SSE) streaming
+   * REFACTOR: Start streaming generation with provided request parameters
+   *
+   * Consolidated streaming logic - this is now the ONLY place where questions stream.
+   * Called from ngOnInit when router state contains streaming params from unified-generator.
    *
    * Progressively loads questions as they're generated, providing instant feedback.
    * Updates UI with skeleton loaders for pending questions and enables navigation
    * as each question becomes available.
    *
    * **Implementation Details:**
+   * - Creates new session for streaming questions
    * - Initializes loading states for all expected questions
    * - Subscribes to streaming observable
-   * - Adds questions to array as they arrive
+   * - Adds questions to array and session as they arrive
    * - Updates loading states and enables navigation progressively
-   * - Transitions to questions view when first question arrives
    * - Handles completion and errors gracefully
+   * - Saves partial sessions to localStorage for answer persistence
    *
-   * @returns {Promise<void>} Resolves when streaming setup completes
+   * @param {any} request - Enhanced question generation request with all parameters
+   * @returns {void}
    * @throws {Error} If session creation or streaming subscription fails
    *
    * @example
-   * await component.generateQuestionsWithStreaming();
+   * const request = { subject: 'mathematics', category: 'addition', ... };
+   * component.startStreamingGeneration(request);
    */
-  private async generateQuestionsWithStreaming(): Promise<void> {
-    // GREEN phase fix: Create session if doesn't exist
-    if (!this.currentSession) {
-      const user = this.currentUser;
-      this.currentSession = {
-        id: 'session-' + Date.now(),
-        userId: user?.id || '',
-        questions: [],
-        answers: [],
-        startedAt: new Date(),
-        totalScore: 0,
-        maxScore: 0,
-        timeSpentMinutes: 0,
-        subject: this.selectedSubject || '',
-        topic: this.selectedTopic || '',
-      };
-    }
-
-    // Build request from current selections and persona
+  private startStreamingGeneration(request: any): void {
+    // Create new session for streaming
     const user = this.currentUser;
+    const sessionId = `session-${Date.now()}`;
 
-    // Map selectedQuestionType to QuestionFormat enum
-    let questionFormat: QuestionFormat;
-    if (this.selectedQuestionType === 'short_answer') {
-      questionFormat = QuestionFormat.SHORT_ANSWER;
-    } else if (this.selectedQuestionType === 'true_false') {
-      questionFormat = QuestionFormat.TRUE_FALSE;
-    } else {
-      questionFormat = QuestionFormat.MULTIPLE_CHOICE;
-    }
-
-    // Map selectedDifficulty to EnhancedDifficultyLevel enum
-    let difficultyLevel: EnhancedDifficultyLevel;
-    if (this.selectedDifficulty === 'beginner') {
-      difficultyLevel = EnhancedDifficultyLevel.EASY;
-    } else if (this.selectedDifficulty === 'advanced') {
-      difficultyLevel = EnhancedDifficultyLevel.HARD;
-    } else {
-      difficultyLevel = EnhancedDifficultyLevel.MEDIUM;
-    }
-
-    const request = {
-      subject: this.currentSession.subject || 'mathematics',
-      category: this.currentSession.topic || '',
-      gradeLevel: user?.grade || 5,
-      questionTypes: [this.selectedQuestionType],
-      questionFormat: questionFormat,
-      difficultyLevel: difficultyLevel,
-      numberOfQuestions: this.questionCount,
-      learningStyle: this.learningStyle,
-      interests: this.interests,
-      motivators: this.motivationalFactors,
-      includeExplanations: true,
+    this.currentSession = {
+      id: sessionId,
+      userId: user?.id || '',
+      questions: [],
+      answers: [],
+      startedAt: new Date(),
+      totalScore: 0,
+      maxScore: this.totalExpectedQuestions * 10,
+      timeSpentMinutes: 0,
+      subject: request.subject || 'mathematics',
+      topic: request.category || '',
     };
 
-    // Initialize streaming state
-    this.isStreaming = true;
+    // Initialize streaming state (already set in ngOnInit, but ensure arrays are ready)
     this.streamingError = null;
     this.streamingQuestions = [];
-    this.totalExpectedQuestions = this.questionCount;
-    this.questionLoadingStates = new Array(this.questionCount).fill(true);
+    this.questionLoadingStates = new Array(this.totalExpectedQuestions).fill(true);
+    this.isShortAnswerMode = true;
 
     console.log('🌊 Starting question streaming...', {
+      sessionId: sessionId,
       expectedQuestions: this.totalExpectedQuestions,
       request,
     });
@@ -657,13 +679,17 @@ export class QuestionGenerator implements OnInit, OnDestroy {
           // Update session questions
           if (this.currentSession) {
             this.currentSession.questions = [...this.streamingQuestions];
+            this.currentSession.maxScore = this.streamingQuestions.length * 10;
+
+            // REFACTOR: Store partial session after each question for answer persistence
+            this.questionService.storeSession(this.currentSession);
           }
 
           // Transition to questions view on first question
           if (this.streamingQuestions.length === 1) {
             this.currentQuestionIndex = 0;
             this.currentQuestion = this.streamingQuestions[0];
-            console.log('✅ First question received, transitioning to questions view');
+            console.log('✅ First question received, displaying in UI');
           }
 
           // Trigger change detection to update UI

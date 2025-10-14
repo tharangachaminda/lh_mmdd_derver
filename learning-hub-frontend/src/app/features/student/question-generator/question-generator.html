@@ -114,7 +114,7 @@
       </span>
     </div>
 
-    <!-- STREAMING: Pagination buttons for all questions -->
+    <!-- REFACTOR Option C: Pagination buttons for all questions (disabled until loaded) -->
     @if (totalExpectedQuestions > 1) {
     <div class="question-pagination">
       @for (questionNum of [].constructor(totalExpectedQuestions); track $index) {
@@ -123,7 +123,7 @@
         [class.active]="currentQuestionIndex === $index"
         [class.loading]="!isQuestionLoaded($index)"
         [disabled]="!isQuestionLoaded($index)"
-        (click)="currentQuestionIndex = $index; currentQuestion = streamingQuestions[$index] || currentSession?.questions?.[$index]"
+        (click)="navigateToQuestion($index)"
         [attr.aria-label]="'Go to question ' + ($index + 1)"
       >
         @if (isQuestionLoaded($index)) {
@@ -169,38 +169,6 @@
           }
         </div>
         }
-
-        <!-- Navigation Controls (moved here) -->
-        <div
-          class="question-navigation"
-          style="display: flex; gap: 1rem; margin: 1rem 0; justify-content: center"
-        >
-          <button
-            mat-stroked-button
-            color="primary"
-            class="previous-question"
-            (click)="goToPreviousQuestion()"
-            [disabled]="currentQuestionIndex === 0"
-            aria-label="Go to previous question"
-          >
-            <mat-icon>arrow_back</mat-icon>
-            Previous
-          </button>
-          <button mat-stroked-button color="primary" class="reset-questions">
-            {{ questionCount }}
-          </button>
-          <button
-            mat-raised-button
-            color="accent"
-            class="next-question"
-            (click)="goToNextQuestion()"
-            [disabled]="currentQuestionIndex === (currentSession?.questions?.length || 1) - 1"
-            aria-label="Go to next question"
-          >
-            Next
-            <mat-icon>arrow_forward</mat-icon>
-          </button>
-        </div>
       </div>
 
       <!-- PHASE A6.2: Submit All Answers (Short-Answer Mode) -->

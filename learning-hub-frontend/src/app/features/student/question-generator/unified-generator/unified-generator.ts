@@ -186,25 +186,6 @@ export class UnifiedGeneratorComponent implements OnInit {
   /** Loading state indicator for async question generation */
   isGenerating: boolean = false;
 
-  /**
-   * STREAMING: Progressive question loading state
-   */
-
-  /** Array of questions received via streaming (grows as questions arrive) */
-  streamingQuestions: GeneratedQuestion[] = [];
-
-  /** Total expected number of questions from stream */
-  totalExpectedQuestions: number = 0;
-
-  /** Currently streaming questions flag */
-  isStreaming: boolean = false;
-
-  /** Streaming error message if any */
-  streamingError: string | null = null;
-
-  /** Current streaming progress (for UI display) */
-  streamingProgress: number = 0;
-
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -486,100 +467,34 @@ export class UnifiedGeneratorComponent implements OnInit {
         : undefined,
     };
 
-    console.log('📤 Sending enhanced request with category metadata:', {
+    console.log('📤 Enhanced request prepared for streaming:', {
       category: request.category,
       categoryName: request.categoryMetadata?.name,
-      hasMetadata: !!request.categoryMetadata,
+      questionCount: request.numberOfQuestions,
     });
 
     if (this.questionService.getCurrentSession()) {
-      console.warn('A question session is already active. Overwriting it.');
+      console.warn('A question session is already active. Clearing it for new generation.');
+      this.questionService.clearSession();
     }
 
-    // STREAMING: Use progressive loading instead of batch generation
-    console.log('🌊 Starting streaming question generation...');
-    this.isStreaming = true;
-    this.streamingError = null;
-    this.streamingQuestions = [];
-    this.totalExpectedQuestions = this.numberOfQuestions;
-    this.streamingProgress = 0;
+    // REFACTOR: Navigate immediately to question-generator with query params
+    // question-generator component will handle all streaming logic
+    console.log('🚀 Navigating to question-generator with streaming query params');
 
-    const currentUser = this.authService.getCurrentUser();
-    const sessionId = `session-${Date.now()}`;
+    // Store streaming request in sessionStorage (query params can't hold complex objects)
+    sessionStorage.setItem('streamingRequest', JSON.stringify(request));
 
-    this.questionService.generateQuestionsEnhancedStream(request).subscribe({
-      next: (question: GeneratedQuestion) => {
-        console.log(
-          `📥 Received question ${this.streamingQuestions.length + 1}/${
-            this.totalExpectedQuestions
-          }`,
-          question
-        );
-
-        // Add question to streaming array
-        this.streamingQuestions.push(question);
-        this.streamingProgress = Math.round(
-          (this.streamingQuestions.length / this.totalExpectedQuestions) * 100
-        );
-
-        // Create or update session
-        const session: QuestionSession = {
-          id: sessionId,
-          userId: currentUser?.id || '',
-          questions: [...this.streamingQuestions],
-          answers: [],
-          startedAt: new Date(),
-          totalScore: 0,
-          maxScore: this.streamingQuestions.length * 10,
-          timeSpentMinutes: 0,
-          subject: this.selectedSubject || 'mathematics',
-          topic: this.selectedCategory || '',
-        };
-
-        this.questionService.storeSession(session);
-
-        // Navigate on FIRST question only
-        if (this.streamingQuestions.length === 1) {
-          console.log('✅ First question received, navigating to question display');
-          this.router.navigate(['/student/question-generator']);
-        }
-      },
-      complete: () => {
-        console.log(`✅ Streaming complete: ${this.streamingQuestions.length} questions received`);
-        this.isStreaming = false;
-        this.isGenerating = false;
-        this.streamingProgress = 100;
-
-        // Final session update
-        const session: QuestionSession = {
-          id: sessionId,
-          userId: currentUser?.id || '',
-          questions: this.streamingQuestions,
-          answers: [],
-          startedAt: new Date(),
-          totalScore: 0,
-          maxScore: this.streamingQuestions.length * 10,
-          timeSpentMinutes: 0,
-          subject: this.selectedSubject || 'mathematics',
-          topic: this.selectedCategory || '',
-        };
-
-        this.questionService.storeSession(session);
-        console.log(
-          '✅ Final session stored:',
-          session.id,
-          'with',
-          session.questions.length,
-          'questions'
-        );
-      },
-      error: (error: any) => {
-        console.error('❌ Streaming question generation failed:', error);
-        this.isGenerating = false;
-        this.isStreaming = false;
-        this.streamingError = error.message || 'Failed to stream questions';
+    this.router.navigate(['/student/question-generator'], {
+      queryParams: {
+        streaming: 'true',
+        count: this.numberOfQuestions,
+        subject: request.subject,
+        category: request.category,
       },
     });
+
+    this.isGenerating = false;
   }
 
   /**
