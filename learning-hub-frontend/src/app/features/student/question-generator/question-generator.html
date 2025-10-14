@@ -15,7 +15,7 @@
   }
 
   <!-- Step 4: Question Interface -->
-  @if (currentStep === QuestionGeneratorStep.QUESTIONS && currentQuestion) {
+  @if (currentQuestion) {
   <div class="questions-step">
     <!-- AI Quality Metrics Panel -->
     @if (qualityMetrics) {
@@ -99,15 +99,50 @@
         <div
           class="progress-fill"
           [style.width.%]="
-            ((currentQuestionIndex + 1) / (currentSession?.questions?.length || 1)) * 100
+            ((currentQuestionIndex + 1) /
+              (currentSession?.questions?.length || totalExpectedQuestions || 1)) *
+            100
           "
         ></div>
       </div>
       <span class="progress-text">
-        Question {{ currentQuestionIndex + 1 }} of {{ currentSession?.questions?.length || 0 }}
+        Question {{ currentQuestionIndex + 1 }} of
+        {{ currentSession?.questions?.length || totalExpectedQuestions || 0 }}
+        @if (isStreaming) {
+        <span class="streaming-indicator"> (Loading...)</span>
+        }
       </span>
     </div>
 
+    <!-- STREAMING: Pagination buttons for all questions -->
+    @if (totalExpectedQuestions > 1) {
+    <div class="question-pagination">
+      @for (questionNum of [].constructor(totalExpectedQuestions); track $index) {
+      <button
+        class="pagination-btn"
+        [class.active]="currentQuestionIndex === $index"
+        [class.loading]="!isQuestionLoaded($index)"
+        [disabled]="!isQuestionLoaded($index)"
+        (click)="currentQuestionIndex = $index; currentQuestion = streamingQuestions[$index] || currentSession?.questions?.[$index]"
+        [attr.aria-label]="'Go to question ' + ($index + 1)"
+      >
+        @if (isQuestionLoaded($index)) {
+        {{ $index + 1 }}
+        } @else {
+        <span class="loading-dot"></span>
+        }
+      </button>
+      }
+    </div>
+    }
+
+    <!-- STREAMING: Show skeleton if question is loading -->
+    @if (!isQuestionLoaded(currentQuestionIndex)) {
+    <app-question-skeleton />
+    }
+
+    <!-- Show real question if loaded -->
+    @if (isQuestionLoaded(currentQuestionIndex) && currentQuestion) {
     <div class="question-card">
       <div class="question-header">
         <span class="question-topic">{{ selectedSubject | titlecase }} - {{ selectedTopic }}</span>
@@ -253,38 +288,9 @@
       </div>
       }
     </div>
+    <!-- question-content -->
+    }
   </div>
-  }
-
-  <!-- Step 5: Results -->
-  @if (currentStep === QuestionGeneratorStep.RESULTS && sessionResults) {
-  <div class="results-step">
-    <div class="results-container">
-      <div class="results-header">
-        <h2>🎉 Great Job!</h2>
-        <p>Here's how you did on your personalized questions</p>
-      </div>
-
-      <div class="score-display">
-        <div class="score-circle">
-          <span class="score-percentage">{{ sessionResults.percentage }}%</span>
-        </div>
-        <div class="score-details">
-          <p>
-            <strong>{{ sessionResults.score }}</strong> out of
-            <strong>{{ sessionResults.maxScore }}</strong> correct
-          </p>
-          <p>
-            Time spent: <strong>{{ sessionResults.timeSpent }}</strong> minutes
-          </p>
-        </div>
-      </div>
-
-      <div class="results-actions">
-        <button class="new-session-btn" (click)="startNewSession()">🔄 Try More Questions</button>
-        <button class="dashboard-btn" (click)="returnToDashboard()">📊 Back to Dashboard</button>
-      </div>
-    </div>
-  </div>
+  <!-- questions-step -->
   }
 </div>
