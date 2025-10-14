@@ -8,10 +8,17 @@ export enum QuestionGeneratorStep {
   QUESTIONS = 'questions',
   RESULTS = 'results',
 }
-import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  inject,
+  ChangeDetectorRef,
+  HostListener,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -187,7 +194,8 @@ export class QuestionGenerator implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly cdr: ChangeDetectorRef,
-    private resultService: ResultsService
+    private resultService: ResultsService,
+    private location: Location
   ) {
     this.subscriptions = new Subscription();
     // ...existing code...
@@ -302,11 +310,22 @@ export class QuestionGenerator implements OnInit, OnDestroy {
         const streamingParams = JSON.parse(streamingRequestJson);
         const expectedCount = parseInt(params['count'], 10) || 10;
 
+        // REFACTOR: Extract display info from query params and streaming request
+        this.selectedSubject = params['subject'] || streamingParams.subject || 'mathematics';
+        this.selectedTopic = params['category'] || streamingParams.category || '';
+        this.selectedDifficulty = streamingParams.difficultyLevel || 'medium';
+
         // Initialize streaming state
         this.totalExpectedQuestions = expectedCount;
         this.isStreaming = true;
         this.streamingQuestions = [];
         this.isShortAnswerMode = true;
+
+        console.log('📋 Display info set:', {
+          subject: this.selectedSubject,
+          topic: this.selectedTopic,
+          difficulty: this.selectedDifficulty,
+        });
 
         // Start streaming immediately
         this.startStreamingGeneration(streamingParams);
@@ -352,6 +371,63 @@ export class QuestionGenerator implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  /**
+   * Warn user before page refresh/close if they have unsaved answers
+   *
+   * Uses browser's native confirmation dialog to prevent accidental data loss.
+   * Only shows warning if in short-answer mode with active session.
+   *
+   * Modern browsers show generic message like "Leave site? Changes you made may not be saved."
+   *
+   * @param {BeforeUnloadEvent} event - Browser's beforeunload event
+   * @returns {string | undefined} Non-empty string triggers confirmation dialog
+   *
+   * @example
+   * // User tries to refresh page → Browser shows: "Leave site? Changes you made may not be saved."
+   */
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any) {
+    if (this.hasUnsavedProgress()) {
+      // Custom function to check for unsaved changes
+      $event.returnValue = true; // Required for some browsers to show the prompt
+      return 'Your practice session will be lost. Do you want to leave?'; // Message for the prompt
+    }
+    return null; // Allow navigation without prompt
+  }
+
+  /**
+   * Check if user has unsaved progress that would be lost
+   *
+   * @returns {boolean} True if there's active session or answered questions
+   */
+  private hasUnsavedProgress(): boolean {
+    // Check if streaming is in progress
+    if (this.isStreaming) {
+      console.log('⚠️  Unsaved progress: streaming in progress');
+      return true;
+    }
+
+    if (!this.currentSession) {
+      console.log('🔍 No unsaved progress: no current session');
+      return false;
+    }
+
+    // Check if there are any questions loaded
+    if (this.currentSession.questions && this.currentSession.questions.length > 0) {
+      console.log('⚠️  Unsaved progress: questions loaded');
+      return true;
+    }
+
+    // Check if there are any answered questions
+    if (this.studentAnswers.size > 0) {
+      console.log('⚠️  Unsaved progress: answers recorded');
+      return true;
+    }
+
+    console.log('🔍 No unsaved progress detected');
+    return false;
   }
 
   /**
@@ -1097,5 +1173,12 @@ export class QuestionGenerator implements OnInit, OnDestroy {
    */
   returnToDashboard(): void {
     this.router.navigate(['/student/dashboard']);
+  }
+
+  /**
+   * Navigate back to category selection to generate new questions
+   */
+  backToCategories(): void {
+    this.location.back();
   }
 }

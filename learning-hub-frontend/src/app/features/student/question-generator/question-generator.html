@@ -9,13 +9,33 @@
   <!-- Error Message -->
   @if (error) {
   <div class="error-message">
-    <span>⚠️ {{ error }}</span>
-    <button (click)="error = null">×</button>
+    <div style="display: flex; align-items: center; gap: 1rem; flex: 1">
+      <span>⚠️ {{ error }}</span>
+    </div>
+    <div style="display: flex; gap: 0.5rem; align-items: center">
+      <button
+        (click)="error = null"
+        style="
+          background: transparent;
+          border: none;
+          font-size: 1.5rem;
+          cursor: pointer;
+          color: inherit;
+        "
+      >
+        ×
+      </button>
+    </div>
   </div>
-  }
-
-  <!-- Step 4: Question Interface -->
-  @if (currentQuestion) {
+  <button
+    mat-stroked-button
+    color="primary"
+    (click)="backToCategories()"
+    style="white-space: nowrap"
+  >
+    ← Back to Categories
+  </button>
+  } @else {
   <div class="questions-step">
     <!-- AI Quality Metrics Panel -->
     @if (qualityMetrics) {
@@ -262,6 +282,5 @@
     <!-- question-content -->
     }
   </div>
-  <!-- questions-step -->
   }
 </div>
