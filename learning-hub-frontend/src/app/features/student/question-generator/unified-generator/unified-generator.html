@@ -210,8 +210,15 @@
     >
       @if (isGenerating) {
       <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
-      <span>Generating...</span>
+      @if (isStreaming && streamingProgress > 0) {
+      <span
+        >Generating... {{ streamingProgress }}% ({{ streamingQuestions.length }}/{{
+          totalExpectedQuestions
+        }})</span
+      >
       } @else {
+      <span>Generating...</span>
+      } } @else {
       <ng-container>
         <mat-icon>auto_awesome</mat-icon>
         <span>Generate Questions</span>
